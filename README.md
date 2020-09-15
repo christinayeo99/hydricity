@@ -3,10 +3,10 @@
 General Description
 -------------------
 This code will loop through all "systems" (combination of solute and solvent) for one "level of theory" (combination of DFT-basis set-solvent model) to:
--check for the job status
--create directories and files
--submit jobs
--calculate hydricities from output files and store the numbers to a dat file
+1) Check for the job status
+2) Create directories and files
+3) Submit jobs
+4) Calculate hydricities from output files and store the numbers to a dat file
 
 Organization
 ------------
@@ -18,15 +18,15 @@ Inputs
 ------
 1) Level of Theory ID: should start with "P"
 2) Job Type:
-  -"minimize": Geometry optimization
-  -"frequencies": Frequency Analysis
-  -"hydricity": Calculate hydricities from output files and store to dat file
+  a. "minimize": Geometry optimization
+  b. "frequencies": Frequency Analysis
+  c. "hydricity": Calculate hydricities from output files and store to dat file
 
 Dependencies
 ------------
 Can be installed by typing "conda install ______" on terminal
--os
--sys
--numpy
--shutil
--forcebalance
+1) os
+2) sys
+3) numpy
+4) shutil
+5) forcebalance
