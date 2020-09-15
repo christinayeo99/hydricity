@@ -18,9 +18,9 @@ Inputs
 ------
 1) Level of Theory ID: should start with "P"
 2) Job Type:
-  a. "minimize": Geometry optimization
-  b. "frequencies": Frequency Analysis
-  c. "hydricity": Calculate hydricities from output files and store to dat file
+  a) "minimize": Geometry optimization
+  b) "frequencies": Frequency Analysis
+  c) "hydricity": Calculate hydricities from output files and store to dat file
 
 Dependencies
 ------------
