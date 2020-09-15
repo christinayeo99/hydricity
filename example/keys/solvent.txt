@@ -1,0 +1,4 @@
+Number    Name                Dielectric constant
+------    ----                -------------------
+S01       acetonitrile        37.5
+S03       water               80.1
