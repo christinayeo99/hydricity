@@ -1,0 +1,547 @@
+Startfile from command line: run.in
+
+
+       ***********************************************************
+       *                    TeraChem v1.9-cpMonitor-dev          *
+       *                 Hg Version: ccdev                       *
+       *                   Development Version                   *
+       *                Compiled without textures                *
+       *           Chemistry at the Speed of Graphics!           *
+       ***********************************************************
+       * This program may only be used in connection with        *
+       * a valid license from PetaChem, LLC. Use of this program *
+       * or results thereof indicates acceptance of all terms    *
+       * and conditions stated in the license and that a valid   *
+       * license agreement between the user and PetaChem, LLC    *
+       * exists. PetaChem, LLC does not warrant the correctness  *
+       * of results or their suitability for any purpose.        *
+       * Please email bugs, suggestions, and comments to         *
+       *                  help@petachem.com                      *
+       *                                                         *
+       ***********************************************************
+
+
+       ***********************************************************
+       *  Compiled by leeping      Sun Aug  2 23:45:58 PDT 2020  *
+       *  Supported architectures: sm_50 sm_60                   *
+       *  Cuda compilation tools, release 8.0, V8.0.44           *
+       ***********************************************************
+
+
+ Job started   Thu Sep  3 06:16:23 2020
+ On g7-32 (available memory: 126577 MB)
+
+######################################### RUNTIME INFO ##########################################
+terachem run.in 
+
+NVRM version: NVIDIA UNIX x86_64 Kernel Module  450.51.06  Sun Jul 19 20:02:54 UTC 2020
+GCC version:  gcc version 4.8.5 20150623 (Red Hat 4.8.5-39) (GCC) 
+
+	linux-vdso.so.1 =>  (0x00007ffdd3af0000)
+	libOpenMM.so => /home/leeping/opt/terachem/current/lib/libOpenMM.so (0x00002b7bfe479000)
+	libintbox.so.1 => /home/leeping/opt/terachem/current/lib/libintbox.so.1 (0x00002b7bfe9ca000)
+	libthcbox.so.1 => /home/leeping/opt/terachem/current/lib/libthcbox.so.1 (0x00002b7c0cf60000)
+	libgridbox.so.1 => /home/leeping/opt/terachem/current/lib/libgridbox.so.1 (0x00002b7c0de6b000)
+	libdftbox.so.1 => /home/leeping/opt/terachem/current/lib/libdftbox.so.1 (0x00002b7c0e223000)
+	libcuda.so.1 => /lib64/libcuda.so.1 (0x00002b7c0e628000)
+	libcudart.so.8.0 => /home/leeping/opt/terachem/current/lib/libcudart.so.8.0 (0x00002b7c0fadb000)
+	libcublas.so.8.0 => /home/leeping/opt/terachem/current/lib/libcublas.so.8.0 (0x00002b7c0fd41000)
+	libcufft.so.8.0 => /home/leeping/opt/terachem/current/lib/libcufft.so.8.0 (0x00002b7c126f1000)
+	libcrypto.so.10 => /lib64/libcrypto.so.10 (0x00002b7c1b53f000)
+	libssl.so.10 => /lib64/libssl.so.10 (0x00002b7c1b9a2000)
+	libm.so.6 => /lib64/libm.so.6 (0x00002b7c1bc14000)
+	libcilkrts.so.5 => /home/leeping/opt/terachem/current/lib/libcilkrts.so.5 (0x00002b7c1bf16000)
+	libstdc++.so.6 => /share/apps/gcc-7.3.0/c74/lib64/libstdc++.so.6 (0x00002b7c1c157000)
+	libgcc_s.so.1 => /share/apps/gcc-7.3.0/c74/lib64/libgcc_s.so.1 (0x00002b7c1c4d9000)
+	libpthread.so.0 => /lib64/libpthread.so.0 (0x00002b7c1c6f0000)
+	libc.so.6 => /lib64/libc.so.6 (0x00002b7c1c90c000)
+	/lib64/ld-linux-x86-64.so.2 (0x00002b7bfe255000)
+	libdl.so.2 => /lib64/libdl.so.2 (0x00002b7c1ccda000)
+	librt.so.1 => /lib64/librt.so.1 (0x00002b7c1cede000)
+	libz.so.1 => /lib64/libz.so.1 (0x00002b7c1d0e6000)
+	libgssapi_krb5.so.2 => /lib64/libgssapi_krb5.so.2 (0x00002b7c1d2fc000)
+	libkrb5.so.3 => /lib64/libkrb5.so.3 (0x00002b7c1d549000)
+	libcom_err.so.2 => /lib64/libcom_err.so.2 (0x00002b7c1d832000)
+	libk5crypto.so.3 => /lib64/libk5crypto.so.3 (0x00002b7c1da36000)
+	libkrb5support.so.0 => /lib64/libkrb5support.so.0 (0x00002b7c1dc69000)
+	libkeyutils.so.1 => /lib64/libkeyutils.so.1 (0x00002b7c1de79000)
+	libresolv.so.2 => /lib64/libresolv.so.2 (0x00002b7c1e07d000)
+	libselinux.so.1 => /lib64/libselinux.so.1 (0x00002b7c1e297000)
+	libpcre.so.1 => /lib64/libpcre.so.1 (0x00002b7c1e4be000)
+#################################################################################################
+
+  _________________________________
+ |         DFTD3 V3.0 Rev 2        |
+ | S.Grimme, University Bonn       |
+ |           Aug  2013             |
+  _________________________________
+ 
+ Please cite DFT-D3 work done with this code as:
+ S. Grimme, J. Antony, S. Ehrlich and H. Krieg,
+ J. Chem. Phys. 132 (2010), 154104
+ If used with BJ-damping cite also
+ S. Grimme, S. Ehrlich and L. Goerigk,
+ J. Comput. Chem. 32 (2011), 1456-1465
+ For DFT-D2 the reference is
+ S. Grimme, J. Comput. Chem., 27 (2006), 1787-1799
+ 
+Scratch directory: ./scr
+Random number seed: 910287679
+
+XYZ coordinates start.xyz
+Molden File Output: ./scr/start.molden
+Using basis set: 6-31gs_ldz
+Orbitals will be written to ./scr/start.molden every 999999999 time step
+Convergence threshold (energy change): 1.00e-07
+Convergence threshold (gradient rms): 3.00e-05
+Convergence threshold (gradient max): 4.50e-05
+Convergence threshold (displacement rms): 1.20e-04
+Convergence threshold (displacement max): 1.80e-04
+Spin multiplicity: 1
+DIIS will use up to 10 vectors.
+WF convergence threshold: 1.00e-06
+------------------ DIIS+A (DIIS with ADIIS backup) enabled. ------------------
+The following steps will be taken if SCF does not converge within 100 cycles:
+1) ADIIS activated until DIIS-error drops below auxiliary threshold = 1.0e-03
+2) DIIS activated for 200 steps with original convergence threshold = 1.0e-06
+3) Tighten ADIIS auxiliary threshold by 10x
+Above steps will repeat until convergence or 10000 total steps is reached.
+------------------------------------------------------------------------------
+Incremental fock with rebuild every 8 iterations
+Will switch to conventional Fock if diffuse functions are detected
+X-matrix tolerance: 1.00e-04
+PRECISION: DYNAMIC
+DFT Functional requested: b3lyp
+Method: B3LYP  with dispersion correction
+  Hartree-Fock exact exchange:          0.20 
+  Slater exchange functional:           0.80 
+  Becke 1988 exchange functional:       0.72 
+  Lee-Yang-Parr correlation functional: 0.81 
+  VWN(I) correlation functional:        0.19 
+Wavefunction: UNRESTRICTED
+DFT grid type: 3
+Using a single DFT grid.
+Initial guess generated by maximum overlap
+
+********************************************
+******* RUNNING GEOMETRY OPTMIZATION *******
+********************************************
+
+Geometry optimization parameters:
+Max number of optimization cycles: 1000
+Convergence threshold (Max grad component): 4.50e-04
+Convergence threshold (energy change): 1.00e-06
+Maximum of RMSD change allowed between steps is 0.500000
+using L-BFGS method
+Optimization checkpoint file will be dumped every 10 cycles
+Atomic displacement in finite-difference Hessian (Bohr) 0.003000
+Each step will be scaled by 1.00
+Maximum step size in internal coordinates 0.50
+Minimization SCF guess will be regenerated every 10 steps
+Job started from scratch
+SCF:   Initial guess is taken from previous step
+COSMO model for polarizable continuum model enabled
+*************WARNING***************
+Unrecognized or unnecessary keywords:
+These are being ignored.
+   thermotemp 298.15
+***********************************
+
+using 4 out of 4 CUDA devices
+   Device 0:  GeForce GTX 1080 Ti, 11178MB, CC 6.1 -- CPU THREAD 0
+   Device 1:  GeForce GTX 1080 Ti, 11178MB, CC 6.1 -- CPU THREAD 1
+   Device 2:  GeForce GTX 1080 Ti, 11178MB, CC 6.1 -- CPU THREAD 2
+   Device 3:  GeForce GTX 1080 Ti, 11178MB, CC 6.1 -- CPU THREAD 3
+-------------------------------------------------------------------
+Compiled with MAGMA support.  MAGMA parameters:
+    Matrices larger than 5000 square will be treated with MAGMA
+       (Change by setting the MagmaMinN environment variable)
+    Magma will use 1 out of 4 GPUs
+       (Change by setting the MagmaNGPUs environment variable)
+-------------------------------------------------------------------
+ CPU Memory Available: 16082.62 MegaWords 
+ GPU Memory Available: 1141.31 MegaWords 
+ Maximum recommended basis set size: 12200 basis functions
+ (limited by GPU memory)
+-------------------------------------------------------------------
+Using d-functions. Configuring GPUs accordingly.
+0: CUBLAS initialized, available GPU memory: 8297MB
+1: CUBLAS initialized, available GPU memory: 8297MB
+2: CUBLAS initialized, available GPU memory: 8297MB
+3: CUBLAS initialized, available GPU memory: 8297MB
+
+****** QM coordinates ******
+O        -0.9988308893         9.0764992492         4.0947450378  
+C        -2.1113334451         9.4032000298         4.1360669025  
+O        -3.2238356602         9.7299007210         4.1773880597  
+
+Basis set:       6-31gs_ldz
+Total atoms:     3
+Total charge:    0
+Total electrons: 22 (11-alpha, 11-beta)
+Number electrons modeled by ECPs: 0
+Total orbitals:  45
+Total AO shells: 18 (9 S-shells; 6 P-shells; 3 D-shells; 0 F-shells; 0 G-shells)
+Spin multiplicity: 1
+Nuclear repulsion energy (QM atoms): 58.381074713313 a.u.
+
+-------------------------------------------------------
+0 additional frames found in start.xyz
+-------------------------------------------------------
+-=#=-----------------------------------=#=-
+-=#=-   Geometry Optimizer Started    -=#=-
+-=#=-----------------------------------=#=-
+-=#=- Covalent Radii:
+-=#     1   O 0.66
+-=#     2   C 0.76
+-=#     3   O 0.66
+-=#=- Using Translation Rotation Internal Coordinates (TRIC)
+-=#=- Building Primitive Internal Coordinates -=#=- 
+-=#=-  Internal Coordinate Summary   -=#=-
+-=#     Total       : 6
+-=#     Constraint  : 0
+-=#     Distance    : 2
+-=#     Angle       : 0
+-=#     OutofPlane  : 0
+-=#     Dihedral    : 0
+-=#     Cartesian-X : 0
+-=#     Cartesian-Y : 0
+-=#     Cartesian-Z : 0
+-=#     Translation-X : 1
+-=#     Translation-Y : 1
+-=#     Translation-Z : 1
+-=#     Rotator     : 1
+-=#  Finished Primitive Internal Coordinates
+-=#  Generating Delocalized Coordinates...
+-=#  Found 7 Delocalized Coordinates
+
+Using WF guess from previous time step during MD.
+-=#=-   Getting Energy and Gradient   -=#=-
+-=#=-      (We'll Be Right Back)      -=#=-
+DFTD Energy:    -0.0016435 hartree
+Setting up the DFT grid...
+time to set the grid = 0.01 s
+DFT grid points: 37122 (12374 points/atom)
+=COSMO= Number of H atoms in QM atoms:0
+=COSMO= Number of Heavy atoms in QM atoms:3
+=COSMO= size of A matrix:540800 bytes
+=COSMO= Total surface area of cavity: 70.7976(Angstrom^2)
+=COSMO= Total volume of cavity: 44.7788 (Angstrom^3)
+=COSMO= ++++++++++++++++++++++++++++++ COSMO parameters ++++++++++++++++++++++++++++++
+=COSMO= I. Cavity Information:
+=COSMO= SAS(Solvent accesible surface) initialization finished
+=COSMO= Time for initializing Molecular Surface:0.00290700 (sec)
+=COSMO= Time for initializing cosmo calculation:0.01085200 (sec)
+=COSMO= Cavity effective radius(Angstrom) (r_solv+r_vdw-dsc) was written into ./scr/ratom.txt
+=COSMO= Solvent Dielectric Constant:80.100000
+=COSMO= Cosmo Solvent radius:0.000000
+=COSMO= Cosmo charge scaling method:0
+=COSMO= Cavity built with Lebedev Grid
+=COSMO= Grid points/QM Hydrogen: 110
+=COSMO= Grid points/QM Heavy atom: 110
+=COSMO= Herbert Switching-Gaussian method turned on
+=COSMO= After removing points inside of SAS:
+=COSMO= Total number of segments on molecular surface:260
+=COSMO= Number of segments belonging to QM atoms:260
+=COSMO= Total surface area of cavity: 70.7976(Angstrom^2)
+=COSMO= Total volume of cavity: 44.7788 (Angstrom^3)
+=COSMO= II. COSMO integral options:
+=COSMO= Building COMSO c vector with original algorithm
+=COSMO= COSMO one-electron integral threshold: 1e-12 
+=COSMO= III. Linear solver options:
+=COSMO= Initialize COSMO for A matrix in full storage form
+=COSMO= CG precondtioner:Jacobi
+=COSMO= Tight CG convergence threshold:1e-06
+=COSMO= CG dynamic threshold: on
+=COSMO= Adjust CG convergence threshold dynamically
+=COSMO= IV. PCM field read/write options:
+=COSMO= PCM field is not written to files
+=COSMO= No PCM field file is read in
+=COSMO= ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+Nuclear Repulsion Energy = 58.3810747133
+
+                      *** Start SCF Iterations ***
+
+ Iter     DIIS Error       Energy change      Electrons        XC Energy           Energy              E_PCM      Time(s)
+-------------------------------------------------------------------------------------------------------------------------
+         >>> Purifying Palpha... IDMP = 3.44e-15 <<<
+         >>> Purifying Pbeta ... IDMP = 3.44e-15 <<<
+THRESPDP set to 1.00e+00
+Rotate HOMO and LUMO by 45.000000 degrees
+   1     0.8304412853    -187.6392569058    22.0000002183   -17.5970486567    -187.6392569058     -0.0055435038    0.23  
+THRESPDP updated: 1.00e+00 -> 3.24e+00
+   2     0.2258624522      -0.5545487229    22.0000003810   -18.6768864346    -188.1938056286     -0.0001746484    0.19  
+   3     0.0846125924      -0.3741086486    22.0000004879   -18.2478249688    -188.5679142773     -0.0053709290    0.18  
+   4     0.0759749069      -0.0043975411    22.0000004175   -18.1633509949    -188.5723118184     -0.0017469974    0.16  
+   5     0.0057132730      -0.0125488324    22.0000004604   -18.2419625058    -188.5848606508     -0.0031909913    0.16  
+   6     0.0062150759      -0.0001910077    22.0000003508   -18.2355162437    -188.5850516585     -0.0031149167    0.16  
+   7     0.0021133644      -0.0001013092    22.0000004836   -18.2349413952    -188.5851529676     -0.0030962874    0.16  
+   8     0.0001880234      -0.0000206005    22.0000003165   -18.2355716245    -188.5851735682     -0.0031068451    0.16  
+THRESPDP updated: 3.24e+00 -> 1.55e-04
+   9     0.0000344864      +0.0000066118    22.0000002525   -18.2354743851    -188.5851669564     -0.0031073421    0.17  
+  10     0.0000127123      -0.0000001392    22.0000002524   -18.2354871869    -188.5851670956     -0.0031075329    0.17  
+  11     0.0000032651      +0.0000000129    22.0000002526   -18.2354885570    -188.5851670827     -0.0031075829    0.17  
+  12     0.0000010266      -0.0000000102    22.0000002525   -18.2354872905    -188.5851670929     -0.0031075674    0.17  
+  13     0.0000001544      -0.0000000006    22.0000002526   -18.2354875209    -188.5851670935     -0.0031075618    0.16  
+-------------------------------------------------------------------------------------------------------------------------
+FINAL ENERGY: -188.5851670935 a.u.
+DFTD Dispersion Correction: -0.0016434757 a.u.
+C-PCM contribution to final energy:-0.0031075618 a.u. ( already included in final energy )
+Computing C-PCM contribution to gradient...
+CENTER OF MASS: {-2.111333, 9.403200, 4.136067} ANGS
+DIPOLE MOMENT: {0.000000, 0.000000, 0.000002} (|D| = 0.000002) DEBYE
+SPIN SZ:         0.000000
+SPIN S-SQUARED: 0.000000 (exact: 0.00)
+GPU Memory: 8197 Mb
+GPU Memory: 8197 Mb
+GPU Memory: 8197 Mb
+GPU Memory: 8197 Mb
+GPU Memory: 8197 Mb
+GPU Memory: 8197 Mb
+GPU Memory: 8197 Mb
+GPU Memory: 8197 Mb
+-=#=-    Now Returning to Optimizer   -=#=-
+-=#=-       End of Initialization     -=#=-
+
+Running Mulliken population analysis...
+
+-=#=-  Checking Convergence Criteria  -=#=-
+-=#@    Cycle       Energy          Delta-E   Gradient-RMS   Gradient-Max   Displace-RMS   Displace-Max
+-=#@                       Crit:  1.000e-07      3.000e-05      4.500e-05      1.200e-04      1.800e-04 
+-=#@  ---------------------------------------------------------------------------------------------------
+-=#@      0    -188.5851670935        -     -    1.579e-02 N    1.855e-02 N        -     -        -     -
+-=#=-----------------------------------=#=-
+-=#=-      Optimization Cycle     1   -=#=-
+-=#=-----------------------------------=#=-
+-=#  Finding Optimization Step, Current Trust Radius: 1.0000e-01
+-=#  Cartesian Step Size: 6.5463e-03, Expected Delta-E: -2.9303e-04
+-=#=-   Getting Energy and Gradient   -=#=-
+-=#=-      (We'll Be Right Back)      -=#=-
+DFTD Energy:    -0.0016419 hartree
+Setting up the DFT grid...
+time to set the grid = 0.00 s
+DFT grid points: 37122 (12374 points/atom)
+=COSMO= Number of H atoms in QM atoms:0
+=COSMO= Number of Heavy atoms in QM atoms:3
+=COSMO= size of A matrix:540800 bytes
+=COSMO= Total surface area of cavity: 70.9983(Angstrom^2)
+=COSMO= Total volume of cavity: 44.9042 (Angstrom^3)
+Nuclear Repulsion Energy = 57.9804092589
+
+                      *** Start SCF Iterations ***
+
+ Iter     DIIS Error       Energy change      Electrons        XC Energy           Energy              E_PCM      Time(s)
+-------------------------------------------------------------------------------------------------------------------------
+         >>> Purifying Palpha... IDMP = 7.33e-03 <<<
+         >>> Purifying Palpha... IDMP = 5.93e-05 <<<
+         >>> Purifying Palpha... IDMP = 3.84e-09 <<<
+         >>> Purifying Palpha... IDMP = 3.33e-16 <<<
+         >>> Purifying Pbeta ... IDMP = 7.33e-03 <<<
+         >>> Purifying Pbeta ... IDMP = 5.93e-05 <<<
+         >>> Purifying Pbeta ... IDMP = 3.84e-09 <<<
+         >>> Purifying Pbeta ... IDMP = 3.33e-16 <<<
+THRESPDP set to 1.55e-04
+Rotate HOMO and LUMO by 45.000000 degrees
+   1     0.0047262003    -188.5850884634    21.9999997978   -18.2268050909    -188.5850884634     -0.0028516475    0.18  
+   2     0.1014218764      +0.1632776436    21.9999998088   -18.1911695196    -188.4218108198     -0.0017190759    0.17  
+   3     0.0024910233      -0.1636383067    21.9999997976   -18.2186241452    -188.5854491265     -0.0030612147    0.16  
+   4     0.0009841385      -0.0000271076    21.9999997978   -18.2238141976    -188.5854762341     -0.0030930637    0.16  
+   5     0.0007380807      -0.0000022534    21.9999997976   -18.2226968557    -188.5854784875     -0.0030921903    0.16  
+   6     0.0000843094      -0.0000013432    21.9999997977   -18.2225971780    -188.5854798307     -0.0030947051    0.16  
+   7     0.0000056103      +0.0000000373    21.9999997977   -18.2225857276    -188.5854797934     -0.0030948392    0.16  
+   8     0.0000019228      +0.0000000184    21.9999997976   -18.2225850089    -188.5854797750     -0.0030947827    0.16  
+   9     0.0000009907      -0.0000000035    21.9999997976   -18.2225867162    -188.5854797785     -0.0030948247    0.17  
+-------------------------------------------------------------------------------------------------------------------------
+FINAL ENERGY: -188.5854797785 a.u.
+DFTD Dispersion Correction: -0.0016418502 a.u.
+C-PCM contribution to final energy:-0.0030948247 a.u. ( already included in final energy )
+Computing C-PCM contribution to gradient...
+CENTER OF MASS: {-2.111333, 9.403200, 4.136067} ANGS
+DIPOLE MOMENT: {-0.000001, 0.000004, 0.000001} (|D| = 0.000005) DEBYE
+SPIN SZ:         0.000000
+SPIN S-SQUARED: 0.000000 (exact: 0.00)
+GPU Memory: 8197 Mb
+GPU Memory: 8197 Mb
+GPU Memory: 8197 Mb
+GPU Memory: 8197 Mb
+GPU Memory: 8197 Mb
+GPU Memory: 8197 Mb
+GPU Memory: 8197 Mb
+GPU Memory: 8197 Mb
+-=#=-    Now Returning to Optimizer   -=#=-
+
+Running Mulliken population analysis...
+
+-=#=-  Checking Convergence Criteria  -=#=-
+-=#     Cycle       Energy          Delta-E   Gradient-RMS   Gradient-Max   Displace-RMS   Displace-Max
+-=#                        Crit:  1.000e-07      3.000e-05      4.500e-05      1.200e-04      1.800e-04 
+-=#   ---------------------------------------------------------------------------------------------------
+-=#@      1    -188.5854797785   -3.127e-04 N    1.195e-03 N    1.404e-03 N    6.546e-03 N    8.018e-03 N
+-=#  Adjusting Trust Radius
+-=#  Step Quality:   1.0671 (Good)
+-=#  Increasing trust radius 1.0000e-01 -> 1.4142e-01
+-=#  Inverse iteration failed - rebuilding ..
+-=#=- Building Primitive Internal Coordinates -=#=- 
+-=#=-  Internal Coordinate Summary   -=#=-
+-=#     Total       : 6
+-=#     Constraint  : 0
+-=#     Distance    : 2
+-=#     Angle       : 0
+-=#     OutofPlane  : 0
+-=#     Dihedral    : 0
+-=#     Cartesian-X : 0
+-=#     Cartesian-Y : 0
+-=#     Cartesian-Z : 0
+-=#     Translation-X : 1
+-=#     Translation-Y : 1
+-=#     Translation-Z : 1
+-=#     Rotator     : 1
+-=#  Finished Primitive Internal Coordinates
+-=#  Generating Delocalized Coordinates...
+-=#  Found 7 Delocalized Coordinates
+-=#  Rebuilding Hessian
+-=#  Using 2 previous steps from history
+-=#  Hessian Eigenvalues:  1.2255e+00  1.1799e+00  5.0000e-02 ...  5.0000e-02  5.0000e-02  4.9999e-02
+-=#=-----------------------------------=#=-
+-=#=-      Optimization Cycle     2   -=#=-
+-=#=-----------------------------------=#=-
+-=#  Finding Optimization Step, Current Trust Radius: 1.4142e-01
+-=#  Cartesian Step Size: 5.3603e-04, Expected Delta-E: -1.8223e-06
+-=#=-   Getting Energy and Gradient   -=#=-
+-=#=-      (We'll Be Right Back)      -=#=-
+DFTD Energy:    -0.0016417 hartree
+Setting up the DFT grid...
+time to set the grid = 0.00 s
+DFT grid points: 37122 (12374 points/atom)
+=COSMO= Number of H atoms in QM atoms:0
+=COSMO= Number of Heavy atoms in QM atoms:3
+=COSMO= size of A matrix:540800 bytes
+=COSMO= Total surface area of cavity: 71.0151(Angstrom^2)
+=COSMO= Total volume of cavity: 44.9147 (Angstrom^3)
+Nuclear Repulsion Energy = 57.9478446512
+
+                      *** Start SCF Iterations ***
+
+ Iter     DIIS Error       Energy change      Electrons        XC Energy           Energy              E_PCM      Time(s)
+-------------------------------------------------------------------------------------------------------------------------
+         >>> Purifying Palpha... IDMP = 6.23e-04 <<<
+         >>> Purifying Palpha... IDMP = 4.29e-07 <<<
+         >>> Purifying Palpha... IDMP = 2.07e-13 <<<
+         >>> Purifying Palpha... IDMP = 3.33e-16 <<<
+         >>> Purifying Pbeta ... IDMP = 6.23e-04 <<<
+         >>> Purifying Pbeta ... IDMP = 4.29e-07 <<<
+         >>> Purifying Pbeta ... IDMP = 6.66e-16 <<<
+THRESPDP set to 1.55e-04
+Rotate HOMO and LUMO by 45.000000 degrees
+   1     0.0006863550    -188.5851841124    21.9999997614   -18.2218830447    -188.5851841124     -0.0028014897    0.18  
+   2     0.1012565450      +0.1629359303    21.9999997703   -18.1940736165    -188.4222481821     -0.0017129790    0.17  
+   3     0.0012700205      -0.1632128240    21.9999997614   -18.2207352169    -188.5854610062     -0.0030363717    0.17  
+   4     0.0003933030      -0.0000206427    21.9999997613   -18.2214974449    -188.5854816489     -0.0030805745    0.16  
+   5     0.0001908983      -0.0000001340    21.9999997614   -18.2214462773    -188.5854817829     -0.0030869948    0.18  
+   6     0.0001171830      +0.0000000340    21.9999997614   -18.2214830024    -188.5854817489     -0.0030894965    0.17  
+   7     0.0000310738      +0.0000000035    21.9999997613   -18.2215502040    -188.5854817454     -0.0030927525    0.16  
+   8     0.0000032615      +0.0000000821    21.9999997613   -18.2215381828    -188.5854816633     -0.0030939146    0.16  
+   9     0.0000004215      -0.0000000038    21.9999997613   -18.2215407543    -188.5854816671     -0.0030937548    0.17  
+-------------------------------------------------------------------------------------------------------------------------
+FINAL ENERGY: -188.5854816671 a.u.
+DFTD Dispersion Correction: -0.0016417144 a.u.
+C-PCM contribution to final energy:-0.0030937548 a.u. ( already included in final energy )
+Computing C-PCM contribution to gradient...
+CENTER OF MASS: {-2.111333, 9.403200, 4.136067} ANGS
+DIPOLE MOMENT: {0.000000, -0.000000, 0.000000} (|D| = 0.000001) DEBYE
+SPIN SZ:         0.000000
+SPIN S-SQUARED: 0.000000 (exact: 0.00)
+GPU Memory: 8197 Mb
+GPU Memory: 8197 Mb
+GPU Memory: 8197 Mb
+GPU Memory: 8197 Mb
+GPU Memory: 8197 Mb
+GPU Memory: 8197 Mb
+GPU Memory: 8197 Mb
+GPU Memory: 8197 Mb
+-=#=-    Now Returning to Optimizer   -=#=-
+
+Running Mulliken population analysis...
+
+-=#=-  Checking Convergence Criteria  -=#=-
+-=#     Cycle       Energy          Delta-E   Gradient-RMS   Gradient-Max   Displace-RMS   Displace-Max
+-=#                        Crit:  1.000e-07      3.000e-05      4.500e-05      1.200e-04      1.800e-04 
+-=#   ---------------------------------------------------------------------------------------------------
+-=#@      2    -188.5854816671   -1.889e-06 N    3.802e-05 N    4.383e-05 Y    5.360e-04 N    6.565e-04 N
+-=#  Adjusting Trust Radius
+-=#  Step Quality:   1.0364 (Good)
+-=#  Increasing trust radius 1.4142e-01 -> 2.0000e-01
+-=#  Updating Hessian with BFGS
+-=#  Hessian Eigenvalues:  1.2255e+00  1.1478e+00  5.0000e-02 ...  5.0000e-02  4.9999e-02  4.9625e-02
+-=#=-----------------------------------=#=-
+-=#=-      Optimization Cycle     3   -=#=-
+-=#=-----------------------------------=#=-
+-=#  Finding Optimization Step, Current Trust Radius: 2.0000e-01
+-=#  Cartesian Step Size: 1.9190e-05, Expected Delta-E: -8.6477e-09
+-=#=-   Getting Energy and Gradient   -=#=-
+-=#=-      (We'll Be Right Back)      -=#=-
+DFTD Energy:    -0.0016417 hartree
+Setting up the DFT grid...
+time to set the grid = 0.00 s
+DFT grid points: 37122 (12374 points/atom)
+=COSMO= Number of H atoms in QM atoms:0
+=COSMO= Number of Heavy atoms in QM atoms:3
+=COSMO= size of A matrix:540800 bytes
+=COSMO= Total surface area of cavity: 71.0160(Angstrom^2)
+=COSMO= Total volume of cavity: 44.9153 (Angstrom^3)
+Nuclear Repulsion Energy = 57.9466795345
+
+                      *** Start SCF Iterations ***
+
+ Iter     DIIS Error       Energy change      Electrons        XC Energy           Energy              E_PCM      Time(s)
+-------------------------------------------------------------------------------------------------------------------------
+         >>> Purifying Palpha... IDMP = 1.12e-04 <<<
+         >>> Purifying Palpha... IDMP = 2.05e-08 <<<
+         >>> Purifying Palpha... IDMP = 2.55e-15 <<<
+         >>> Purifying Pbeta ... IDMP = 1.12e-04 <<<
+         >>> Purifying Pbeta ... IDMP = 2.05e-08 <<<
+         >>> Purifying Pbeta ... IDMP = 2.55e-15 <<<
+THRESPDP set to 1.55e-04
+Rotate HOMO and LUMO by 45.000000 degrees
+   1     0.0007041261    -188.5851849519    21.9999997620   -18.2215155965    -188.5851849519     -0.0027972733    0.18  
+   2     0.1012465922      +0.1629131187    21.9999997689   -18.1943718269    -188.4222718332     -0.0017129781    0.17  
+   3     0.0012710696      -0.1631893177    21.9999997620   -18.2210045616    -188.5854611509     -0.0030352938    0.17  
+   4     0.0004041083      -0.0000203836    21.9999997622   -18.2214836996    -188.5854815345     -0.0030772960    0.16  
+   5     0.0002698417      -0.0000001599    21.9999997621   -18.2214239626    -188.5854816944     -0.0030829276    0.16  
+   6     0.0002094042      +0.0000006285    21.9999997620   -18.2214463688    -188.5854810659     -0.0030847004    0.16  
+   7     0.0000788191      -0.0000006803    21.9999997620   -18.2215039743    -188.5854817462     -0.0030906882    0.17  
+   8     0.0000071462      +0.0000000408    21.9999997620   -18.2214978508    -188.5854817054     -0.0030935231    0.17  
+   9     0.0000006067      +0.0000000322    21.9999997620   -18.2215034303    -188.5854816732     -0.0030937220    0.18  
+-------------------------------------------------------------------------------------------------------------------------
+FINAL ENERGY: -188.5854816732 a.u.
+DFTD Dispersion Correction: -0.0016417096 a.u.
+C-PCM contribution to final energy:-0.0030937220 a.u. ( already included in final energy )
+Computing C-PCM contribution to gradient...
+CENTER OF MASS: {-2.111333, 9.403200, 4.136067} ANGS
+DIPOLE MOMENT: {-0.000010, 0.000005, 0.000001} (|D| = 0.000011) DEBYE
+SPIN SZ:         0.000000
+SPIN S-SQUARED: 0.000000 (exact: 0.00)
+GPU Memory: 8197 Mb
+GPU Memory: 8197 Mb
+GPU Memory: 8197 Mb
+GPU Memory: 8197 Mb
+GPU Memory: 8197 Mb
+GPU Memory: 8197 Mb
+GPU Memory: 8197 Mb
+GPU Memory: 8197 Mb
+-=#=-    Now Returning to Optimizer   -=#=-
+
+Running Mulliken population analysis...
+
+-=#=-  Checking Convergence Criteria  -=#=-
+-=#     Cycle       Energy          Delta-E   Gradient-RMS   Gradient-Max   Displace-RMS   Displace-Max
+-=#                        Crit:  1.000e-07      3.000e-05      4.500e-05      1.200e-04      1.800e-04 
+-=#   ---------------------------------------------------------------------------------------------------
+-=#@      3    -188.5854816732   -6.079e-09 Y    1.161e-05 Y    9.716e-06 Y    1.919e-05 Y    2.351e-05 Y
+-=#=-----------------------------------=#=-
+-=#=-     Optimization Converged.     -=#=-
+-=#=-----------------------------------=#=-
+Total processing time: 7.93 sec 
+
+ Job finished: Thu Sep  3 06:16:39 2020
+

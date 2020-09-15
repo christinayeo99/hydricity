@@ -1,0 +1,1711 @@
+Startfile from command line: run.in
+
+
+       ***********************************************************
+       *                    TeraChem v1.9-cpMonitor-dev          *
+       *                 Hg Version: ccdev                       *
+       *                   Development Version                   *
+       *                Compiled without textures                *
+       *           Chemistry at the Speed of Graphics!           *
+       ***********************************************************
+       * This program may only be used in connection with        *
+       * a valid license from PetaChem, LLC. Use of this program *
+       * or results thereof indicates acceptance of all terms    *
+       * and conditions stated in the license and that a valid   *
+       * license agreement between the user and PetaChem, LLC    *
+       * exists. PetaChem, LLC does not warrant the correctness  *
+       * of results or their suitability for any purpose.        *
+       * Please email bugs, suggestions, and comments to         *
+       *                  help@petachem.com                      *
+       *                                                         *
+       ***********************************************************
+
+
+       ***********************************************************
+       *  Compiled by leeping      Sun Aug  2 23:45:58 PDT 2020  *
+       *  Supported architectures: sm_50 sm_60                   *
+       *  Cuda compilation tools, release 8.0, V8.0.44           *
+       ***********************************************************
+
+
+ Job started   Tue Sep  8 03:03:42 2020
+ On g6-12 (available memory: 120048 MB)
+
+######################################### RUNTIME INFO ##########################################
+terachem run.in 
+
+NVRM version: NVIDIA UNIX x86_64 Kernel Module  410.48  Thu Sep  6 06:36:33 CDT 2018
+GCC version:  gcc version 7.3.0 (GCC) 
+
+	linux-vdso.so.1 =>  (0x00007ffdd9330000)
+	libOpenMM.so => /home/leeping/opt/terachem/current/lib/libOpenMM.so (0x00002b6a6908f000)
+	libintbox.so.1 => /home/leeping/opt/terachem/current/lib/libintbox.so.1 (0x00002b6a695e0000)
+	libthcbox.so.1 => /home/leeping/opt/terachem/current/lib/libthcbox.so.1 (0x00002b6a77b76000)
+	libgridbox.so.1 => /home/leeping/opt/terachem/current/lib/libgridbox.so.1 (0x00002b6a78a81000)
+	libdftbox.so.1 => /home/leeping/opt/terachem/current/lib/libdftbox.so.1 (0x00002b6a78e39000)
+	libcuda.so.1 => /lib64/libcuda.so.1 (0x00002b6a7923e000)
+	libcudart.so.8.0 => /home/leeping/opt/terachem/current/lib/libcudart.so.8.0 (0x00002b6a7a334000)
+	libcublas.so.8.0 => /home/leeping/opt/terachem/current/lib/libcublas.so.8.0 (0x00002b6a7a59a000)
+	libcufft.so.8.0 => /home/leeping/opt/terachem/current/lib/libcufft.so.8.0 (0x00002b6a7cf4a000)
+	libcrypto.so.10 => /lib64/libcrypto.so.10 (0x00002b6a85d98000)
+	libssl.so.10 => /lib64/libssl.so.10 (0x00002b6a861fb000)
+	libm.so.6 => /lib64/libm.so.6 (0x00002b6a8646d000)
+	libcilkrts.so.5 => /home/leeping/opt/terachem/current/lib/libcilkrts.so.5 (0x00002b6a8676f000)
+	libstdc++.so.6 => /share/apps/gcc-7.3.0/c74/lib64/libstdc++.so.6 (0x00002b6a869b0000)
+	libgcc_s.so.1 => /share/apps/gcc-7.3.0/c74/lib64/libgcc_s.so.1 (0x00002b6a86d32000)
+	libpthread.so.0 => /lib64/libpthread.so.0 (0x00002b6a86f49000)
+	libc.so.6 => /lib64/libc.so.6 (0x00002b6a87165000)
+	/lib64/ld-linux-x86-64.so.2 (0x00002b6a68e6b000)
+	libdl.so.2 => /lib64/libdl.so.2 (0x00002b6a87532000)
+	librt.so.1 => /lib64/librt.so.1 (0x00002b6a87736000)
+	libnvidia-fatbinaryloader.so.410.48 => /lib64/libnvidia-fatbinaryloader.so.410.48 (0x00002b6a8793e000)
+	libz.so.1 => /lib64/libz.so.1 (0x00002b6a87b8b000)
+	libgssapi_krb5.so.2 => /lib64/libgssapi_krb5.so.2 (0x00002b6a87da1000)
+	libkrb5.so.3 => /lib64/libkrb5.so.3 (0x00002b6a87fee000)
+	libcom_err.so.2 => /lib64/libcom_err.so.2 (0x00002b6a882d6000)
+	libk5crypto.so.3 => /lib64/libk5crypto.so.3 (0x00002b6a884da000)
+	libkrb5support.so.0 => /lib64/libkrb5support.so.0 (0x00002b6a8870d000)
+	libkeyutils.so.1 => /lib64/libkeyutils.so.1 (0x00002b6a8891b000)
+	libresolv.so.2 => /lib64/libresolv.so.2 (0x00002b6a88b1f000)
+	libselinux.so.1 => /lib64/libselinux.so.1 (0x00002b6a88d38000)
+	libpcre.so.1 => /lib64/libpcre.so.1 (0x00002b6a88f5f000)
+#################################################################################################
+
+  _________________________________
+ |         DFTD3 V3.0 Rev 2        |
+ | S.Grimme, University Bonn       |
+ |           Aug  2013             |
+  _________________________________
+ 
+ Please cite DFT-D3 work done with this code as:
+ S. Grimme, J. Antony, S. Ehrlich and H. Krieg,
+ J. Chem. Phys. 132 (2010), 154104
+ If used with BJ-damping cite also
+ S. Grimme, S. Ehrlich and L. Goerigk,
+ J. Comput. Chem. 32 (2011), 1456-1465
+ For DFT-D2 the reference is
+ S. Grimme, J. Comput. Chem., 27 (2006), 1787-1799
+ 
+Scratch directory: ./scr
+Random number seed: 83783712
+
+XYZ coordinates start.xyz
+Molden File Output: ./scr/start.molden
+Using basis set: 6-31gs_ldz
+Orbitals will be written to ./scr/start.molden every 999999999 time step
+Spin multiplicity: 1
+DIIS will use up to 10 vectors.
+WF convergence threshold: 1.00e-06
+------------------ DIIS+A (DIIS with ADIIS backup) enabled. ------------------
+The following steps will be taken if SCF does not converge within 100 cycles:
+1) ADIIS activated until DIIS-error drops below auxiliary threshold = 1.0e-03
+2) DIIS activated for 200 steps with original convergence threshold = 1.0e-06
+3) Tighten ADIIS auxiliary threshold by 10x
+Above steps will repeat until convergence or 10000 total steps is reached.
+------------------------------------------------------------------------------
+Incremental fock with rebuild every 8 iterations
+Will switch to conventional Fock if diffuse functions are detected
+X-matrix tolerance: 1.00e-04
+PRECISION: DYNAMIC
+DFT Functional requested: b3lyp
+Method: B3LYP  with dispersion correction
+  Hartree-Fock exact exchange:          0.20 
+  Slater exchange functional:           0.80 
+  Becke 1988 exchange functional:       0.72 
+  Lee-Yang-Parr correlation functional: 0.81 
+  VWN(I) correlation functional:        0.19 
+Wavefunction: UNRESTRICTED
+DFT grid type: 3
+Using a single DFT grid.
+Initial guess generated by maximum overlap
+
+********************************************
+********** FREQUENCY ANALYSIS **************
+********************************************
+COSMO model for polarizable continuum model enabled
+*************WARNING***************
+Unrecognized or unnecessary keywords:
+These are being ignored.
+   thermotemp 298.15
+   min_converge_e 1.0e-7
+   min_converge_grms 3.0e-5
+   min_converge_gmax 4.5e-5
+   min_converge_drms 1.2e-4
+   min_converge_dmax 1.8e-4
+***********************************
+
+using 4 out of 4 CUDA devices
+   Device 0:   GeForce GTX 980 Ti,  6083MB, CC 5.2 -- CPU THREAD 0
+   Device 1:   GeForce GTX 980 Ti,  6083MB, CC 5.2 -- CPU THREAD 1
+   Device 2:   GeForce GTX 980 Ti,  6083MB, CC 5.2 -- CPU THREAD 2
+   Device 3:   GeForce GTX 980 Ti,  6083MB, CC 5.2 -- CPU THREAD 3
+-------------------------------------------------------------------
+Compiled with MAGMA support.  MAGMA parameters:
+    Matrices larger than 5000 square will be treated with MAGMA
+       (Change by setting the MagmaMinN environment variable)
+    Magma will use 1 out of 4 GPUs
+       (Change by setting the MagmaNGPUs environment variable)
+-------------------------------------------------------------------
+ CPU Memory Available: 16083.25 MegaWords 
+ GPU Memory Available: 504.49 MegaWords 
+ Maximum recommended basis set size: 8100 basis functions
+ (limited by GPU memory)
+-------------------------------------------------------------------
+Using d-functions. Configuring GPUs accordingly.
+0: CUBLAS initialized, available GPU memory: 3569MB
+1: CUBLAS initialized, available GPU memory: 3569MB
+2: CUBLAS initialized, available GPU memory: 3569MB
+3: CUBLAS initialized, available GPU memory: 3569MB
+
+****** QM coordinates ******
+O        -0.9905319762         9.0740299128         4.0935052684  
+C        -2.1113333248         9.4032001480         4.1360666937  
+O        -3.2321346966         9.7323699392         4.1786280379  
+
+Basis set:       6-31gs_ldz
+Total atoms:     3
+Total charge:    0
+Total electrons: 22 (11-alpha, 11-beta)
+Number electrons modeled by ECPs: 0
+Total orbitals:  45
+Total AO shells: 18 (9 S-shells; 6 P-shells; 3 D-shells; 0 F-shells; 0 G-shells)
+Spin multiplicity: 1
+Nuclear repulsion energy (QM atoms): 57.946679533954 a.u.
+
+*********************************************************************
+*** Frequency Analysis by Finite Difference of Analytic Gradients ***
+*********************************************************************
+Search for computed Hessian in ./scr/Hessian.bin ...  ...Hessian not found. 
+Search for restart file in ./scr/Hessian.restart ...   ...No restart file found. 
+Compute Hessian from scratch.
+Computing the Hessian via finite differences with a 3 point formula
+Using displacements of 0.0050 bohr
+Numerical Hessian requires 18 displacements
+
+*** Reference Geometry ***
+          Molecular Geometry (bohr)
+ O     -1.871834     17.147430      7.735603
+ C     -3.989841     17.769472      7.816033
+ O     -6.107849     18.391512      7.896462
+
+DFTD Energy:    -0.0016417 hartree
+Setting up the DFT grid...
+time to set the grid = 0.02 s
+DFT grid points: 37122 (12374 points/atom)
+=COSMO= Number of H atoms in QM atoms:0
+=COSMO= Number of Heavy atoms in QM atoms:3
+=COSMO= size of A matrix:540800 bytes
+=COSMO= Total surface area of cavity: 71.0160(Angstrom^2)
+=COSMO= Total volume of cavity: 44.9153 (Angstrom^3)
+=COSMO= ++++++++++++++++++++++++++++++ COSMO parameters ++++++++++++++++++++++++++++++
+=COSMO= I. Cavity Information:
+=COSMO= SAS(Solvent accesible surface) initialization finished
+=COSMO= Time for initializing Molecular Surface:0.00141300 (sec)
+=COSMO= Time for initializing cosmo calculation:0.00911500 (sec)
+=COSMO= Cavity effective radius(Angstrom) (r_solv+r_vdw-dsc) was written into ./scr/ratom.txt
+=COSMO= Solvent Dielectric Constant:80.100000
+=COSMO= Cosmo Solvent radius:0.000000
+=COSMO= Cosmo charge scaling method:0
+=COSMO= Cavity built with Lebedev Grid
+=COSMO= Grid points/QM Hydrogen: 110
+=COSMO= Grid points/QM Heavy atom: 110
+=COSMO= Herbert Switching-Gaussian method turned on
+=COSMO= After removing points inside of SAS:
+=COSMO= Total number of segments on molecular surface:260
+=COSMO= Number of segments belonging to QM atoms:260
+=COSMO= Total surface area of cavity: 71.0160(Angstrom^2)
+=COSMO= Total volume of cavity: 44.9153 (Angstrom^3)
+=COSMO= II. COSMO integral options:
+=COSMO= Building COMSO c vector with original algorithm
+=COSMO= COSMO one-electron integral threshold: 1e-12 
+=COSMO= III. Linear solver options:
+=COSMO= Initialize COSMO for A matrix in full storage form
+=COSMO= CG precondtioner:Jacobi
+=COSMO= Tight CG convergence threshold:1e-06
+=COSMO= CG dynamic threshold: on
+=COSMO= Adjust CG convergence threshold dynamically
+=COSMO= IV. PCM field read/write options:
+=COSMO= PCM field is not written to files
+=COSMO= No PCM field file is read in
+=COSMO= ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+Nuclear Repulsion Energy = 57.9466795340
+
+                      *** Start SCF Iterations ***
+
+ Iter     DIIS Error       Energy change      Electrons        XC Energy           Energy              E_PCM      Time(s)
+-------------------------------------------------------------------------------------------------------------------------
+         >>> Purifying Palpha... IDMP = 3.33e-15 <<<
+         >>> Purifying Pbeta ... IDMP = 3.33e-15 <<<
+THRESPDP set to 1.00e+00
+Rotate HOMO and LUMO by 45.000000 degrees
+   1     0.8193424367    -187.6511016962    22.0000002129   -17.5879021843    -187.6511016962     -0.0055308019    0.31  
+THRESPDP updated: 1.00e+00 -> 3.17e+00
+   2     0.2246479601      -0.5501684477    21.9999992689   -18.6597144774    -188.2012701439     -0.0001767791    0.25  
+   3     0.0852522597      -0.3666570101    21.9999997238   -18.2345258467    -188.5679271540     -0.0054153538    0.24  
+   4     0.0777626593      -0.0041902534    21.9999995533   -18.1481898579    -188.5721174075     -0.0016943237    0.23  
+   5     0.0057554650      -0.0130536219    21.9999996253   -18.2279447611    -188.5851710294     -0.0031781703    0.23  
+   6     0.0063631780      -0.0001925686    21.9999995373   -18.2215400273    -188.5853635980     -0.0031020607    0.23  
+   7     0.0021315699      -0.0001078616    21.9999996024   -18.2209525826    -188.5854714597     -0.0030823379    0.23  
+   8     0.0001987697      -0.0000220131    21.9999996579   -18.2215907159    -188.5854934728     -0.0030930772    0.23  
+THRESPDP updated: 3.17e+00 -> 1.55e-04
+   9     0.0000588801      +0.0000119437    21.9999997622   -18.2214898922    -188.5854815291     -0.0030935765    0.25  
+  10     0.0000140671      -0.0000001851    21.9999997621   -18.2215022861    -188.5854817142     -0.0030938033    0.24  
+  11     0.0000036782      +0.0000000530    21.9999997620   -18.2215049002    -188.5854816611     -0.0030937510    0.24  
+  12     0.0000012103      -0.0000000090    21.9999997619   -18.2215035318    -188.5854816702     -0.0030937226    0.24  
+  13     0.0000001423      -0.0000000025    21.9999997620   -18.2215035908    -188.5854816727     -0.0030937241    0.24  
+-------------------------------------------------------------------------------------------------------------------------
+FINAL ENERGY: -188.5854816727 a.u.
+DFTD Dispersion Correction: -0.0016417096 a.u.
+C-PCM contribution to final energy:-0.0030937241 a.u. ( already included in final energy )
+Computing C-PCM contribution to gradient...
+CENTER OF MASS: {-2.111333, 9.403200, 4.136067} ANGS
+DIPOLE MOMENT: {-0.000002, 0.000001, -0.000000} (|D| = 0.000003) DEBYE
+SPIN SZ:         0.000000
+SPIN S-SQUARED: 0.000000 (exact: 0.00)
+
+Running Mulliken population analysis...
+
+GPU Memory: 3466 Mb
+GPU Memory: 3466 Mb
+GPU Memory: 3466 Mb
+GPU Memory: 3466 Mb
+GPU Memory: 3466 Mb
+GPU Memory: 3466 Mb
+GPU Memory: 3466 Mb
+GPU Memory: 3466 Mb
+Writing out molden info
+Completed initial gradient at reference geometry
+
+Gradient units are Hartree/Bohr
+---------------------------------------------------
+        dE/dX            dE/dY            dE/dZ
+    0.0000062223    -0.0000042008     0.0000098205
+    0.0000002166    -0.0000000632     0.0000000116
+   -0.0000064388     0.0000042640    -0.0000098322
+---------------------------------------------------
+Net gradient: -3.668437e-12  8.134008e-13 -9.737207e-12
+Net torque:   -1.290576e-05 -4.264288e-05 -1.005266e-05
+
+Total Dipole Moment: {-0.000001, 0.000000, -0.000000} (|D| = 0.000001) a.u.
+
+Maximum gradient component at reference geometry: 9.83e-06
+Deal with potential Hessian restart
+Will write Hessian.restart file
+Positioned restart file at start of displacements
+
+*** Displacement 1 ***
+          Molecular Geometry (bohr)
+ O     -1.866834     17.147430      7.735603
+ C     -3.989841     17.769472      7.816033
+ O     -6.107849     18.391512      7.896462
+
+DFTD Energy:    -0.0016414 hartree
+Setting up the DFT grid...
+time to set the grid = 0.01 s
+DFT grid points: 37122 (12374 points/atom)
+=COSMO= Number of H atoms in QM atoms:0
+=COSMO= Number of Heavy atoms in QM atoms:3
+=COSMO= size of A matrix:540800 bytes
+=COSMO= Total surface area of cavity: 71.0478(Angstrom^2)
+=COSMO= Total volume of cavity: 44.9351 (Angstrom^3)
+Nuclear Repulsion Energy = 57.8839105203
+
+                      *** Start SCF Iterations ***
+
+ Iter     DIIS Error       Energy change      Electrons        XC Energy           Energy              E_PCM      Time(s)
+-------------------------------------------------------------------------------------------------------------------------
+         >>> Purifying Palpha... IDMP = 1.43e-03 <<<
+         >>> Purifying Palpha... IDMP = 2.56e-06 <<<
+         >>> Purifying Palpha... IDMP = 1.22e-15 <<<
+         >>> Purifying Pbeta ... IDMP = 1.43e-03 <<<
+         >>> Purifying Pbeta ... IDMP = 2.56e-06 <<<
+         >>> Purifying Pbeta ... IDMP = 9.68e-12 <<<
+         >>> Purifying Pbeta ... IDMP = 4.44e-16 <<<
+THRESPDP set to 1.55e-04
+Rotate HOMO and LUMO by 45.000000 degrees
+   1     0.0009946267    -188.5851662156    21.9999996916   -18.2201495797    -188.5851662156     -0.0028028677    0.29  
+   2     0.1010203077      +0.1624519445    21.9999996987   -18.1917616877    -188.4227142711     -0.0017039513    0.27  
+   3     0.0013020851      -0.1627333670    21.9999996916   -18.2183670564    -188.5854476381     -0.0030345222    0.27  
+   4     0.0005390824      -0.0000213089    21.9999996916   -18.2196651720    -188.5854689470     -0.0030871575    0.27  
+   5     0.0002865040      -0.0000006720    21.9999996916   -18.2196437883    -188.5854696190     -0.0030926315    0.26  
+   6     0.0000642335      +0.0000001555    21.9999996916   -18.2194575419    -188.5854694635     -0.0030904295    0.26  
+   7     0.0000106740      -0.0000002464    21.9999996915   -18.2195062502    -188.5854697099     -0.0030916404    0.26  
+   8     0.0000027287      +0.0000000906    21.9999996916   -18.2194891103    -188.5854696193     -0.0030919579    0.26  
+   9     0.0000006306      -0.0000000005    21.9999996915   -18.2194917032    -188.5854696199     -0.0030918520    0.27  
+-------------------------------------------------------------------------------------------------------------------------
+FINAL ENERGY: -188.5854696199 a.u.
+DFTD Dispersion Correction: -0.0016414460 a.u.
+C-PCM contribution to final energy:-0.0030918520 a.u. ( already included in final energy )
+Computing C-PCM contribution to gradient...
+CENTER OF MASS: {-2.110371, 9.403200, 4.136067} ANGS
+DIPOLE MOMENT: {-0.016445, 0.003699, 0.000478} (|D| = 0.016863) DEBYE
+SPIN SZ:         0.000000
+SPIN S-SQUARED: 0.000000 (exact: 0.00)
+
+Running Mulliken population analysis...
+
+GPU Memory: 3466 Mb
+GPU Memory: 3466 Mb
+GPU Memory: 3466 Mb
+GPU Memory: 3466 Mb
+GPU Memory: 3466 Mb
+GPU Memory: 3466 Mb
+GPU Memory: 3466 Mb
+GPU Memory: 3466 Mb
+
+Gradient units are Hartree/Bohr
+---------------------------------------------------
+        dE/dX            dE/dY            dE/dZ
+    0.0047958347    -0.0013592823    -0.0001650560
+   -0.0043736654     0.0011844278     0.0001529190
+   -0.0004221693     0.0001748545     0.0000121369
+---------------------------------------------------
+Net gradient:  3.410635e-11 -1.622130e-12 -1.188614e-11
+Net torque:   -1.316857e-05 -4.355960e-05 -1.029522e-05
+
+Total Dipole Moment: {-0.006470, 0.001455, 0.000188} (|D| = 0.006634) a.u.
+
+
+*** Displacement 2 ***
+          Molecular Geometry (bohr)
+ O     -1.876834     17.147430      7.735603
+ C     -3.989841     17.769472      7.816033
+ O     -6.107849     18.391512      7.896462
+
+DFTD Energy:    -0.0016420 hartree
+Setting up the DFT grid...
+time to set the grid = 0.01 s
+DFT grid points: 37122 (12374 points/atom)
+=COSMO= Number of H atoms in QM atoms:0
+=COSMO= Number of Heavy atoms in QM atoms:3
+=COSMO= size of A matrix:540800 bytes
+=COSMO= Total surface area of cavity: 70.9843(Angstrom^2)
+=COSMO= Total volume of cavity: 44.8954 (Angstrom^3)
+Nuclear Repulsion Energy = 58.0096769149
+
+                      *** Start SCF Iterations ***
+
+ Iter     DIIS Error       Energy change      Electrons        XC Energy           Energy              E_PCM      Time(s)
+-------------------------------------------------------------------------------------------------------------------------
+         >>> Purifying Palpha... IDMP = 3.08e-03 <<<
+         >>> Purifying Palpha... IDMP = 1.09e-05 <<<
+         >>> Purifying Palpha... IDMP = 1.47e-10 <<<
+         >>> Purifying Palpha... IDMP = 3.33e-16 <<<
+         >>> Purifying Pbeta ... IDMP = 3.08e-03 <<<
+         >>> Purifying Pbeta ... IDMP = 1.09e-05 <<<
+         >>> Purifying Pbeta ... IDMP = 1.47e-10 <<<
+         >>> Purifying Pbeta ... IDMP = 4.44e-16 <<<
+THRESPDP set to 1.55e-04
+Rotate HOMO and LUMO by 45.000000 degrees
+   1     0.0016826756    -188.5851516329    21.9999998357   -18.2222097645    -188.5851516329     -0.0027832400    0.29  
+   2     0.1014710645      +0.1631373995    21.9999998463   -18.1977398164    -188.4220142334     -0.0017075547    0.27  
+   3     0.0013732977      -0.1634299876    21.9999998360   -18.2242980981    -188.5854442210     -0.0030339686    0.27  
+   4     0.0013866228      -0.0000205932    21.9999998358   -18.2237461858    -188.5854648142     -0.0030956233    0.27  
+   5     0.0002446035      -0.0000045507    21.9999998359   -18.2234002126    -188.5854693649     -0.0030983951    0.31  
+   6     0.0000649365      -0.0000000555    21.9999998358   -18.2234978291    -188.5854694204     -0.0030942421    0.32  
+   7     0.0000238070      -0.0000001631    21.9999998359   -18.2235573469    -188.5854695835     -0.0030963943    0.34  
+   8     0.0000047786      +0.0000000312    21.9999998359   -18.2235222493    -188.5854695523     -0.0030958825    0.35  
+   9     0.0000005577      -0.0000000163    21.9999998358   -18.2235274520    -188.5854695686     -0.0030959550    0.31  
+-------------------------------------------------------------------------------------------------------------------------
+FINAL ENERGY: -188.5854695686 a.u.
+DFTD Dispersion Correction: -0.0016419715 a.u.
+C-PCM contribution to final energy:-0.0030959550 a.u. ( already included in final energy )
+Computing C-PCM contribution to gradient...
+CENTER OF MASS: {-2.112295, 9.403200, 4.136067} ANGS
+DIPOLE MOMENT: {0.016488, -0.003716, -0.000480} (|D| = 0.016908) DEBYE
+SPIN SZ:         0.000000
+SPIN S-SQUARED: 0.000000 (exact: 0.00)
+
+Running Mulliken population analysis...
+
+GPU Memory: 3466 Mb
+GPU Memory: 3466 Mb
+GPU Memory: 3466 Mb
+GPU Memory: 3466 Mb
+GPU Memory: 3466 Mb
+GPU Memory: 3466 Mb
+GPU Memory: 3466 Mb
+GPU Memory: 3466 Mb
+
+Gradient units are Hartree/Bohr
+---------------------------------------------------
+        dE/dX            dE/dY            dE/dZ
+   -0.0048680614     0.0013815613     0.0001887193
+    0.0044565111    -0.0012139384    -0.0001567546
+    0.0004115503    -0.0001676230    -0.0000319647
+---------------------------------------------------
+Net gradient:  2.196058e-11 -1.970019e-11 -1.261234e-11
+Net torque:   -1.267465e-05 -4.183047e-05 -9.861663e-06
+
+Total Dipole Moment: {0.006487, -0.001462, -0.000189} (|D| = 0.006652) a.u.
+
+
+*** Displacement 3 ***
+          Molecular Geometry (bohr)
+ O     -1.871834     17.152430      7.735603
+ C     -3.989841     17.769472      7.816033
+ O     -6.107849     18.391512      7.896462
+
+DFTD Energy:    -0.0016418 hartree
+Setting up the DFT grid...
+time to set the grid = 0.01 s
+DFT grid points: 37122 (12374 points/atom)
+=COSMO= Number of H atoms in QM atoms:0
+=COSMO= Number of Heavy atoms in QM atoms:3
+=COSMO= size of A matrix:540800 bytes
+=COSMO= Total surface area of cavity: 71.0066(Angstrom^2)
+=COSMO= Total volume of cavity: 44.9094 (Angstrom^3)
+Nuclear Repulsion Energy = 57.9650981573
+
+                      *** Start SCF Iterations ***
+
+ Iter     DIIS Error       Energy change      Electrons        XC Energy           Energy              E_PCM      Time(s)
+-------------------------------------------------------------------------------------------------------------------------
+         >>> Purifying Palpha... IDMP = 1.25e-03 <<<
+         >>> Purifying Palpha... IDMP = 2.07e-06 <<<
+         >>> Purifying Palpha... IDMP = 7.15e-12 <<<
+         >>> Purifying Palpha... IDMP = 2.22e-16 <<<
+         >>> Purifying Pbeta ... IDMP = 1.25e-03 <<<
+         >>> Purifying Pbeta ... IDMP = 2.07e-06 <<<
+         >>> Purifying Pbeta ... IDMP = 6.66e-16 <<<
+THRESPDP set to 1.55e-04
+Rotate HOMO and LUMO by 45.000000 degrees
+   1     0.0008539908    -188.5851760364    21.9999997803   -18.2225633732    -188.5851760364     -0.0028038175    0.35  
+   2     0.1014608364      +0.1630998066    21.9999997862   -18.1944898965    -188.4220762299     -0.0017272403    0.33  
+   3     0.0012989143      -0.1633822690    21.9999997800   -18.2211498990    -188.5854584989     -0.0030369390    0.31  
+   4     0.0006689003      -0.0000206861    21.9999997802   -18.2223779298    -188.5854791849     -0.0030922264    0.31  
+   5     0.0002950488      -0.0000010081    21.9999997801   -18.2222592912    -188.5854801930     -0.0030966831    0.33  
+   6     0.0000733304      +0.0000000461    21.9999997802   -18.2220617314    -188.5854801469     -0.0030934565    0.31  
+   7     0.0000115065      -0.0000002367    21.9999997801   -18.2221125453    -188.5854803835     -0.0030942055    0.31  
+   8     0.0000023339      +0.0000001046    21.9999997801   -18.2220913294    -188.5854802789     -0.0030944357    0.34  
+   9     0.0000004877      -0.0000000008    21.9999997801   -18.2220944295    -188.5854802797     -0.0030943620    0.34  
+-------------------------------------------------------------------------------------------------------------------------
+FINAL ENERGY: -188.5854802797 a.u.
+DFTD Dispersion Correction: -0.0016417865 a.u.
+C-PCM contribution to final energy:-0.0030943620 a.u. ( already included in final energy )
+Computing C-PCM contribution to gradient...
+CENTER OF MASS: {-2.111333, 9.404162, 4.136067} ANGS
+DIPOLE MOMENT: {0.003696, -0.004928, -0.000139} (|D| = 0.006162) DEBYE
+SPIN SZ:         0.000000
+SPIN S-SQUARED: 0.000000 (exact: 0.00)
+
+Running Mulliken population analysis...
+
+GPU Memory: 3466 Mb
+GPU Memory: 3466 Mb
+GPU Memory: 3466 Mb
+GPU Memory: 3466 Mb
+GPU Memory: 3466 Mb
+GPU Memory: 3466 Mb
+GPU Memory: 3466 Mb
+GPU Memory: 3466 Mb
+
+Gradient units are Hartree/Bohr
+---------------------------------------------------
+        dE/dX            dE/dY            dE/dZ
+   -0.0013641430     0.0005617553     0.0000623528
+    0.0011990804    -0.0006822048    -0.0000460334
+    0.0001650627     0.0001204495    -0.0000163195
+---------------------------------------------------
+Net gradient:  4.825571e-12  1.280823e-11 -1.204575e-11
+Net torque:   -1.313197e-05 -4.363539e-05 -9.719642e-06
+
+Total Dipole Moment: {0.001454, -0.001939, -0.000055} (|D| = 0.002424) a.u.
+
+
+*** Displacement 4 ***
+          Molecular Geometry (bohr)
+ O     -1.871834     17.142430      7.735603
+ C     -3.989841     17.769472      7.816033
+ O     -6.107849     18.391512      7.896462
+
+DFTD Energy:    -0.0016416 hartree
+Setting up the DFT grid...
+time to set the grid = 0.01 s
+DFT grid points: 37123 (12374 points/atom)
+=COSMO= Number of H atoms in QM atoms:0
+=COSMO= Number of Heavy atoms in QM atoms:3
+=COSMO= size of A matrix:540800 bytes
+=COSMO= Total surface area of cavity: 71.0254(Angstrom^2)
+=COSMO= Total volume of cavity: 44.9212 (Angstrom^3)
+Nuclear Repulsion Energy = 57.9281619199
+
+                      *** Start SCF Iterations ***
+
+ Iter     DIIS Error       Energy change      Electrons        XC Energy           Energy              E_PCM      Time(s)
+-------------------------------------------------------------------------------------------------------------------------
+         >>> Purifying Palpha... IDMP = 1.41e-03 <<<
+         >>> Purifying Palpha... IDMP = 2.74e-06 <<<
+         >>> Purifying Palpha... IDMP = 1.37e-11 <<<
+         >>> Purifying Palpha... IDMP = 4.44e-16 <<<
+         >>> Purifying Pbeta ... IDMP = 1.41e-03 <<<
+         >>> Purifying Pbeta ... IDMP = 2.74e-06 <<<
+         >>> Purifying Pbeta ... IDMP = 1.22e-15 <<<
+THRESPDP set to 1.55e-04
+Rotate HOMO and LUMO by 45.000000 degrees
+   1     0.0012385058    -188.5851701964    21.9999997440   -18.2212984329    -188.5851701964     -0.0028013133    0.31  
+   2     0.1011410188      +0.1629440456    21.9999997541   -18.1934002168    -188.4222261508     -0.0017370482    0.28  
+   3     0.0011794952      -0.1632334482    21.9999997442   -18.2201302738    -188.5854595990     -0.0030378603    0.27  
+   4     0.0005347971      -0.0000201020    21.9999997444   -18.2214006637    -188.5854797010     -0.0030990507    0.29  
+   5     0.0001795141      -0.0000001199    21.9999997443   -18.2209385362    -188.5854798210     -0.0030942506    0.35  
+   6     0.0001774860      -0.0000001777    21.9999997443   -18.2208690419    -188.5854799987     -0.0030917306    0.33  
+   7     0.0000130577      -0.0000002257    21.9999997442   -18.2209296238    -188.5854802244     -0.0030929357    0.34  
+   8     0.0000026255      +0.0000000123    21.9999997443   -18.2209055450    -188.5854802121     -0.0030931603    0.32  
+   9     0.0000005813      -0.0000000070    21.9999997442   -18.2209092713    -188.5854802191     -0.0030931129    0.36  
+-------------------------------------------------------------------------------------------------------------------------
+FINAL ENERGY: -188.5854802191 a.u.
+DFTD Dispersion Correction: -0.0016416322 a.u.
+C-PCM contribution to final energy:-0.0030931129 a.u. ( already included in final energy )
+Computing C-PCM contribution to gradient...
+CENTER OF MASS: {-2.111333, 9.402238, 4.136067} ANGS
+DIPOLE MOMENT: {-0.003717, 0.004940, 0.000140} (|D| = 0.006184) DEBYE
+SPIN SZ:         0.000000
+SPIN S-SQUARED: 0.000000 (exact: 0.00)
+
+Running Mulliken population analysis...
+
+GPU Memory: 3466 Mb
+GPU Memory: 3466 Mb
+GPU Memory: 3466 Mb
+GPU Memory: 3466 Mb
+GPU Memory: 3466 Mb
+GPU Memory: 3466 Mb
+GPU Memory: 3466 Mb
+GPU Memory: 3466 Mb
+
+Gradient units are Hartree/Bohr
+---------------------------------------------------
+        dE/dX            dE/dY            dE/dZ
+    0.0013761315    -0.0005758266    -0.0000426655
+   -0.0011990963     0.0006873855     0.0000460402
+   -0.0001770352    -0.0001115589    -0.0000033748
+---------------------------------------------------
+Net gradient: -5.799476e-11  3.210254e-11 -1.071059e-11
+Net torque:   -1.268745e-05 -4.170275e-05 -1.030680e-05
+
+Total Dipole Moment: {-0.001463, 0.001944, 0.000055} (|D| = 0.002433) a.u.
+
+
+*** Displacement 5 ***
+          Molecular Geometry (bohr)
+ O     -1.871834     17.147430      7.740603
+ C     -3.989841     17.769472      7.816033
+ O     -6.107849     18.391512      7.896462
+
+DFTD Energy:    -0.0016417 hartree
+Setting up the DFT grid...
+time to set the grid = 0.01 s
+DFT grid points: 37122 (12374 points/atom)
+=COSMO= Number of H atoms in QM atoms:0
+=COSMO= Number of Heavy atoms in QM atoms:3
+=COSMO= size of A matrix:540800 bytes
+=COSMO= Total surface area of cavity: 71.0136(Angstrom^2)
+=COSMO= Total volume of cavity: 44.9138 (Angstrom^3)
+Nuclear Repulsion Energy = 57.9490027559
+
+                      *** Start SCF Iterations ***
+
+ Iter     DIIS Error       Energy change      Electrons        XC Energy           Energy              E_PCM      Time(s)
+-------------------------------------------------------------------------------------------------------------------------
+         >>> Purifying Palpha... IDMP = 1.00e-03 <<<
+         >>> Purifying Palpha... IDMP = 1.28e-06 <<<
+         >>> Purifying Palpha... IDMP = 9.44e-16 <<<
+         >>> Purifying Pbeta ... IDMP = 1.00e-03 <<<
+         >>> Purifying Pbeta ... IDMP = 1.28e-06 <<<
+         >>> Purifying Pbeta ... IDMP = 2.50e-12 <<<
+         >>> Purifying Pbeta ... IDMP = 2.22e-16 <<<
+THRESPDP set to 1.55e-04
+Rotate HOMO and LUMO by 45.000000 degrees
+   1     0.0007820457    -188.5851785093    21.9999997576   -18.2213603512    -188.5851785093     -0.0027945113    0.30  
+   2     0.1012201654      +0.1628433086    21.9999997677   -18.1946681841    -188.4223352008     -0.0016975858    0.27  
+   3     0.0012226508      -0.1631255490    21.9999997573   -18.2213280886    -188.5854607497     -0.0030356613    0.26  
+   4     0.0003616467      -0.0000203492    21.9999997574   -18.2218339298    -188.5854810989     -0.0030939457    0.27  
+   5     0.0001631970      +0.0000001941    21.9999997573   -18.2215263783    -188.5854809048     -0.0030928280    0.35  
+   6     0.0001816533      -0.0000001870    21.9999997574   -18.2215519483    -188.5854810918     -0.0030923549    0.35  
+   7     0.0000221642      -0.0000001014    21.9999997574   -18.2216115783    -188.5854811932     -0.0030938458    0.33  
+   8     0.0000033796      +0.0000000338    21.9999997574   -18.2215737589    -188.5854811594     -0.0030937141    0.35  
+   9     0.0000005229      -0.0000000360    21.9999997574   -18.2215776874    -188.5854811954     -0.0030937559    0.34  
+-------------------------------------------------------------------------------------------------------------------------
+FINAL ENERGY: -188.5854811954 a.u.
+DFTD Dispersion Correction: -0.0016417194 a.u.
+C-PCM contribution to final energy:-0.0030937559 a.u. ( already included in final energy )
+Computing C-PCM contribution to gradient...
+CENTER OF MASS: {-2.111333, 9.403200, 4.137029} ANGS
+DIPOLE MOMENT: {0.000460, -0.000131, -0.003861} (|D| = 0.003890) DEBYE
+SPIN SZ:         0.000000
+SPIN S-SQUARED: 0.000000 (exact: 0.00)
+
+Running Mulliken population analysis...
+
+GPU Memory: 3466 Mb
+GPU Memory: 3466 Mb
+GPU Memory: 3466 Mb
+GPU Memory: 3466 Mb
+GPU Memory: 3466 Mb
+GPU Memory: 3466 Mb
+GPU Memory: 3466 Mb
+GPU Memory: 3466 Mb
+
+Gradient units are Hartree/Bohr
+---------------------------------------------------
+        dE/dX            dE/dY            dE/dZ
+   -0.0001665149     0.0000471067     0.0001821262
+    0.0001501844    -0.0000446831    -0.0003377206
+    0.0000163305    -0.0000024236     0.0001555944
+---------------------------------------------------
+Net gradient:  1.309905e-11 -8.463406e-13 -2.216288e-11
+Net torque:   -1.275621e-05 -4.232085e-05 -8.832179e-06
+
+Total Dipole Moment: {0.000181, -0.000052, -0.001519} (|D| = 0.001530) a.u.
+
+
+*** Displacement 6 ***
+          Molecular Geometry (bohr)
+ O     -1.871834     17.147430      7.730603
+ C     -3.989841     17.769472      7.816033
+ O     -6.107849     18.391512      7.896462
+
+DFTD Energy:    -0.0016417 hartree
+Setting up the DFT grid...
+time to set the grid = 0.01 s
+DFT grid points: 37123 (12374 points/atom)
+=COSMO= Number of H atoms in QM atoms:0
+=COSMO= Number of Heavy atoms in QM atoms:3
+=COSMO= size of A matrix:540800 bytes
+=COSMO= Total surface area of cavity: 71.0185(Angstrom^2)
+=COSMO= Total volume of cavity: 44.9168 (Angstrom^3)
+Nuclear Repulsion Energy = 57.9442269367
+
+                      *** Start SCF Iterations ***
+
+ Iter     DIIS Error       Energy change      Electrons        XC Energy           Energy              E_PCM      Time(s)
+-------------------------------------------------------------------------------------------------------------------------
+         >>> Purifying Palpha... IDMP = 1.07e-03 <<<
+         >>> Purifying Palpha... IDMP = 1.74e-06 <<<
+         >>> Purifying Palpha... IDMP = 7.94e-12 <<<
+         >>> Purifying Palpha... IDMP = 3.33e-16 <<<
+         >>> Purifying Pbeta ... IDMP = 1.07e-03 <<<
+         >>> Purifying Pbeta ... IDMP = 1.74e-06 <<<
+         >>> Purifying Pbeta ... IDMP = 8.88e-16 <<<
+THRESPDP set to 1.55e-04
+Rotate HOMO and LUMO by 45.000000 degrees
+   1     0.0012529351    -188.5851725238    21.9999997666   -18.2214766171    -188.5851725238     -0.0027977083    0.30  
+   2     0.1011483055      +0.1627987988    21.9999997613   -18.1942433712    -188.4223737250     -0.0016943880    0.28  
+   3     0.0012210523      -0.1630871029    21.9999997668   -18.2209267171    -188.5854608278     -0.0030364576    0.27  
+   4     0.0005477274      -0.0000199705    21.9999997668   -18.2218745862    -188.5854807983     -0.0031014137    0.28  
+   5     0.0001149646      -0.0000002320    21.9999997668   -18.2213662811    -188.5854810303     -0.0030933928    0.28  
+   6     0.0001873344      -0.0000001136    21.9999997668   -18.2214509639    -188.5854811439     -0.0030935958    0.27  
+   7     0.0000172058      -0.0000001459    21.9999997668   -18.2214512548    -188.5854812897     -0.0030935676    0.27  
+   8     0.0000030371      -0.0000000011    21.9999997669   -18.2214205749    -188.5854812908     -0.0030937074    0.27  
+   9     0.0000004652      +0.0000000009    21.9999997668   -18.2214245977    -188.5854812899     -0.0030936850    0.28  
+-------------------------------------------------------------------------------------------------------------------------
+FINAL ENERGY: -188.5854812899 a.u.
+DFTD Dispersion Correction: -0.0016416994 a.u.
+C-PCM contribution to final energy:-0.0030936850 a.u. ( already included in final energy )
+Computing C-PCM contribution to gradient...
+CENTER OF MASS: {-2.111333, 9.403200, 4.135105} ANGS
+DIPOLE MOMENT: {-0.000495, 0.000145, 0.003863} (|D| = 0.003897) DEBYE
+SPIN SZ:         0.000000
+SPIN S-SQUARED: 0.000000 (exact: 0.00)
+
+Running Mulliken population analysis...
+
+GPU Memory: 3466 Mb
+GPU Memory: 3466 Mb
+GPU Memory: 3466 Mb
+GPU Memory: 3466 Mb
+GPU Memory: 3466 Mb
+GPU Memory: 3466 Mb
+GPU Memory: 3466 Mb
+GPU Memory: 3466 Mb
+
+Gradient units are Hartree/Bohr
+---------------------------------------------------
+        dE/dX            dE/dY            dE/dZ
+    0.0001875883    -0.0000580493    -0.0001636352
+   -0.0001593643     0.0000473801     0.0003388545
+   -0.0000282239     0.0000106692    -0.0001752194
+---------------------------------------------------
+Net gradient:  6.107317e-11 -8.703550e-12 -9.940374e-12
+Net torque:   -1.302308e-05 -4.283066e-05 -1.130344e-05
+
+Total Dipole Moment: {-0.000195, 0.000057, 0.001520} (|D| = 0.001533) a.u.
+
+
+*** Displacement 7 ***
+          Molecular Geometry (bohr)
+ O     -1.871834     17.147430      7.735603
+ C     -3.984841     17.769472      7.816033
+ O     -6.107849     18.391512      7.896462
+
+DFTD Energy:    -0.0016417 hartree
+Setting up the DFT grid...
+time to set the grid = 0.01 s
+DFT grid points: 37122 (12374 points/atom)
+=COSMO= Number of H atoms in QM atoms:0
+=COSMO= Number of Heavy atoms in QM atoms:3
+=COSMO= size of A matrix:540800 bytes
+=COSMO= Total surface area of cavity: 71.0160(Angstrom^2)
+=COSMO= Total volume of cavity: 44.9153 (Angstrom^3)
+Nuclear Repulsion Energy = 57.9468752637
+
+                      *** Start SCF Iterations ***
+
+ Iter     DIIS Error       Energy change      Electrons        XC Energy           Energy              E_PCM      Time(s)
+-------------------------------------------------------------------------------------------------------------------------
+         >>> Purifying Palpha... IDMP = 1.49e-03 <<<
+         >>> Purifying Palpha... IDMP = 3.52e-06 <<<
+         >>> Purifying Palpha... IDMP = 2.60e-11 <<<
+         >>> Purifying Palpha... IDMP = 4.44e-16 <<<
+         >>> Purifying Pbeta ... IDMP = 1.49e-03 <<<
+         >>> Purifying Pbeta ... IDMP = 3.52e-06 <<<
+         >>> Purifying Pbeta ... IDMP = 2.60e-11 <<<
+         >>> Purifying Pbeta ... IDMP = 4.44e-16 <<<
+THRESPDP set to 1.55e-04
+Rotate HOMO and LUMO by 45.000000 degrees
+   1     0.0016943195    -188.5851463159    21.9999997655   -18.2214870408    -188.5851463159     -0.0027970290    0.31  
+   2     0.1012226882      +0.1627440602    21.9999997760   -18.1944727365    -188.4224022557     -0.0016986591    0.28  
+   3     0.0012814443      -0.1630334544    21.9999997655   -18.2210511286    -188.5854357101     -0.0030352867    0.28  
+   4     0.0011931157      -0.0000202119    21.9999997656   -18.2218173904    -188.5854559220     -0.0030943385    0.28  
+   5     0.0002860465      -0.0000036669    21.9999997655   -18.2216568119    -188.5854595889     -0.0030990870    0.30  
+   6     0.0000567370      +0.0000000539    21.9999997655   -18.2214451495    -188.5854595349     -0.0030928567    0.35  
+   7     0.0000204979      -0.0000000816    21.9999997655   -18.2215472285    -188.5854596165     -0.0030945880    0.36  
+   8     0.0000030989      +0.0000000113    21.9999997656   -18.2215117510    -188.5854596053     -0.0030945315    0.33  
+   9     0.0000007890      +0.0000000055    21.9999997655   -18.2215159300    -188.5854595997     -0.0030944809    0.34  
+-------------------------------------------------------------------------------------------------------------------------
+FINAL ENERGY: -188.5854595997 a.u.
+DFTD Dispersion Correction: -0.0016417095 a.u.
+C-PCM contribution to final energy:-0.0030944809 a.u. ( already included in final energy )
+Computing C-PCM contribution to gradient...
+CENTER OF MASS: {-2.110612, 9.403200, 4.136067} ANGS
+DIPOLE MOMENT: {0.032939, -0.007416, -0.000958} (|D| = 0.033777) DEBYE
+SPIN SZ:         0.000000
+SPIN S-SQUARED: 0.000000 (exact: 0.00)
+
+Running Mulliken population analysis...
+
+GPU Memory: 3466 Mb
+GPU Memory: 3466 Mb
+GPU Memory: 3466 Mb
+GPU Memory: 3466 Mb
+GPU Memory: 3466 Mb
+GPU Memory: 3466 Mb
+GPU Memory: 3466 Mb
+GPU Memory: 3466 Mb
+
+Gradient units are Hartree/Bohr
+---------------------------------------------------
+        dE/dX            dE/dY            dE/dZ
+   -0.0044502907     0.0012099694     0.0001666430
+    0.0088299056    -0.0023982961    -0.0003096655
+   -0.0043796149     0.0011883267     0.0001430225
+---------------------------------------------------
+Net gradient:  2.284010e-12 -1.060740e-11 -1.131013e-11
+Net torque:   -1.295231e-05 -4.279511e-05 -1.011900e-05
+
+Total Dipole Moment: {0.012959, -0.002918, -0.000377} (|D| = 0.013289) a.u.
+
+
+*** Displacement 8 ***
+          Molecular Geometry (bohr)
+ O     -1.871834     17.147430      7.735603
+ C     -3.994841     17.769472      7.816033
+ O     -6.107849     18.391512      7.896462
+
+DFTD Energy:    -0.0016417 hartree
+Setting up the DFT grid...
+time to set the grid = 0.01 s
+DFT grid points: 37122 (12374 points/atom)
+=COSMO= Number of H atoms in QM atoms:0
+=COSMO= Number of Heavy atoms in QM atoms:3
+=COSMO= size of A matrix:540800 bytes
+=COSMO= Total surface area of cavity: 71.0160(Angstrom^2)
+=COSMO= Total volume of cavity: 44.9153 (Angstrom^3)
+Nuclear Repulsion Energy = 57.9468752913
+
+                      *** Start SCF Iterations ***
+
+ Iter     DIIS Error       Energy change      Electrons        XC Energy           Energy              E_PCM      Time(s)
+-------------------------------------------------------------------------------------------------------------------------
+         >>> Purifying Palpha... IDMP = 2.55e-03 <<<
+         >>> Purifying Palpha... IDMP = 1.16e-05 <<<
+         >>> Purifying Palpha... IDMP = 2.93e-10 <<<
+         >>> Purifying Palpha... IDMP = 3.33e-16 <<<
+         >>> Purifying Pbeta ... IDMP = 2.55e-03 <<<
+         >>> Purifying Pbeta ... IDMP = 1.16e-05 <<<
+         >>> Purifying Pbeta ... IDMP = 2.93e-10 <<<
+         >>> Purifying Pbeta ... IDMP = 4.44e-16 <<<
+THRESPDP set to 1.55e-04
+Rotate HOMO and LUMO by 45.000000 degrees
+   1     0.0033687965    -188.5851098906    21.9999997654   -18.2215167226    -188.5851098906     -0.0027972537    0.30  
+   2     0.1012633727      +0.1626591322    21.9999997754   -18.1944570616    -188.4224507584     -0.0016952612    0.27  
+   3     0.0027515590      -0.1629730098    21.9999997650   -18.2211202737    -188.5854237682     -0.0030378061    0.27  
+   4     0.0024664055      -0.0000189117    21.9999997650   -18.2217962337    -188.5854426799     -0.0030939021    0.27  
+   5     0.0002996531      -0.0000172829    21.9999997650   -18.2216494803    -188.5854599627     -0.0031001246    0.27  
+   6     0.0001052487      +0.0000004631    21.9999997650   -18.2214198033    -188.5854594997     -0.0030920657    0.27  
+   7     0.0000211524      -0.0000001256    21.9999997649   -18.2215462803    -188.5854596253     -0.0030947190    0.27  
+   8     0.0000037589      +0.0000000573    21.9999997650   -18.2215105810    -188.5854595680     -0.0030944989    0.27  
+   9     0.0000013961      -0.0000000301    21.9999997649   -18.2215159914    -188.5854595981     -0.0030944681    0.27  
+  10     0.0000002825      -0.0000000003    21.9999997648   -18.2215161866    -188.5854595983     -0.0030945048    0.26  
+-------------------------------------------------------------------------------------------------------------------------
+FINAL ENERGY: -188.5854595983 a.u.
+DFTD Dispersion Correction: -0.0016417095 a.u.
+C-PCM contribution to final energy:-0.0030945048 a.u. ( already included in final energy )
+Computing C-PCM contribution to gradient...
+CENTER OF MASS: {-2.112055, 9.403200, 4.136067} ANGS
+DIPOLE MOMENT: {-0.032933, 0.007414, 0.000959} (|D| = 0.033771) DEBYE
+SPIN SZ:         0.000000
+SPIN S-SQUARED: 0.000000 (exact: 0.00)
+
+Running Mulliken population analysis...
+
+GPU Memory: 3466 Mb
+GPU Memory: 3466 Mb
+GPU Memory: 3466 Mb
+GPU Memory: 3466 Mb
+GPU Memory: 3466 Mb
+GPU Memory: 3466 Mb
+GPU Memory: 3466 Mb
+GPU Memory: 3466 Mb
+
+Gradient units are Hartree/Bohr
+---------------------------------------------------
+        dE/dX            dE/dY            dE/dZ
+    0.0043804708    -0.0011885874    -0.0001430723
+   -0.0088309252     0.0023986171     0.0003097171
+    0.0044504544    -0.0012100296    -0.0001666449
+---------------------------------------------------
+Net gradient:  2.669839e-11 -8.878984e-12 -1.206600e-11
+Net torque:   -1.293874e-05 -4.275014e-05 -1.010773e-05
+
+Total Dipole Moment: {-0.012957, 0.002917, 0.000377} (|D| = 0.013286) a.u.
+
+
+*** Displacement 9 ***
+          Molecular Geometry (bohr)
+ O     -1.871834     17.147430      7.735603
+ C     -3.989841     17.774472      7.816033
+ O     -6.107849     18.391512      7.896462
+
+DFTD Energy:    -0.0016417 hartree
+Setting up the DFT grid...
+time to set the grid = 0.01 s
+DFT grid points: 37123 (12374 points/atom)
+=COSMO= Number of H atoms in QM atoms:0
+=COSMO= Number of Heavy atoms in QM atoms:3
+=COSMO= size of A matrix:540800 bytes
+=COSMO= Total surface area of cavity: 71.0160(Angstrom^2)
+=COSMO= Total volume of cavity: 44.9153 (Angstrom^3)
+Nuclear Repulsion Energy = 57.9465946698
+
+                      *** Start SCF Iterations ***
+
+ Iter     DIIS Error       Energy change      Electrons        XC Energy           Energy              E_PCM      Time(s)
+-------------------------------------------------------------------------------------------------------------------------
+         >>> Purifying Palpha... IDMP = 1.27e-03 <<<
+         >>> Purifying Palpha... IDMP = 2.67e-06 <<<
+         >>> Purifying Palpha... IDMP = 1.45e-11 <<<
+         >>> Purifying Palpha... IDMP = 3.33e-16 <<<
+         >>> Purifying Pbeta ... IDMP = 1.27e-03 <<<
+         >>> Purifying Pbeta ... IDMP = 2.67e-06 <<<
+         >>> Purifying Pbeta ... IDMP = 1.45e-11 <<<
+         >>> Purifying Pbeta ... IDMP = 4.44e-16 <<<
+THRESPDP set to 1.55e-04
+Rotate HOMO and LUMO by 45.000000 degrees
+   1     0.0015768905    -188.5851662099    21.9999997616   -18.2215074351    -188.5851662099     -0.0027973892    0.30  
+   2     0.1013244402      +0.1631306074    21.9999997737   -18.1943751943    -188.4220356025     -0.0017683282    0.27  
+   3     0.0013608076      -0.1634187086    21.9999997620   -18.2209463926    -188.5854543112     -0.0030341020    0.27  
+   4     0.0012264294      -0.0000200158    21.9999997621   -18.2218870151    -188.5854743270     -0.0030944767    0.27  
+   5     0.0003004694      -0.0000036903    21.9999997620   -18.2216428756    -188.5854780172     -0.0030989336    0.27  
+   6     0.0000704719      -0.0000001444    21.9999997619   -18.2214431182    -188.5854781617     -0.0030926176    0.27  
+   7     0.0000189550      -0.0000000945    21.9999997619   -18.2215292470    -188.5854782562     -0.0030938076    0.27  
+   8     0.0000031336      -0.0000000045    21.9999997620   -18.2214962230    -188.5854782607     -0.0030938343    0.27  
+   9     0.0000005501      +0.0000000113    21.9999997620   -18.2215003393    -188.5854782493     -0.0030938087    0.27  
+-------------------------------------------------------------------------------------------------------------------------
+FINAL ENERGY: -188.5854782493 a.u.
+DFTD Dispersion Correction: -0.0016417095 a.u.
+C-PCM contribution to final energy:-0.0030938087 a.u. ( already included in final energy )
+Computing C-PCM contribution to gradient...
+CENTER OF MASS: {-2.111333, 9.403922, 4.136067} ANGS
+DIPOLE MOMENT: {-0.007413, 0.009870, 0.000279} (|D| = 0.012347) DEBYE
+SPIN SZ:         0.000000
+SPIN S-SQUARED: 0.000000 (exact: 0.00)
+
+Running Mulliken population analysis...
+
+GPU Memory: 3466 Mb
+GPU Memory: 3466 Mb
+GPU Memory: 3466 Mb
+GPU Memory: 3466 Mb
+GPU Memory: 3466 Mb
+GPU Memory: 3466 Mb
+GPU Memory: 3466 Mb
+GPU Memory: 3466 Mb
+
+Gradient units are Hartree/Bohr
+---------------------------------------------------
+        dE/dX            dE/dY            dE/dZ
+    0.0012048001    -0.0006917343    -0.0000361776
+   -0.0023986990     0.0013698358     0.0000920987
+    0.0011938990    -0.0006781015    -0.0000559211
+---------------------------------------------------
+Net gradient:  5.699506e-11 -1.801360e-11 -1.440100e-11
+Net torque:   -1.291744e-05 -4.269346e-05 -1.009995e-05
+
+Total Dipole Moment: {-0.002917, 0.003883, 0.000110} (|D| = 0.004858) a.u.
+
+
+*** Displacement 10 ***
+          Molecular Geometry (bohr)
+ O     -1.871834     17.147430      7.735603
+ C     -3.989841     17.764472      7.816033
+ O     -6.107849     18.391512      7.896462
+
+DFTD Energy:    -0.0016417 hartree
+Setting up the DFT grid...
+time to set the grid = 0.01 s
+DFT grid points: 37123 (12374 points/atom)
+=COSMO= Number of H atoms in QM atoms:0
+=COSMO= Number of Heavy atoms in QM atoms:3
+=COSMO= size of A matrix:540800 bytes
+=COSMO= Total surface area of cavity: 71.0160(Angstrom^2)
+=COSMO= Total volume of cavity: 44.9153 (Angstrom^3)
+Nuclear Repulsion Energy = 57.9465946997
+
+                      *** Start SCF Iterations ***
+
+ Iter     DIIS Error       Energy change      Electrons        XC Energy           Energy              E_PCM      Time(s)
+-------------------------------------------------------------------------------------------------------------------------
+         >>> Purifying Palpha... IDMP = 1.57e-03 <<<
+         >>> Purifying Palpha... IDMP = 4.39e-06 <<<
+         >>> Purifying Palpha... IDMP = 3.97e-11 <<<
+         >>> Purifying Palpha... IDMP = 4.44e-16 <<<
+         >>> Purifying Pbeta ... IDMP = 1.57e-03 <<<
+         >>> Purifying Pbeta ... IDMP = 4.39e-06 <<<
+         >>> Purifying Pbeta ... IDMP = 3.97e-11 <<<
+         >>> Purifying Pbeta ... IDMP = 3.33e-16 <<<
+THRESPDP set to 1.55e-04
+Rotate HOMO and LUMO by 45.000000 degrees
+   1     0.0022174105    -188.5851558778    21.9999997616   -18.2215057605    -188.5851558778     -0.0027973216    0.30  
+   2     0.1012841665      +0.1632988076    21.9999997698   -18.1943636718    -188.4218570702     -0.0017850732    0.27  
+   3     0.0010625963      -0.1636004363    21.9999997608   -18.2211719186    -188.5854575066     -0.0030401165    0.27  
+   4     0.0008683280      -0.0000187935    21.9999997609   -18.2217869624    -188.5854763001     -0.0030999892    0.27  
+   5     0.0003592925      -0.0000013903    21.9999997609   -18.2216327123    -188.5854776903     -0.0030989571    0.27  
+   6     0.0000584041      -0.0000004625    21.9999997608   -18.2214243327    -188.5854781528     -0.0030923665    0.27  
+   7     0.0000186382      -0.0000001047    21.9999997609   -18.2215285383    -188.5854782575     -0.0030938212    0.27  
+   8     0.0000034879      +0.0000000102    21.9999997608   -18.2214956972    -188.5854782472     -0.0030938304    0.27  
+   9     0.0000007480      -0.0000000025    21.9999997608   -18.2215004289    -188.5854782497     -0.0030938059    0.27  
+-------------------------------------------------------------------------------------------------------------------------
+FINAL ENERGY: -188.5854782497 a.u.
+DFTD Dispersion Correction: -0.0016417095 a.u.
+C-PCM contribution to final energy:-0.0030938059 a.u. ( already included in final energy )
+Computing C-PCM contribution to gradient...
+CENTER OF MASS: {-2.111333, 9.402478, 4.136067} ANGS
+DIPOLE MOMENT: {0.007414, -0.009867, -0.000279} (|D| = 0.012345) DEBYE
+SPIN SZ:         0.000000
+SPIN S-SQUARED: 0.000000 (exact: 0.00)
+
+Running Mulliken population analysis...
+
+GPU Memory: 3466 Mb
+GPU Memory: 3466 Mb
+GPU Memory: 3466 Mb
+GPU Memory: 3466 Mb
+GPU Memory: 3466 Mb
+GPU Memory: 3466 Mb
+GPU Memory: 3466 Mb
+GPU Memory: 3466 Mb
+
+Gradient units are Hartree/Bohr
+---------------------------------------------------
+        dE/dX            dE/dY            dE/dZ
+   -0.0011936117     0.0006778839     0.0000558987
+    0.0023976696    -0.0013692444    -0.0000920455
+   -0.0012040580     0.0006913605     0.0000361469
+---------------------------------------------------
+Net gradient: -3.539565e-11  3.785136e-12 -1.123067e-11
+Net torque:   -1.291028e-05 -4.267477e-05 -1.005764e-05
+
+Total Dipole Moment: {0.002917, -0.003882, -0.000110} (|D| = 0.004857) a.u.
+
+
+*** Displacement 11 ***
+          Molecular Geometry (bohr)
+ O     -1.871834     17.147430      7.735603
+ C     -3.989841     17.769472      7.821033
+ O     -6.107849     18.391512      7.896462
+
+DFTD Energy:    -0.0016417 hartree
+Setting up the DFT grid...
+time to set the grid = 0.01 s
+DFT grid points: 37123 (12374 points/atom)
+=COSMO= Number of H atoms in QM atoms:0
+=COSMO= Number of Heavy atoms in QM atoms:3
+=COSMO= size of A matrix:540800 bytes
+=COSMO= Total surface area of cavity: 71.0161(Angstrom^2)
+=COSMO= Total volume of cavity: 44.9153 (Angstrom^3)
+Nuclear Repulsion Energy = 57.9465686379
+
+                      *** Start SCF Iterations ***
+
+ Iter     DIIS Error       Energy change      Electrons        XC Energy           Energy              E_PCM      Time(s)
+-------------------------------------------------------------------------------------------------------------------------
+         >>> Purifying Palpha... IDMP = 1.08e-03 <<<
+         >>> Purifying Palpha... IDMP = 2.10e-06 <<<
+         >>> Purifying Palpha... IDMP = 8.88e-16 <<<
+         >>> Purifying Pbeta ... IDMP = 1.08e-03 <<<
+         >>> Purifying Pbeta ... IDMP = 2.10e-06 <<<
+         >>> Purifying Pbeta ... IDMP = 8.88e-16 <<<
+THRESPDP set to 1.55e-04
+Rotate HOMO and LUMO by 45.000000 degrees
+   1     0.0011739681    -188.5851709592    21.9999997612   -18.2215021957    -188.5851709592     -0.0027972328    0.30  
+   2     0.1002267985      +0.1626558681    21.9999997492   -18.1943547081    -188.4225150911     -0.0016643562    0.32  
+   3     0.0012383287      -0.1629454095    21.9999997615   -18.2210417400    -188.5854605006     -0.0030377793    0.34  
+   4     0.0011032212      -0.0000152220    21.9999997616   -18.2218576927    -188.5854757226     -0.0030980641    0.32  
+   5     0.0003159269      -0.0000039165    21.9999997615   -18.2216642490    -188.5854796391     -0.0030994019    0.33  
+   6     0.0000707528      -0.0000003004    21.9999997615   -18.2214532929    -188.5854799395     -0.0030932723    0.34  
+   7     0.0000400963      -0.0000000371    21.9999997615   -18.2215372332    -188.5854799765     -0.0030938596    0.35  
+   8     0.0000060798      -0.0000000009    21.9999997616   -18.2214906535    -188.5854799775     -0.0030937992    0.34  
+   9     0.0000012124      +0.0000000042    21.9999997615   -18.2214993728    -188.5854799732     -0.0030937408    0.35  
+  10     0.0000001597      -0.0000000088    21.9999997615   -18.2214989945    -188.5854799820     -0.0030937612    0.34  
+-------------------------------------------------------------------------------------------------------------------------
+FINAL ENERGY: -188.5854799820 a.u.
+DFTD Dispersion Correction: -0.0016417096 a.u.
+C-PCM contribution to final energy:-0.0030937612 a.u. ( already included in final energy )
+Computing C-PCM contribution to gradient...
+CENTER OF MASS: {-2.111333, 9.403200, 4.136788} ANGS
+DIPOLE MOMENT: {-0.000956, 0.000280, 0.007727} (|D| = 0.007791) DEBYE
+SPIN SZ:         0.000000
+SPIN S-SQUARED: 0.000000 (exact: 0.00)
+
+Running Mulliken population analysis...
+
+GPU Memory: 3466 Mb
+GPU Memory: 3466 Mb
+GPU Memory: 3466 Mb
+GPU Memory: 3466 Mb
+GPU Memory: 3466 Mb
+GPU Memory: 3466 Mb
+GPU Memory: 3466 Mb
+GPU Memory: 3466 Mb
+
+Gradient units are Hartree/Bohr
+---------------------------------------------------
+        dE/dX            dE/dY            dE/dZ
+    0.0001649233    -0.0000513869    -0.0003289727
+   -0.0003094402     0.0000920158     0.0006765233
+    0.0001445170    -0.0000406289    -0.0003475506
+---------------------------------------------------
+Net gradient:  7.569513e-11 -9.492739e-12 -1.083531e-11
+Net torque:   -1.288146e-05 -4.253628e-05 -1.009318e-05
+
+Total Dipole Moment: {-0.000376, 0.000110, 0.003040} (|D| = 0.003065) a.u.
+
+
+*** Displacement 12 ***
+          Molecular Geometry (bohr)
+ O     -1.871834     17.147430      7.735603
+ C     -3.989841     17.769472      7.811033
+ O     -6.107849     18.391512      7.896462
+
+DFTD Energy:    -0.0016417 hartree
+Setting up the DFT grid...
+time to set the grid = 0.01 s
+DFT grid points: 37123 (12374 points/atom)
+=COSMO= Number of H atoms in QM atoms:0
+=COSMO= Number of Heavy atoms in QM atoms:3
+=COSMO= size of A matrix:540800 bytes
+=COSMO= Total surface area of cavity: 71.0161(Angstrom^2)
+=COSMO= Total volume of cavity: 44.9153 (Angstrom^3)
+Nuclear Repulsion Energy = 57.9465686438
+
+                      *** Start SCF Iterations ***
+
+ Iter     DIIS Error       Energy change      Electrons        XC Energy           Energy              E_PCM      Time(s)
+-------------------------------------------------------------------------------------------------------------------------
+         >>> Purifying Palpha... IDMP = 1.43e-03 <<<
+         >>> Purifying Palpha... IDMP = 3.82e-06 <<<
+         >>> Purifying Palpha... IDMP = 3.03e-11 <<<
+         >>> Purifying Palpha... IDMP = 5.55e-16 <<<
+         >>> Purifying Pbeta ... IDMP = 1.43e-03 <<<
+         >>> Purifying Pbeta ... IDMP = 3.82e-06 <<<
+         >>> Purifying Pbeta ... IDMP = 3.03e-11 <<<
+         >>> Purifying Pbeta ... IDMP = 4.44e-16 <<<
+THRESPDP set to 1.55e-04
+Rotate HOMO and LUMO by 45.000000 degrees
+   1     0.0024097302    -188.5851601475    21.9999997616   -18.2215048471    -188.5851601475     -0.0027973382    0.30  
+   2     0.0997112421      +0.1627265984    21.9999997440   -18.1943575294    -188.4224335491     -0.0016805044    0.27  
+   3     0.0011747161      -0.1630257862    21.9999997618   -18.2210724886    -188.5854593353     -0.0030370432    0.28  
+   4     0.0007384912      -0.0000195106    21.9999997619   -18.2220193479    -188.5854788459     -0.0031067121    0.34  
+   5     0.0002725343      -0.0000009154    21.9999997617   -18.2214542598    -188.5854797613     -0.0030945219    0.34  
+   6     0.0001813741      -0.0000001120    21.9999997617   -18.2214698964    -188.5854798733     -0.0030931826    0.33  
+   7     0.0000192214      -0.0000000437    21.9999997617   -18.2215281277    -188.5854799170     -0.0030936645    0.33  
+   8     0.0000034714      -0.0000000509    21.9999997617   -18.2214944061    -188.5854799679     -0.0030937482    0.34  
+   9     0.0000007015      -0.0000000162    21.9999997617   -18.2214989540    -188.5854799841     -0.0030937454    0.33  
+-------------------------------------------------------------------------------------------------------------------------
+FINAL ENERGY: -188.5854799841 a.u.
+DFTD Dispersion Correction: -0.0016417096 a.u.
+C-PCM contribution to final energy:-0.0030937454 a.u. ( already included in final energy )
+Computing C-PCM contribution to gradient...
+CENTER OF MASS: {-2.111333, 9.403200, 4.135345} ANGS
+DIPOLE MOMENT: {0.000952, -0.000277, -0.007724} (|D| = 0.007788) DEBYE
+SPIN SZ:         0.000000
+SPIN S-SQUARED: 0.000000 (exact: 0.00)
+
+Running Mulliken population analysis...
+
+GPU Memory: 3466 Mb
+GPU Memory: 3466 Mb
+GPU Memory: 3466 Mb
+GPU Memory: 3466 Mb
+GPU Memory: 3466 Mb
+GPU Memory: 3466 Mb
+GPU Memory: 3466 Mb
+GPU Memory: 3466 Mb
+
+Gradient units are Hartree/Bohr
+---------------------------------------------------
+        dE/dX            dE/dY            dE/dZ
+   -0.0001447905     0.0000407065     0.0003475948
+    0.0003097205    -0.0000920829    -0.0006766064
+   -0.0001649300     0.0000513764     0.0003290116
+---------------------------------------------------
+Net gradient: -3.530951e-11 -7.763241e-12 -1.080962e-11
+Net torque:   -1.287856e-05 -4.252822e-05 -1.007085e-05
+
+Total Dipole Moment: {0.000375, -0.000109, -0.003039} (|D| = 0.003064) a.u.
+
+
+*** Displacement 13 ***
+          Molecular Geometry (bohr)
+ O     -1.871834     17.147430      7.735603
+ C     -3.989841     17.769472      7.816033
+ O     -6.102849     18.391512      7.896462
+
+DFTD Energy:    -0.0016420 hartree
+Setting up the DFT grid...
+time to set the grid = 0.01 s
+DFT grid points: 37122 (12374 points/atom)
+=COSMO= Number of H atoms in QM atoms:0
+=COSMO= Number of Heavy atoms in QM atoms:3
+=COSMO= size of A matrix:540800 bytes
+=COSMO= Total surface area of cavity: 70.9843(Angstrom^2)
+=COSMO= Total volume of cavity: 44.8954 (Angstrom^3)
+Nuclear Repulsion Energy = 58.0096769288
+
+                      *** Start SCF Iterations ***
+
+ Iter     DIIS Error       Energy change      Electrons        XC Energy           Energy              E_PCM      Time(s)
+-------------------------------------------------------------------------------------------------------------------------
+         >>> Purifying Palpha... IDMP = 1.66e-03 <<<
+         >>> Purifying Palpha... IDMP = 3.30e-06 <<<
+         >>> Purifying Palpha... IDMP = 4.44e-16 <<<
+         >>> Purifying Pbeta ... IDMP = 1.66e-03 <<<
+         >>> Purifying Pbeta ... IDMP = 3.30e-06 <<<
+         >>> Purifying Pbeta ... IDMP = 9.99e-16 <<<
+THRESPDP set to 1.55e-04
+Rotate HOMO and LUMO by 45.000000 degrees
+   1     0.0011904892    -188.5851621699    21.9999998353   -18.2228669683    -188.5851621699     -0.0027915141    0.30  
+   2     0.1014421709      +0.1631978085    21.9999998445   -18.1970675833    -188.4219643614     -0.0017076187    0.27  
+   3     0.0012636351      -0.1634834710    21.9999998352   -18.2236639641    -188.5854478324     -0.0030355472    0.27  
+   4     0.0007932119      -0.0000200848    21.9999998351   -18.2237852494    -188.5854679172     -0.0030973203    0.27  
+   5     0.0003240930      -0.0000013253    21.9999998352   -18.2235070445    -188.5854692425     -0.0030979359    0.27  
+   6     0.0000653178      -0.0000001862    21.9999998351   -18.2234699538    -188.5854694287     -0.0030942302    0.27  
+   7     0.0000263998      -0.0000001465    21.9999998352   -18.2235642064    -188.5854695752     -0.0030962839    0.27  
+   8     0.0000036821      +0.0000000311    21.9999998350   -18.2235231562    -188.5854695441     -0.0030959149    0.27  
+   9     0.0000005162      -0.0000000224    21.9999998352   -18.2235274634    -188.5854695665     -0.0030959577    0.27  
+-------------------------------------------------------------------------------------------------------------------------
+FINAL ENERGY: -188.5854695665 a.u.
+DFTD Dispersion Correction: -0.0016419715 a.u.
+C-PCM contribution to final energy:-0.0030959577 a.u. ( already included in final energy )
+Computing C-PCM contribution to gradient...
+CENTER OF MASS: {-2.110371, 9.403200, 4.136067} ANGS
+DIPOLE MOMENT: {-0.016489, 0.003717, 0.000479} (|D| = 0.016910) DEBYE
+SPIN SZ:         0.000000
+SPIN S-SQUARED: 0.000000 (exact: 0.00)
+
+Running Mulliken population analysis...
+
+GPU Memory: 3466 Mb
+GPU Memory: 3466 Mb
+GPU Memory: 3466 Mb
+GPU Memory: 3466 Mb
+GPU Memory: 3466 Mb
+GPU Memory: 3466 Mb
+GPU Memory: 3466 Mb
+GPU Memory: 3466 Mb
+
+Gradient units are Hartree/Bohr
+---------------------------------------------------
+        dE/dX            dE/dY            dE/dZ
+   -0.0004116358     0.0001676471     0.0000319369
+   -0.0044566324     0.0012139794     0.0001568194
+    0.0048682681    -0.0013816265    -0.0001887563
+---------------------------------------------------
+Net gradient:  2.193977e-11 -7.518945e-12 -1.177896e-11
+Net torque:   -1.267334e-05 -4.182699e-05 -9.851007e-06
+
+Total Dipole Moment: {-0.006487, 0.001462, 0.000189} (|D| = 0.006653) a.u.
+
+
+*** Displacement 14 ***
+          Molecular Geometry (bohr)
+ O     -1.871834     17.147430      7.735603
+ C     -3.989841     17.769472      7.816033
+ O     -6.112849     18.391512      7.896462
+
+DFTD Energy:    -0.0016414 hartree
+Setting up the DFT grid...
+time to set the grid = 0.01 s
+DFT grid points: 37122 (12374 points/atom)
+=COSMO= Number of H atoms in QM atoms:0
+=COSMO= Number of Heavy atoms in QM atoms:3
+=COSMO= size of A matrix:540800 bytes
+=COSMO= Total surface area of cavity: 71.0478(Angstrom^2)
+=COSMO= Total volume of cavity: 44.9351 (Angstrom^3)
+Nuclear Repulsion Energy = 57.8839105066
+
+                      *** Start SCF Iterations ***
+
+ Iter     DIIS Error       Energy change      Electrons        XC Energy           Energy              E_PCM      Time(s)
+-------------------------------------------------------------------------------------------------------------------------
+         >>> Purifying Palpha... IDMP = 2.84e-03 <<<
+         >>> Purifying Palpha... IDMP = 1.02e-05 <<<
+         >>> Purifying Palpha... IDMP = 1.54e-10 <<<
+         >>> Purifying Palpha... IDMP = 4.44e-16 <<<
+         >>> Purifying Pbeta ... IDMP = 2.84e-03 <<<
+         >>> Purifying Pbeta ... IDMP = 1.02e-05 <<<
+         >>> Purifying Pbeta ... IDMP = 1.54e-10 <<<
+         >>> Purifying Pbeta ... IDMP = 5.55e-16 <<<
+THRESPDP set to 1.55e-04
+Rotate HOMO and LUMO by 45.000000 degrees
+   1     0.0016862608    -188.5851485934    21.9999996911   -18.2208114162    -188.5851485934     -0.0028112012    0.29  
+   2     0.1010426591      +0.1624271165    21.9999996991   -18.1910943944    -188.4227214768     -0.0016997335    0.34  
+   3     0.0014233716      -0.1627219791    21.9999996913   -18.2177838548    -188.5854434559     -0.0030374252    0.34  
+   4     0.0014186239      -0.0000210494    21.9999996913   -18.2198659738    -188.5854645053     -0.0030930728    0.34  
+   5     0.0003762796      -0.0000047514    21.9999996914   -18.2198947639    -188.5854692567     -0.0030952889    0.32  
+   6     0.0000400081      -0.0000002432    21.9999996913   -18.2194772025    -188.5854694999     -0.0030911278    0.32  
+   7     0.0000067480      -0.0000001214    21.9999996913   -18.2194997583    -188.5854696213     -0.0030918459    0.31  
+   8     0.0000013030      +0.0000000021    21.9999996912   -18.2194900294    -188.5854696192     -0.0030918803    0.32  
+   9     0.0000007728      -0.0000000046    21.9999996913   -18.2194919792    -188.5854696239     -0.0030918489    0.32  
+-------------------------------------------------------------------------------------------------------------------------
+FINAL ENERGY: -188.5854696239 a.u.
+DFTD Dispersion Correction: -0.0016414460 a.u.
+C-PCM contribution to final energy:-0.0030918489 a.u. ( already included in final energy )
+Computing C-PCM contribution to gradient...
+CENTER OF MASS: {-2.112295, 9.403200, 4.136067} ANGS
+DIPOLE MOMENT: {0.016446, -0.003697, -0.000478} (|D| = 0.016863) DEBYE
+SPIN SZ:         0.000000
+SPIN S-SQUARED: 0.000000 (exact: 0.00)
+
+Running Mulliken population analysis...
+
+GPU Memory: 3466 Mb
+GPU Memory: 3466 Mb
+GPU Memory: 3466 Mb
+GPU Memory: 3466 Mb
+GPU Memory: 3466 Mb
+GPU Memory: 3466 Mb
+GPU Memory: 3466 Mb
+GPU Memory: 3466 Mb
+
+Gradient units are Hartree/Bohr
+---------------------------------------------------
+        dE/dX            dE/dY            dE/dZ
+    0.0004218363    -0.0001747557    -0.0000121382
+    0.0043737393    -0.0011844483    -0.0001528918
+   -0.0047955756     0.0013592040     0.0001650300
+---------------------------------------------------
+Net gradient: -3.444880e-11 -1.392037e-11 -1.111971e-11
+Net torque:   -1.316956e-05 -4.356441e-05 -1.029037e-05
+
+Total Dipole Moment: {0.006470, -0.001455, -0.000188} (|D| = 0.006634) a.u.
+
+
+*** Displacement 15 ***
+          Molecular Geometry (bohr)
+ O     -1.871834     17.147430      7.735603
+ C     -3.989841     17.769472      7.816033
+ O     -6.107849     18.396512      7.896462
+
+DFTD Energy:    -0.0016416 hartree
+Setting up the DFT grid...
+time to set the grid = 0.01 s
+DFT grid points: 37123 (12374 points/atom)
+=COSMO= Number of H atoms in QM atoms:0
+=COSMO= Number of Heavy atoms in QM atoms:3
+=COSMO= size of A matrix:540800 bytes
+=COSMO= Total surface area of cavity: 71.0254(Angstrom^2)
+=COSMO= Total volume of cavity: 44.9212 (Angstrom^3)
+Nuclear Repulsion Energy = 57.9281619348
+
+                      *** Start SCF Iterations ***
+
+ Iter     DIIS Error       Energy change      Electrons        XC Energy           Energy              E_PCM      Time(s)
+-------------------------------------------------------------------------------------------------------------------------
+         >>> Purifying Palpha... IDMP = 1.34e-03 <<<
+         >>> Purifying Palpha... IDMP = 2.16e-06 <<<
+         >>> Purifying Palpha... IDMP = 1.11e-15 <<<
+         >>> Purifying Pbeta ... IDMP = 1.34e-03 <<<
+         >>> Purifying Pbeta ... IDMP = 2.16e-06 <<<
+         >>> Purifying Pbeta ... IDMP = 4.44e-16 <<<
+THRESPDP set to 1.55e-04
+Rotate HOMO and LUMO by 45.000000 degrees
+   1     0.0009811431    -188.5851764480    21.9999997441   -18.2204469806    -188.5851764480     -0.0027905685    0.31  
+   2     0.1011507444      +0.1628341642    21.9999997538   -18.1942683323    -188.4223422838     -0.0017293258    0.27  
+   3     0.0012979498      -0.1631164045    21.9999997442   -18.2208358077    -188.5854586883     -0.0030327567    0.27  
+   4     0.0006569916      -0.0000204819    21.9999997442   -18.2211885039    -188.5854791701     -0.0030910921    0.27  
+   5     0.0002712724      -0.0000009834    21.9999997442   -18.2209267019    -188.5854801536     -0.0030942521    0.35  
+   6     0.0000808251      +0.0000000788    21.9999997441   -18.2208593222    -188.5854800748     -0.0030914864    0.31  
+   7     0.0000241769      -0.0000001913    21.9999997442   -18.2209446809    -188.5854802661     -0.0030933938    0.33  
+   8     0.0000035404      +0.0000000496    21.9999997441   -18.2209051837    -188.5854802165     -0.0030930966    0.33  
+   9     0.0000003353      -0.0000000046    21.9999997443   -18.2209092346    -188.5854802211     -0.0030931233    0.33  
+-------------------------------------------------------------------------------------------------------------------------
+FINAL ENERGY: -188.5854802211 a.u.
+DFTD Dispersion Correction: -0.0016416322 a.u.
+C-PCM contribution to final energy:-0.0030931233 a.u. ( already included in final energy )
+Computing C-PCM contribution to gradient...
+CENTER OF MASS: {-2.111333, 9.404162, 4.136067} ANGS
+DIPOLE MOMENT: {0.003717, -0.004940, -0.000140} (|D| = 0.006184) DEBYE
+SPIN SZ:         0.000000
+SPIN S-SQUARED: 0.000000 (exact: 0.00)
+
+Running Mulliken population analysis...
+
+GPU Memory: 3466 Mb
+GPU Memory: 3466 Mb
+GPU Memory: 3466 Mb
+GPU Memory: 3466 Mb
+GPU Memory: 3466 Mb
+GPU Memory: 3466 Mb
+GPU Memory: 3466 Mb
+GPU Memory: 3466 Mb
+
+Gradient units are Hartree/Bohr
+---------------------------------------------------
+        dE/dX            dE/dY            dE/dZ
+    0.0001770068     0.0001115622     0.0000033614
+    0.0011992527    -0.0006874103    -0.0000460241
+   -0.0013762595     0.0005758481     0.0000426626
+---------------------------------------------------
+Net gradient:  1.181372e-11 -2.710527e-11 -1.120434e-11
+Net torque:   -1.268190e-05 -4.168788e-05 -1.028470e-05
+
+Total Dipole Moment: {0.001462, -0.001943, -0.000055} (|D| = 0.002433) a.u.
+
+
+*** Displacement 16 ***
+          Molecular Geometry (bohr)
+ O     -1.871834     17.147430      7.735603
+ C     -3.989841     17.769472      7.816033
+ O     -6.107849     18.386512      7.896462
+
+DFTD Energy:    -0.0016418 hartree
+Setting up the DFT grid...
+time to set the grid = 0.02 s
+DFT grid points: 37122 (12374 points/atom)
+=COSMO= Number of H atoms in QM atoms:0
+=COSMO= Number of Heavy atoms in QM atoms:3
+=COSMO= size of A matrix:540800 bytes
+=COSMO= Total surface area of cavity: 71.0066(Angstrom^2)
+=COSMO= Total volume of cavity: 44.9094 (Angstrom^3)
+Nuclear Repulsion Energy = 57.9650981423
+
+                      *** Start SCF Iterations ***
+
+ Iter     DIIS Error       Energy change      Electrons        XC Energy           Energy              E_PCM      Time(s)
+-------------------------------------------------------------------------------------------------------------------------
+         >>> Purifying Palpha... IDMP = 1.54e-03 <<<
+         >>> Purifying Palpha... IDMP = 2.95e-06 <<<
+         >>> Purifying Palpha... IDMP = 1.27e-11 <<<
+         >>> Purifying Palpha... IDMP = 1.72e-16 <<<
+         >>> Purifying Pbeta ... IDMP = 1.54e-03 <<<
+         >>> Purifying Pbeta ... IDMP = 2.95e-06 <<<
+         >>> Purifying Pbeta ... IDMP = 1.27e-11 <<<
+         >>> Purifying Pbeta ... IDMP = 4.44e-16 <<<
+THRESPDP set to 1.55e-04
+Rotate HOMO and LUMO by 45.000000 degrees
+   1     0.0012055339    -188.5851711289    21.9999997804   -18.2217092125    -188.5851711289     -0.0027930835    0.37  
+   2     0.1014377108      +0.1631203273    21.9999997869   -18.1953495006    -188.4220508016     -0.0017330354    0.34  
+   3     0.0011759324      -0.1634089563    21.9999997804   -18.2220407822    -188.5854597579     -0.0030368482    0.34  
+   4     0.0004294339      -0.0000200901    21.9999997805   -18.2223267815    -188.5854798481     -0.0030996876    0.35  
+   5     0.0002812623      +0.0000000763    21.9999997804   -18.2220597201    -188.5854797717     -0.0030952272    0.40  
+   6     0.0001417633      -0.0000003321    21.9999997804   -18.2220317687    -188.5854801038     -0.0030926141    0.39  
+   7     0.0000242043      -0.0000002203    21.9999997804   -18.2221296529    -188.5854803242     -0.0030945541    0.39  
+   8     0.0000036099      +0.0000000481    21.9999997805   -18.2220901562    -188.5854802761     -0.0030943507    0.41  
+   9     0.0000004539      -0.0000000067    21.9999997805   -18.2220944853    -188.5854802828     -0.0030943666    0.33  
+-------------------------------------------------------------------------------------------------------------------------
+FINAL ENERGY: -188.5854802828 a.u.
+DFTD Dispersion Correction: -0.0016417865 a.u.
+C-PCM contribution to final energy:-0.0030943666 a.u. ( already included in final energy )
+Computing C-PCM contribution to gradient...
+CENTER OF MASS: {-2.111333, 9.402238, 4.136067} ANGS
+DIPOLE MOMENT: {-0.003696, 0.004929, 0.000139} (|D| = 0.006162) DEBYE
+SPIN SZ:         0.000000
+SPIN S-SQUARED: 0.000000 (exact: 0.00)
+
+Running Mulliken population analysis...
+
+GPU Memory: 3466 Mb
+GPU Memory: 3466 Mb
+GPU Memory: 3466 Mb
+GPU Memory: 3466 Mb
+GPU Memory: 3466 Mb
+GPU Memory: 3466 Mb
+GPU Memory: 3466 Mb
+GPU Memory: 3466 Mb
+
+Gradient units are Hartree/Bohr
+---------------------------------------------------
+        dE/dX            dE/dY            dE/dZ
+   -0.0001653894    -0.0001203561     0.0000163175
+   -0.0011989397     0.0006821696     0.0000460541
+    0.0013643292    -0.0005618136    -0.0000623716
+---------------------------------------------------
+Net gradient:  2.129062e-11 -5.240905e-11 -1.380443e-11
+Net torque:   -1.312974e-05 -4.362984e-05 -9.715626e-06
+
+Total Dipole Moment: {-0.001454, 0.001939, 0.000055} (|D| = 0.002424) a.u.
+
+
+*** Displacement 17 ***
+          Molecular Geometry (bohr)
+ O     -1.871834     17.147430      7.735603
+ C     -3.989841     17.769472      7.816033
+ O     -6.107849     18.391512      7.901462
+
+DFTD Energy:    -0.0016417 hartree
+Setting up the DFT grid...
+time to set the grid = 0.01 s
+DFT grid points: 37123 (12374 points/atom)
+=COSMO= Number of H atoms in QM atoms:0
+=COSMO= Number of Heavy atoms in QM atoms:3
+=COSMO= size of A matrix:540800 bytes
+=COSMO= Total surface area of cavity: 71.0185(Angstrom^2)
+=COSMO= Total volume of cavity: 44.9168 (Angstrom^3)
+Nuclear Repulsion Energy = 57.9442269396
+
+                      *** Start SCF Iterations ***
+
+ Iter     DIIS Error       Energy change      Electrons        XC Energy           Energy              E_PCM      Time(s)
+-------------------------------------------------------------------------------------------------------------------------
+         >>> Purifying Palpha... IDMP = 9.38e-04 <<<
+         >>> Purifying Palpha... IDMP = 1.23e-06 <<<
+         >>> Purifying Palpha... IDMP = 9.99e-16 <<<
+         >>> Purifying Pbeta ... IDMP = 9.38e-04 <<<
+         >>> Purifying Pbeta ... IDMP = 1.23e-06 <<<
+         >>> Purifying Pbeta ... IDMP = 2.81e-12 <<<
+         >>> Purifying Pbeta ... IDMP = 3.33e-16 <<<
+THRESPDP set to 1.55e-04
+Rotate HOMO and LUMO by 45.000000 degrees
+   1     0.0006772841    -188.5851781255    21.9999997668   -18.2216444216    -188.5851781255     -0.0027998019    0.32  
+   2     0.1011644048      +0.1628439780    21.9999997615   -18.1940750659    -188.4223341475     -0.0016998491    0.35  
+   3     0.0012271321      -0.1631265924    21.9999997666   -18.2207650092    -188.5854607399     -0.0030368363    0.31  
+   4     0.0003736536      -0.0000204258    21.9999997668   -18.2217467124    -188.5854811657     -0.0030941182    0.27  
+   5     0.0001219548      +0.0000001119    21.9999997667   -18.2214047423    -188.5854810538     -0.0030933637    0.27  
+   6     0.0001839359      -0.0000000875    21.9999997666   -18.2214076346    -188.5854811413     -0.0030923451    0.28  
+   7     0.0000158789      -0.0000001684    21.9999997666   -18.2214492635    -188.5854813097     -0.0030935361    0.33  
+   8     0.0000027086      +0.0000000093    21.9999997666   -18.2214210228    -188.5854813004     -0.0030937356    0.30  
+   9     0.0000004242      +0.0000000133    21.9999997666   -18.2214245453    -188.5854812871     -0.0030936855    0.31  
+-------------------------------------------------------------------------------------------------------------------------
+FINAL ENERGY: -188.5854812871 a.u.
+DFTD Dispersion Correction: -0.0016416994 a.u.
+C-PCM contribution to final energy:-0.0030936855 a.u. ( already included in final energy )
+Computing C-PCM contribution to gradient...
+CENTER OF MASS: {-2.111333, 9.403200, 4.137029} ANGS
+DIPOLE MOMENT: {0.000491, -0.000143, -0.003863} (|D| = 0.003897) DEBYE
+SPIN SZ:         0.000000
+SPIN S-SQUARED: 0.000000 (exact: 0.00)
+
+Running Mulliken population analysis...
+
+GPU Memory: 3466 Mb
+GPU Memory: 3466 Mb
+GPU Memory: 3466 Mb
+GPU Memory: 3466 Mb
+GPU Memory: 3466 Mb
+GPU Memory: 3466 Mb
+GPU Memory: 3466 Mb
+GPU Memory: 3466 Mb
+
+Gradient units are Hartree/Bohr
+---------------------------------------------------
+        dE/dX            dE/dY            dE/dZ
+    0.0000280532    -0.0000106088     0.0001752035
+    0.0001594824    -0.0000474483    -0.0003388098
+   -0.0001875356     0.0000580571     0.0001636062
+---------------------------------------------------
+Net gradient:  8.126749e-12 -3.705951e-11 -5.418819e-12
+Net torque:   -1.302700e-05 -4.284053e-05 -1.132964e-05
+
+Total Dipole Moment: {0.000193, -0.000056, -0.001520} (|D| = 0.001533) a.u.
+
+
+*** Displacement 18 ***
+          Molecular Geometry (bohr)
+ O     -1.871834     17.147430      7.735603
+ C     -3.989841     17.769472      7.816033
+ O     -6.107849     18.391512      7.891462
+
+DFTD Energy:    -0.0016417 hartree
+Setting up the DFT grid...
+time to set the grid = 0.01 s
+DFT grid points: 37122 (12374 points/atom)
+=COSMO= Number of H atoms in QM atoms:0
+=COSMO= Number of Heavy atoms in QM atoms:3
+=COSMO= size of A matrix:540800 bytes
+=COSMO= Total surface area of cavity: 71.0136(Angstrom^2)
+=COSMO= Total volume of cavity: 44.9138 (Angstrom^3)
+Nuclear Repulsion Energy = 57.9490027529
+
+                      *** Start SCF Iterations ***
+
+ Iter     DIIS Error       Energy change      Electrons        XC Energy           Energy              E_PCM      Time(s)
+-------------------------------------------------------------------------------------------------------------------------
+         >>> Purifying Palpha... IDMP = 1.14e-03 <<<
+         >>> Purifying Palpha... IDMP = 1.75e-06 <<<
+         >>> Purifying Palpha... IDMP = 8.19e-12 <<<
+         >>> Purifying Palpha... IDMP = 4.44e-16 <<<
+         >>> Purifying Pbeta ... IDMP = 1.14e-03 <<<
+         >>> Purifying Pbeta ... IDMP = 1.75e-06 <<<
+         >>> Purifying Pbeta ... IDMP = 8.18e-12 <<<
+         >>> Purifying Pbeta ... IDMP = 4.44e-16 <<<
+THRESPDP set to 1.55e-04
+Rotate HOMO and LUMO by 45.000000 degrees
+   1     0.0012587749    -188.5851726291    21.9999997572   -18.2215297816    -188.5851726291     -0.0027966759    0.36  
+   2     0.1012038218      +0.1628158542    21.9999997669   -18.1944947260    -188.4223567749     -0.0016925434    0.33  
+   3     0.0012169298      -0.1631040152    21.9999997572   -18.2211734811    -188.5854607901     -0.0030362810    0.37  
+   4     0.0005460561      -0.0000199380    21.9999997572   -18.2219942990    -188.5854807281     -0.0031014952    0.28  
+   5     0.0001159843      -0.0000002152    21.9999997570   -18.2215071112    -188.5854809433     -0.0030933117    0.31  
+   6     0.0001865057      -0.0000001078    21.9999997572   -18.2216047776    -188.5854810511     -0.0030936709    0.32  
+   7     0.0000186391      -0.0000001508    21.9999997572   -18.2216064303    -188.5854812019     -0.0030936934    0.28  
+   8     0.0000032764      -0.0000000056    21.9999997571   -18.2215736617    -188.5854812075     -0.0030937817    0.28  
+   9     0.0000004106      +0.0000000148    21.9999997572   -18.2215777597    -188.5854811927     -0.0030937568    0.34  
+-------------------------------------------------------------------------------------------------------------------------
+FINAL ENERGY: -188.5854811927 a.u.
+DFTD Dispersion Correction: -0.0016417194 a.u.
+C-PCM contribution to final energy:-0.0030937568 a.u. ( already included in final energy )
+Computing C-PCM contribution to gradient...
+CENTER OF MASS: {-2.111333, 9.403200, 4.135105} ANGS
+DIPOLE MOMENT: {-0.000466, 0.000137, 0.003860} (|D| = 0.003890) DEBYE
+SPIN SZ:         0.000000
+SPIN S-SQUARED: 0.000000 (exact: 0.00)
+
+Running Mulliken population analysis...
+
+GPU Memory: 3466 Mb
+GPU Memory: 3466 Mb
+GPU Memory: 3466 Mb
+GPU Memory: 3466 Mb
+GPU Memory: 3466 Mb
+GPU Memory: 3466 Mb
+GPU Memory: 3466 Mb
+GPU Memory: 3466 Mb
+
+Gradient units are Hartree/Bohr
+---------------------------------------------------
+        dE/dX            dE/dY            dE/dZ
+   -0.0000160948     0.0000023562    -0.0001556214
+   -0.0001498750     0.0000445759     0.0003377477
+    0.0001659698    -0.0000469321    -0.0001821264
+---------------------------------------------------
+Net gradient:  5.773061e-11 -4.809630e-12 -9.784852e-12
+Net torque:   -1.275766e-05 -4.232400e-05 -8.859507e-06
+
+Total Dipole Moment: {-0.000183, 0.000054, 0.001519} (|D| = 0.001531) a.u.
+
+
+Finished computing Hessian
+Hessian has been written to disk
+
+Hessian matrix has been written to text file ./scr/Hessian.txt
+ *** Hessian Matrix (Hartree/Bohr^2) ***
+             1          2          3          4          5          6
+        ---------  ---------  ---------  ---------  ---------  ---------
+   1      0.9664    -0.2741    -0.0354    -0.8830     0.2398     0.0310
+   2     -0.2741     0.1138     0.0105     0.2398    -0.1370    -0.0092
+   3     -0.0354     0.0105     0.0346     0.0310    -0.0092    -0.0677
+   4     -0.8830     0.2398     0.0310     1.7661    -0.4797    -0.0619
+   5      0.2398    -0.1370    -0.0092    -0.4797     0.2739     0.0184
+   6      0.0310    -0.0092    -0.0677    -0.0619     0.0184     0.1353
+   7     -0.0834     0.0342     0.0044    -0.8830     0.2398     0.0310
+   8      0.0342     0.0232    -0.0013     0.2398    -0.1370    -0.0092
+   9      0.0044    -0.0013     0.0331     0.0310    -0.0092    -0.0677
+
+             7          8          9
+        ---------  ---------  ---------
+   1     -0.0834     0.0342     0.0044
+   2      0.0342     0.0232    -0.0013
+   3      0.0044    -0.0013     0.0331
+   4     -0.8830     0.2398     0.0310
+   5      0.2398    -0.1370    -0.0092
+   6      0.0310    -0.0092    -0.0677
+   7      0.9664    -0.2741    -0.0354
+   8     -0.2741     0.1138     0.0105
+   9     -0.0354     0.0105     0.0346
+
+
+Dipole moment derivatives:
+
+ Atom        dMuX/dX            dMuX/dY         dMuX/dZ (a.u.)
+------  -----------------  -----------------  -----------------
+    1      -1.2956722863       0.2916511116       0.0375588330
+    2       2.5915672910      -0.5833436781      -0.0750723976
+    3      -1.2957537713       0.2916449254       0.0376484185
+
+ Atom        dMuY/dX            dMuY/dY         dMuY/dZ (a.u.)
+------  -----------------  -----------------  -----------------
+    1       0.2916997909      -0.3882443019      -0.0108648917
+    2      -0.5834407248       0.7765022094       0.0219062213
+    3       0.2917003036      -0.3882653963      -0.0109953122
+
+ Atom        dMuZ/dX            dMuZ/dY         dMuZ/dZ (a.u.)
+------  -----------------  -----------------  -----------------
+    1       0.0377257123      -0.0109804974      -0.3038694393
+    2      -0.0754156449       0.0219620327       0.6079008376
+    3       0.0376725194      -0.0109803189      -0.3038589779
+
+*** Vibrational Frequency Analysis ***
+
+Vibrational Frequencies Before Projection of Rotation/Translation
+  1         13.51252287035568i
+  2          0.07873552391167i
+  3          0.01937075557282i
+  4          0.09292307910530
+  5         13.64112214247551
+  6        634.07672141080013
+  7        635.11145388355465
+  8       1373.43684060399983
+  9       2404.48688883065552
+
+Remove Rotational and Translational Modes
+
+Center of Mass at: -3.989841468559 17.769471382347 7.816032662311
+
+Translational-Rotational degrees of freedom:   5
+Point Group Symmetry:        Dinfh
+Rotational symmetry number:  2
+Coordinates of molecule in Eckart frame: 
+O       2.2089272864     -0.0000001133      0.0000000010
+C      -0.0000000727      0.0000003019     -0.0000000026
+O      -2.2089272319     -0.0000001133      0.0000000010
+Vibrational Frequencies/Thermochemical Analysis After Removing Rotation and Translation
+Temperature (Kelvin):     300.00
+Mode      Eigenvalue(AU)      Frequency(cm-1)    Intensity(km/mol)          Vib.Temp(K)              ZPE(AU)       Vib.Energy(AU)             -T*S(AU)
+  1         0.1233496033       634.0767213592        40.9232065387       912.2610632649         0.0014445331         0.0001450084        -0.0001915367
+  2         0.1235508942       635.1114537958        40.8813510320       913.7497571106         0.0014468904         0.0001444902        -0.0001907825
+  3         0.2671804273      1373.4368395358         0.0000006967      1975.9958209414         0.0031289194         0.0000086393        -0.0000099500
+  4         0.4677549166      2404.4868887946       854.5239112797      3459.3917295625         0.0054778244         0.0000001076        -0.0000001169
+
+ZPVE                           =  0.011498 AU (   7.215 kcal/mol)
+H (Trans, Rot, Vib) @ 300.00 K =  0.002375  0.000950  0.000298 AU   (    1.490    0.596    0.187 kcal/mol )
+S (Trans, Rot, Vib) @ 300.00 K =  0.059487  0.020901  0.001308 mH/K (   37.329   13.115    0.821 cal/mol/K)
+TS(Trans, Rot, Vib) @ 300.00 K =  0.017846  0.006270  0.000392 AU   (   11.199    3.935    0.246 kcal/mol )
+
+Ground State Electronic Energy    : E0                            =  -188.58548167 AU (   -118339.1764 kcal/mol)
+Free Energy Correction (Harmonic) : ZPVE + (H - TS)[T,R,V]        =    -0.00938695 AU (        -5.8904 kcal/mol)
+Gibbs Free Energy (Harmonic)      : E0 + ZPVE + (H - TS)[T,R,V]   =  -188.59486862 AU (   -118345.0668 kcal/mol)
+Total processing time: 62.87 sec 
+
+ Job finished: Tue Sep  8 03:04:53 2020
+
