@@ -221,7 +221,7 @@ def submit(MID,SID,PID,mold,lvld,sold,job,donacc,spin):
         name = "acc"
         key = "accchg"
         
-    startxyz = os.path.join('..', '..', 'projects', 'hydricity', 'startxyz')
+    startxyz = os.path.join('startxyz')
     solname = sold[SID]['sname']
     
     #Submit an optimization job
