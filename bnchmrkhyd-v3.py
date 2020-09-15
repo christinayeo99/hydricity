@@ -1,20 +1,5 @@
 #!/usr/bin/env python
 
-"""
-Description
------------
-This code will loop through "systems" (combination of solute and solvent) to check for the job status,
-create directories and files, and submit jobs for one combination of parameters (DFT-basis set-solvent model).
-All files that this code creates will be under a folder named 'molecules'. All energies are in kcal/mol.
-This code can also calculate the hydricity from the output files and store the numbers to a dat file.
-
-Directions
-----------
-For this code to work properly, txt files to be parsed should be stored in a folder called 'keys' and
-starting structures should be stored in a folder called 'startxyz' (in the folder that you're running this script).
-When running this script, provide the level of theory ID and job type.
-"""
-
 import os, sys
 import numpy as np
 import shutil
@@ -445,21 +430,21 @@ def main():
                 if stat == "optinc":
                     print("Geometry optimization for %s acceptor incomplete." % MID)
                     
-        #If freq analysis done for all spin mults, calculate hydricity
-        if jobtype == "hydricity":
-            for YID in sysd:
-                MID = sysd[YID]['molecule']
-                SID = sysd[YID]['solvent']
-                donminspn, donfreeE = gethyd(MID,SID,PID,mold,sold,'donor')
-                accminspn, accfreeE = gethyd(MID,SID,PID,mold,sold,'acceptor')
-                delG_HHR = accfreeE - donfreeE
-                if SID == 'S03': #water
-                    hydricity = delG_HHR - 420.7
-                else: #acetonitrile, benzonitrile, DMSO
-                    hydricity = delG_HHR - 419.34
-                #Save results to dat file (YID, donor charge, donor spin, acceptor charge, acceptor spin, hydricity)
-                with open(os.path.join('data', 'data-%s.dat' % PID), 'w') as f:
-                    f.write(YID + "\t" + mold[MID]['donchg'] + "\t" + donminspn + "\t" + mold[MID]['accchg'] + "\t" + accminspn + "\t" + hydricity + "\n")
+    #If freq analysis done for all spin mults, calculate hydricity
+    if jobtype == "hydricity":
+        for YID in sysd:
+            MID = sysd[YID]['molecule']
+            SID = sysd[YID]['solvent']
+            donminspn, donfreeE = gethyd(MID,SID,PID,mold,sold,'donor')
+            accminspn, accfreeE = gethyd(MID,SID,PID,mold,sold,'acceptor')
+            delG_HHR = accfreeE - donfreeE
+            if SID == 'S03': #water
+                hydricity = delG_HHR - 420.7
+            else: #acetonitrile, benzonitrile, DMSO
+                hydricity = delG_HHR - 419.34
+            #Save results to dat file (YID, donor charge, donor spin, acceptor charge, acceptor spin, hydricity)
+            with open(os.path.join('data', 'data-%s.dat' % PID), 'a+') as f:
+                f.write(YID + "\t" + mold[MID]['donchg'] + "\t" + donminspn + "\t" + mold[MID]['accchg'] + "\t" + accminspn + "\t" + hydricity + "\n")
     
 if __name__ == "__main__":
     main()
