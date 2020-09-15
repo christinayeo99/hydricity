@@ -220,8 +220,7 @@ def submit(MID,SID,PID,mold,lvld,sold,job,donacc,spin):
     else:
         name = "acc"
         key = "accchg"
-        
-    startxyz = os.path.join('startxyz')
+    
     solname = sold[SID]['sname']
     
     #Submit an optimization job
@@ -256,7 +255,7 @@ def submit(MID,SID,PID,mold,lvld,sold,job,donacc,spin):
                 f.write("\nmin_converge_e    1.0e-7\nmin_converge_grms 3.0e-5\nmin_converge_gmax 4.5e-5\nmin_converge_drms 1.2e-4\nmin_converge_dmax 1.8e-4")
                 
         #Copy over starting structure and rename as start.xyz        
-        shutil.copy(os.path.join(startxyz, "%s-%s.xyz" % (MID, name)), optdir)
+        shutil.copy(os.path.join('startxyz', "%s-%s.xyz" % (MID, name)), optdir)
         os.rename(os.path.join(optdir, "%s-%s.xyz" % (MID, name)), os.path.join(optdir, "start.xyz"))
 
         #Write batch.script (doing this so that time limit can be set to 7 days, not 2 days (the default)
