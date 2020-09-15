@@ -17,7 +17,6 @@ When running this script, provide the level of theory ID and job type.
 
 import os, sys
 import numpy as np
-import IPython
 import shutil
 from forcebalance.nifty import _exec
 
