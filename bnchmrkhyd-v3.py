@@ -251,11 +251,11 @@ def submit(MID,SID,PID,mold,lvld,sold,job,donacc,spin):
         with open(os.path.join(optdir, 'batch.script'), 'w') as g:
             #Depending on the number of atoms, set the number of GPUs to either 1, 2, or 4.
             if atomnum < 30:
-                g.write("#!/bin/bash -l\n#SBATCH -p gpu\n#SBATCH -N 1\n#SBATCH -n 1\n#SBATCH -c 2\n#SBATCH --gres=gpu:1\n#SBATCH --mem=8000\n#SBATCH -J tera\n#SBATCH -t 7-00:00:00\n")
+                g.write("#!/bin/bash -l\n#SBATCH -p gpu\n#SBATCH -N 1\n#SBATCH -n 1\n#SBATCH -c 2\n#SBATCH --gres=gpu:1\n#SBATCH --mem=8000\n#SBATCH -J %s\n#SBATCH -t 7-00:00:00\n" % MID)
             if 30 <= atomnum < 50:
-                g.write("#!/bin/bash -l\n#SBATCH -p gpu\n#SBATCH -N 1\n#SBATCH -n 2\n#SBATCH -c 2\n#SBATCH --gres=gpu:2\n#SBATCH --mem=16000\n#SBATCH -J tera\n#SBATCH -t 7-00:00:00\n")
+                g.write("#!/bin/bash -l\n#SBATCH -p gpu\n#SBATCH -N 1\n#SBATCH -n 2\n#SBATCH -c 2\n#SBATCH --gres=gpu:2\n#SBATCH --mem=16000\n#SBATCH -J %s\n#SBATCH -t 7-00:00:00\n" % MID)
             if atomnum >= 50:
-                g.write("#!/bin/bash -l\n#SBATCH -p gpu\n#SBATCH -N 1\n#SBATCH -n 4\n#SBATCH -c 2\n#SBATCH --gres=gpu:4\n#SBATCH --mem=32000\n#SBATCH -J tera\n#SBATCH -t 7-00:00:00\n")
+                g.write("#!/bin/bash -l\n#SBATCH -p gpu\n#SBATCH -N 1\n#SBATCH -n 4\n#SBATCH -c 2\n#SBATCH --gres=gpu:4\n#SBATCH --mem=32000\n#SBATCH -J %s\n#SBATCH -t 7-00:00:00\n" % MID)
             g.write("\n#SBATCH --no-requeue\n")
             g.write('\n# Record job info\necho -e "$SLURM_JOB_ID  $HOSTNAME  $(pwd)" >> ~/.myslurmhistory\n')
             g.write("\nmodule load intel cuda/9.0\nexport CUDA_CACHE_PATH=/scratch/$USER/.nv/ComputeCache\nexport TeraChem=/home/leeping/opt/terachem/current\nexport PATH=$TeraChem/bin:$PATH\nexport LD_LIBRARY_PATH=$TeraChem/lib:$LD_LIBRARY_PATH\n\n")
@@ -303,11 +303,11 @@ def submit(MID,SID,PID,mold,lvld,sold,job,donacc,spin):
         with open(os.path.join(freqdir, 'batch.script'), 'w') as g:
             #Depending on the number of atoms, set the number of GPUs to either 1, 2, or 4.
             if atomnum < 30:
-                g.write("#!/bin/bash -l\n#SBATCH -p gpu\n#SBATCH -N 1\n#SBATCH -n 1\n#SBATCH -c 2\n#SBATCH --gres=gpu:1\n#SBATCH --mem=8000\n#SBATCH -J tera\n#SBATCH -t 7-00:00:00\n")
+                g.write("#!/bin/bash -l\n#SBATCH -p gpu\n#SBATCH -N 1\n#SBATCH -n 1\n#SBATCH -c 2\n#SBATCH --gres=gpu:1\n#SBATCH --mem=8000\n#SBATCH -J %s\n#SBATCH -t 7-00:00:00\n" % MID)
             if 30 <= atomnum < 50:
-                g.write("#!/bin/bash -l\n#SBATCH -p gpu\n#SBATCH -N 1\n#SBATCH -n 2\n#SBATCH -c 2\n#SBATCH --gres=gpu:2\n#SBATCH --mem=16000\n#SBATCH -J tera\n#SBATCH -t 7-00:00:00\n")
+                g.write("#!/bin/bash -l\n#SBATCH -p gpu\n#SBATCH -N 1\n#SBATCH -n 2\n#SBATCH -c 2\n#SBATCH --gres=gpu:2\n#SBATCH --mem=16000\n#SBATCH -J %s\n#SBATCH -t 7-00:00:00\n" % MID)
             if atomnum >= 50:
-                g.write("#!/bin/bash -l\n#SBATCH -p gpu\n#SBATCH -N 1\n#SBATCH -n 4\n#SBATCH -c 2\n#SBATCH --gres=gpu:4\n#SBATCH --mem=32000\n#SBATCH -J tera\n#SBATCH -t 7-00:00:00\n")
+                g.write("#!/bin/bash -l\n#SBATCH -p gpu\n#SBATCH -N 1\n#SBATCH -n 4\n#SBATCH -c 2\n#SBATCH --gres=gpu:4\n#SBATCH --mem=32000\n#SBATCH -J %s\n#SBATCH -t 7-00:00:00\n" % MID)
             g.write("\n#SBATCH --no-requeue\n")
             g.write('\n# Record job info\necho -e "$SLURM_JOB_ID  $HOSTNAME  $(pwd)" >> ~/.myslurmhistory\n')
             g.write("\nmodule load intel cuda/9.0\nexport CUDA_CACHE_PATH=/scratch/$USER/.nv/ComputeCache\nexport TeraChem=/home/leeping/opt/terachem/current\nexport PATH=$TeraChem/bin:$PATH\nexport LD_LIBRARY_PATH=$TeraChem/lib:$LD_LIBRARY_PATH\n\n")
