@@ -8,7 +8,7 @@ This code will loop through all "systems" (combination of solute and solvent) fo
 * Calculate hydricities from output files
 * Store results to a dat file
 * Make scatter plots with a linear trendline
-All jobs are done with TeraChem.
+All calculation jobs are done with TeraChem.
 
 ## Organization
 For this code to work properly, txt files to be parsed should be stored in a folder called 'keys' and starting structures should be stored in a folder called 'startxyz'. All the TeraChem input and output files will be under a folder called 'molecules', and dat files will be under a folder called 'data'. Look at the example folder for guidance. The example folder contains:
