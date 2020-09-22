@@ -1,20 +1,5 @@
 #!/usr/bin/env python
 
-"""
-Description
------------
-This code will loop through "systems" (combination of solute and solvent) to check for the job status,
-create directories and files, and submit jobs for one combination of parameters (DFT-basis set-solvent model).
-All files that this code creates will be under a folder named 'molecules'. All energies are in kcal/mol.
-This code can also calculate the hydricity from the output files and store the numbers to a dat file.
-
-Directions
-----------
-For this code to work properly, txt files to be parsed should be stored in a folder called 'keys' and
-starting structures should be stored in a folder called 'startxyz' (in the folder that you're running this script).
-When running this script, provide the level of theory ID and job type.
-"""
-
 import os, sys
 import numpy as np
 import IPython
