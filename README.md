@@ -1,4 +1,4 @@
-# bnchmrkhyd-v4.py
+# bnchmrkhyd-v5.py
 
 ## General Description
 This code will loop through all "systems" (combination of solute and solvent) for one "level of theory" (combination of DFT-basis set-solvent model) to:
@@ -30,3 +30,9 @@ Can be installed by typing "conda install ______" on terminal
 * numpy
 * shutil
 * forcebalance
+
+## Differences From The Last Version
+* Saves plots to subdirectory named after the level of theory under a directory called "plots"
+* Strings that are written into the TeraChem input files formatted so that they're easier to read
+* Main function edited for "minimize" and "frequencies" jobs, new function "bigbraintime"
+* "savedata" function edited so that it's not specific to the four solvents I used. Lists stored to a dictionary.
