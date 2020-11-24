@@ -7,7 +7,7 @@ import shutil
 from forcebalance.nifty import _exec
 import matplotlib.pyplot as plt
 
-def parser():
+def parser(molfile):
     """
     Parse out info from system.txt, molecule.txt, lvlthry.txt, and solvent.txt
 
@@ -37,7 +37,7 @@ def parser():
     """  
     mold = {}
 
-    for line in open(os.path.join('keys', 'molecules.txt')):
+    for line in open(molfile):
         #Each line that user wants parsed will start with molecule ID (M####), otherwise will start with # and will be skipped.
         if line.startswith('M'):
             #Make dictonaries inside mold, each labelled with their respective molecule IDs.
@@ -456,27 +456,19 @@ def savedata(PID, sysd, mold, sold):
         calOM = "cal_%s_OM" % solname
         expOM = "exp_%s_OM" % solname
         
-        calsolv = listdict[calOR] + listdict[calOM]
-        expsolv = listdict[expOR] + listdict[expOM]
+        color = next(axall._get_lines.prop_cycler)['color']
         
-        axall.scatter(calsolv, expsolv, label=solname)
-
-        #Combine data to single list
-        allcal += calsolv
-        allexp += expsolv
+        labelOR = solname + ', organic'
+        labelOM = solname + ', organometallic'
         
-    #Add trendline and calculate R^2
-    z = np.polyfit(allcal, allexp, 1)
-    p = np.poly1d(z)
-    axall.plot(allcal,p(allcal),"k")
-    correlation_matrix = np.corrcoef(allcal, allexp)
-    correlation_xy = correlation_matrix[0,1]
-    r_squared = correlation_xy**2
+        axall.scatter(listdict[calOR], listdict[expOR], color=color, marker='x', label=labelOR)
+        axall.scatter(listdict[calOM], listdict[expOM], color=color, marker='.', label=labelOM)
     
     #Add labels and legend
-    axall.set_title('All Solvents\ny = %f x + %f, R^2 = %f' % (z[0], z[1], r_squared))
+    axall.set_title('All Solvents')
     axall.set_xlabel('Calculated hydricity (kcal/mol)')
     axall.set_ylabel('Experimental Hydricity (kcal/mol)')
+    axall.set_aspect('equal', adjustable='box')
     axall.legend()
     
     #Save plot to pdf
@@ -501,17 +493,44 @@ def savedata(PID, sysd, mold, sold):
         solvexp = listdict[expOR] + listdict[expOM]
         
         #Add trendline and calculate R^2
-        z = np.polyfit(solvcal, solvexp, 1)
-        p = np.poly1d(z)
-        axsolv.plot(solvcal,p(solvcal),"k")
-        correlation_matrix = np.corrcoef(solvcal, solvexp)
-        correlation_xy = correlation_matrix[0,1]
-        r_squared = correlation_xy**2
+        #Get trendline with slope fixed to 1
+        fixedslope = 1
+        yintlist = []
+        for i in range(len(solvcal)):
+            yintlist.append(solvexp[i] - fixedslope * solvcal[i])
+        yint = np.mean(yintlist)
+        minx = min(solvcal)
+        maxx = max(solvcal)
+        x = np.linspace(minx, maxx, 1000)
+        axsolv.plot(x, fixedslope*x+yint, linestyle = 'dashed', color = 'black')
         
+        #Get R^2
+        #residual
+        predictedy = fixedslope*solvcal+yint
+        residual = []
+        for i in range(len(solvexp)):
+            residual.append(solvexp[i] - predictedy[i])
+        ressq = []
+        for i in range(len(residual)):
+            ressq.append(residual[i]**2)
+        #average y
+        aveexp = np.sum(solvexp)/len(solvexp)
+        diffmean = []
+        for i in range(len(solvexp)):
+            diffmean.append(solvexp[i] - aveexp)
+        diffmeansq = []
+        for i in range(len(diffmean)):
+            diffmeansq.append(diffmean[i]**2)
+        #R^2
+        ressqsum = np.sum(ressq)
+        diffmeansqsum = np.sum(diffmeansq)
+        Rsquared = 1 - ressqsum/diffmeansqsum
+
         #Add labels and legend
-        axsolv.set_title('%s\ny = %f x + %f, R^2 = %f' % (solname, z[0], z[1], r_squared))
+        axsolv.set_title('%s\ny = x + %f, R^2 = %f' % (solname, yint, Rsquared))
         axsolv.set_xlabel('Calculated hydricity (kcal/mol)')
         axsolv.set_ylabel('Experimental Hydricity (kcal/mol)')
+        axsolv.set_aspect('equal', adjustable='box')
         axsolv.legend()
         
         #Save plot to pdf
@@ -519,11 +538,13 @@ def savedata(PID, sysd, mold, sold):
     
 
 def main():
-    #Create dictionaries
-    mold, lvld, sold, sysd = parser()
-    #Ask user to provide level of theory and job type
+    #Ask user to provide level of theory, job type, and name of file containing molecule info
     PID = str(input('Enter level of theory ID: \n'))
     jobtype = str(input('Enter job type: \n'))
+    molfile = str(input('Enter name of file containing molecule info: \n'))
+    
+    #Create dictionaries
+    mold, lvld, sold, sysd = parser(molfile)
     
     #If freq analysis done for all spin mults, calculate hydricity, then store data to dat file and plots
     if jobtype == "hydricity":
