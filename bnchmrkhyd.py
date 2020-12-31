@@ -6,6 +6,7 @@ import IPython
 import shutil
 from forcebalance.nifty import _exec
 import matplotlib.pyplot as plt
+from matplotlib.patches import Rectangle
 
 def parser(molfile):
     """
@@ -388,6 +389,46 @@ def bigbraintime(MID,SID,PID,mold,lvld,sold,jobtype,donacc,spin):
         print("%s done for %s %s, time to %s" % (name, MID, donacc, nextstep))
     if stat == "optinc":
         print("Geometry optimization for %s %s incomplete." % (MID, donacc))
+        
+def dataanalysis(xlist, ylist, fixedslope):
+    #Add trendline and calculate R^2 & RMSD
+    #Get trendline with slope fixed
+    yintlist = []
+    for i in range(len(xlist)):
+        yintlist.append(ylist[i] - fixedslope * xlist[i])
+    yint = np.mean(yintlist)
+    
+    #Get R^2
+    #residual
+    predictedy = fixedslope*xlist+yint
+    residual = []
+    for i in range(len(ylist)):
+        residual.append(ylist[i] - predictedy[i])
+    ressq = []
+    for i in range(len(residual)):
+        ressq.append(residual[i]**2)
+    #average y
+    aveexp = np.sum(ylist)/len(ylist)
+    diffmean = []
+    for i in range(len(ylist)):
+        diffmean.append(ylist[i] - aveexp)
+    diffmeansq = []
+    for i in range(len(diffmean)):
+        diffmeansq.append(diffmean[i]**2)
+    #R^2
+    ressqsum = np.sum(ressq)
+    diffmeansqsum = np.sum(diffmeansq)
+    Rsquared = 1 - ressqsum/diffmeansqsum
+    
+    #Get RMSD
+    difflist=[]
+    for i in range(len(xlist)):
+        diffexpcalsq = (xlist[i]-ylist[i])**2
+        difflist.append(diffexpcalsq)
+    diffsqsum = np.sum(difflist)
+    RMSD = np.sqrt(diffsqsum/len(xlist))
+    
+    return Rsquared, RMSD, yint
 
 def savedata(PID, sysd, mold, sold):
     """
@@ -446,8 +487,7 @@ def savedata(PID, sysd, mold, sold):
     #All
     #Make scatter plot
     figall, axall = plt.subplots()
-    allcal = []
-    allexp = []
+
     for solvent in sold:
         solname = sold[solvent]['sname']
         
@@ -461,15 +501,17 @@ def savedata(PID, sysd, mold, sold):
         labelOR = solname + ', organic'
         labelOM = solname + ', organometallic'
         
-        axall.scatter(listdict[calOR], listdict[expOR], color=color, marker='x', label=labelOR)
-        axall.scatter(listdict[calOM], listdict[expOM], color=color, marker='.', label=labelOM)
+        axall.scatter(listdict[expOR], listdict[calOR], color=color, marker='x', label=labelOR)
+        axall.scatter(listdict[expOM], listdict[calOM], color=color, marker='.', label=labelOM)
     
     #Add labels and legend
     axall.set_title('All Solvents')
-    axall.set_xlabel('Calculated hydricity (kcal/mol)')
-    axall.set_ylabel('Experimental Hydricity (kcal/mol)')
+    axall.set_xlabel('Experimental hydricity (kcal/mol)')
+    axall.set_ylabel('Calculated Hydricity (kcal/mol)')
     axall.set_aspect('equal', adjustable='box')
-    axall.legend()
+    axall.set_xlim([0,140])
+    axall.set_ylim([0,140])
+    axall.legend(fontsize=9.8, prop={'family': 'monospace'})
     
     #Save plot to pdf
     figall.savefig(os.path.join(plotdir, '%s_all.pdf' % PID))
@@ -485,53 +527,52 @@ def savedata(PID, sysd, mold, sold):
         
         #Make scatter plot
         figsolv, axsolv = plt.subplots()
-        axsolv.scatter(listdict[calOR], listdict[expOR], c='turquoise', label = "Organic")
-        axsolv.scatter(listdict[calOM], listdict[expOM], c='darkgray', label = "Organometallic")
+        organic = axsolv.scatter(listdict[expOR], listdict[calOR], c='turquoise')
+        organometallic = axsolv.scatter(listdict[expOM], listdict[calOM], c='darkgray')
         
         #Combine data to single list
         solvcal = listdict[calOR] + listdict[calOM]
         solvexp = listdict[expOR] + listdict[expOM]
         
-        #Add trendline and calculate R^2
-        #Get trendline with slope fixed to 1
+        #Get R^2 and RMSD for all, organic, and organometallic molecules, then change type from float to str
         fixedslope = 1
-        yintlist = []
-        for i in range(len(solvcal)):
-            yintlist.append(solvexp[i] - fixedslope * solvcal[i])
-        yint = np.mean(yintlist)
-        minx = min(solvcal)
-        maxx = max(solvcal)
-        x = np.linspace(minx, maxx, 1000)
-        axsolv.plot(x, fixedslope*x+yint, linestyle = 'dashed', color = 'black')
         
-        #Get R^2
-        #residual
-        predictedy = fixedslope*solvcal+yint
-        residual = []
-        for i in range(len(solvexp)):
-            residual.append(solvexp[i] - predictedy[i])
-        ressq = []
-        for i in range(len(residual)):
-            ressq.append(residual[i]**2)
-        #average y
-        aveexp = np.sum(solvexp)/len(solvexp)
-        diffmean = []
-        for i in range(len(solvexp)):
-            diffmean.append(solvexp[i] - aveexp)
-        diffmeansq = []
-        for i in range(len(diffmean)):
-            diffmeansq.append(diffmean[i]**2)
-        #R^2
-        ressqsum = np.sum(ressq)
-        diffmeansqsum = np.sum(diffmeansq)
-        Rsquared = 1 - ressqsum/diffmeansqsum
+        rsqall, rmsdall, yintall = dataanalysis(solvexp, solvcal, fixedslope)
+        rsqall = str(round(rsqall, 3))
+        rmsdall = str(round(rmsdall, 3))
+        
+        if len(listdict[expOR])>1:
+            rsqorg, rmsdorg, yintorg = dataanalysis(listdict[expOR], listdict[calOR], fixedslope)
+            rsqorg = str(round(rsqorg, 3))
+            rmsdorg = str(round(rmsdorg, 3))
+        else:
+            rsqorg = "N/A"
+            rmsdorg = "N/A"
+        if len(listdict[expOM])>1:
+            rsqorm, rmsdorm, yintorm = dataanalysis(listdict[expOM], listdict[calOM], fixedslope)
+            rsqorm = str(round(rsqorm, 3))
+            rmsdorm = str(round(rmsdorm, 3))
+        else:
+            rsqorm = "N/A"
+            rmsdorm = "N/A"
+        
+        #Add trendline
+        x = np.linspace(0, 140, 1000)
+        axsolv.plot(x, fixedslope*x+yintall, linestyle = 'dashed', color = 'black')
 
         #Add labels and legend
-        axsolv.set_title('%s\ny = x + %f, R^2 = %f' % (solname, yint, Rsquared))
-        axsolv.set_xlabel('Calculated hydricity (kcal/mol)')
-        axsolv.set_ylabel('Experimental Hydricity (kcal/mol)')
+        axsolv.set_title('%s' % solname.capitalize())
+        axsolv.set_xlabel('Experimental hydricity (kcal/mol)')
+        axsolv.set_ylabel('Calculated Hydricity (kcal/mol)')
+        axsolv.set_xlim([0,140])
+        axsolv.set_ylim([0,140])
         axsolv.set_aspect('equal', adjustable='box')
-        axsolv.legend()
+        extra = Rectangle((0, 0), 1, 1, fc="w", fill=False, edgecolor='none', linewidth=0)
+        
+        RsqRMSD='{:4}{:8}{:8}\n{:4}{:8}{:8}\n{:4}{:8}{:8}\n{:4}{:8}{:8}'.format(' ', 'R^2', 'RMSD',\
+                 'All', rsqall, rmsdall, 'OR', rsqorg, rmsdorg, 'OM', rsqorm, rmsdorm)
+        
+        axsolv.legend([organic, organometallic, extra], ('Organic (OR)', 'Organometallic (OM)',RsqRMSD), prop={'family': 'monospace'})
         
         #Save plot to pdf
         figsolv.savefig(os.path.join(plotdir, '%s_%s.pdf' % (PID, solname)))
