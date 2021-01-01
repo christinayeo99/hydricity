@@ -511,7 +511,7 @@ def savedata(PID, sysd, mold, sold):
     axall.set_aspect('equal', adjustable='box')
     axall.set_xlim([0,140])
     axall.set_ylim([0,140])
-    axall.legend(fontsize=9.8, prop={'family': 'monospace'})
+    axall.legend(fontsize=9.8)
     
     #Save plot to pdf
     figall.savefig(os.path.join(plotdir, '%s_all.pdf' % PID))
