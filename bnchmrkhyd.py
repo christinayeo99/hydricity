@@ -391,7 +391,7 @@ def bigbraintime(MID,SID,PID,mold,lvld,sold,jobtype,donacc,spin):
         print("Geometry optimization for %s %s incomplete." % (MID, donacc))
         
 def dataanalysis(xlist, ylist, fixedslope):
-    #Add trendline and calculate R^2 & RMSD
+    #Add trendline and calculate R^2 & RMSE
     #Get trendline with slope fixed
     yintlist = []
     for i in range(len(xlist)):
@@ -420,15 +420,15 @@ def dataanalysis(xlist, ylist, fixedslope):
     diffmeansqsum = np.sum(diffmeansq)
     Rsquared = 1 - ressqsum/diffmeansqsum
     
-    #Get RMSD
+    #Get RMSE
     difflist=[]
     for i in range(len(xlist)):
         diffexpcalsq = (xlist[i]-ylist[i])**2
         difflist.append(diffexpcalsq)
     diffsqsum = np.sum(difflist)
-    RMSD = np.sqrt(diffsqsum/len(xlist))
+    RMSE = np.sqrt(diffsqsum/len(xlist))
     
-    return Rsquared, RMSD, yint
+    return Rsquared, RMSE, yint
 
 def savedata(PID, sysd, mold, sold):
     """
@@ -534,27 +534,27 @@ def savedata(PID, sysd, mold, sold):
         solvcal = listdict[calOR] + listdict[calOM]
         solvexp = listdict[expOR] + listdict[expOM]
         
-        #Get R^2 and RMSD for all, organic, and organometallic molecules, then change type from float to str
+        #Get R^2 and RMSE for all, organic, and organometallic molecules, then change type from float to str
         fixedslope = 1
         
-        rsqall, rmsdall, yintall = dataanalysis(solvexp, solvcal, fixedslope)
+        rsqall, RMSEall, yintall = dataanalysis(solvexp, solvcal, fixedslope)
         rsqall = str(round(rsqall, 3))
-        rmsdall = str(round(rmsdall, 3))
+        RMSEall = str(round(RMSEall, 3))
         
         if len(listdict[expOR])>1:
-            rsqorg, rmsdorg, yintorg = dataanalysis(listdict[expOR], listdict[calOR], fixedslope)
+            rsqorg, RMSEorg, yintorg = dataanalysis(listdict[expOR], listdict[calOR], fixedslope)
             rsqorg = str(round(rsqorg, 3))
-            rmsdorg = str(round(rmsdorg, 3))
+            RMSEorg = str(round(RMSEorg, 3))
         else:
             rsqorg = "N/A"
-            rmsdorg = "N/A"
+            RMSEorg = "N/A"
         if len(listdict[expOM])>1:
-            rsqorm, rmsdorm, yintorm = dataanalysis(listdict[expOM], listdict[calOM], fixedslope)
+            rsqorm, RMSEorm, yintorm = dataanalysis(listdict[expOM], listdict[calOM], fixedslope)
             rsqorm = str(round(rsqorm, 3))
-            rmsdorm = str(round(rmsdorm, 3))
+            RMSEorm = str(round(RMSEorm, 3))
         else:
             rsqorm = "N/A"
-            rmsdorm = "N/A"
+            RMSEorm = "N/A"
         
         #Add trendline
         x = np.linspace(0, 140, 1000)
@@ -569,10 +569,10 @@ def savedata(PID, sysd, mold, sold):
         axsolv.set_aspect('equal', adjustable='box')
         extra = Rectangle((0, 0), 1, 1, fc="w", fill=False, edgecolor='none', linewidth=0)
         
-        RsqRMSD='{:4}{:8}{:8}\n{:4}{:8}{:8}\n{:4}{:8}{:8}\n{:4}{:8}{:8}'.format(' ', 'R^2', 'RMSD',\
-                 'All', rsqall, rmsdall, 'OR', rsqorg, rmsdorg, 'OM', rsqorm, rmsdorm)
+        RsqRMSE='{:4}{:8}{:8}\n{:4}{:8}{:8}\n{:4}{:8}{:8}\n{:4}{:8}{:8}'.format(' ', 'R^2', 'RMSE',\
+                 'All', rsqall, RMSEall, 'OR', rsqorg, RMSEorg, 'OM', rsqorm, RMSEorm)
         
-        axsolv.legend([organic, organometallic, extra], ('Organic (OR)', 'Organometallic (OM)',RsqRMSD), prop={'family': 'monospace'})
+        axsolv.legend([organic, organometallic, extra], ('Organic (OR)', 'Organometallic (OM)',RsqRMSE), prop={'family': 'monospace'})
         
         #Save plot to pdf
         figsolv.savefig(os.path.join(plotdir, '%s_%s.pdf' % (PID, solname)))
