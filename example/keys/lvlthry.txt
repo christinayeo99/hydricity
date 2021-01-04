@@ -1,3 +1,0 @@
-Number    DFT Functional    Basis Set    Solvent Model
-------    --------------    ---------    -------------
-P01       ub3lyp            6-31gs_ldz   pcm
