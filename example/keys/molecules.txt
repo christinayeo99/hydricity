@@ -1,3 +1,3 @@
-ID       Name                  Printable Name   Don Chg     Don Spin Mult     Acc Chg     Acc Spin Mult
---       ----                  --------------   -------     -------------     -------     -------------
-M0004	 Formate	       formate		-1	    1		      0		  1
+ID       Name                  Printable Name   Don Chg     Don Spin Mult     Acc Chg     Acc Spin Mult    Type
+--       ----                  --------------   -------     -------------     -------     -------------	   ----
+M0004	 Formate	       formate		-1	    1		      0		  1		   OR
