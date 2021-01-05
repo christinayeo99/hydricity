@@ -14,7 +14,7 @@ For this code to work properly, txt files to be parsed should be stored in a fol
 * txt files that the code will read, parse, and make dictionaries from
 * Starting structures for formate (donor) and CO2 (acceptor)
 * TeraChem input/output files and data for formate calculated using ub3lyp/6-31gs_ldz/pcm
-* Plots for hydricities calculated using ub3lyp/tzvp_ltz/pcm
+* Calculated vs experimental hydricities for molecules in acetonitrile
 
 ## Inputs
 * Level of Theory ID: should start with "P"
