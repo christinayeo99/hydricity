@@ -1,8 +1,8 @@
 #!/usr/bin/env python
 
-import os, sys
+import os#, sys
 import numpy as np
-import IPython
+#import IPython
 import shutil
 from forcebalance.nifty import _exec
 import matplotlib.pyplot as plt
@@ -561,18 +561,20 @@ def savedata(PID, sysd, mold, sold):
         axsolv.plot(x, fixedslope*x+yintall, linestyle = 'dashed', color = 'black')
 
         #Add labels and legend
-        axsolv.set_title('%s' % solname.capitalize())
-        axsolv.set_xlabel('Experimental hydricity (kcal/mol)')
+        axsolv.set_title('Calculated vs Experimental Hydricities in %s\ny-intercept = %.3f' % (solname.capitalize(), yintorg))
+        axsolv.set_xlabel('Experimental Hydricity (kcal/mol)')
         axsolv.set_ylabel('Calculated Hydricity (kcal/mol)')
         axsolv.set_xlim([0,140])
         axsolv.set_ylim([0,140])
         axsolv.set_aspect('equal', adjustable='box')
         extra = Rectangle((0, 0), 1, 1, fc="w", fill=False, edgecolor='none', linewidth=0)
         
-        RsqRMSE='{:4}{:8}{:8}\n{:4}{:8}{:8}\n{:4}{:8}{:8}\n{:4}{:8}{:8}'.format(' ', 'R^2', 'RMSE',\
-                 'All', rsqall, RMSEall, 'OR', rsqorg, RMSEorg, 'OM', rsqorm, RMSEorm)
+#        RsqRMSE='{:4}{:8}{:8}\n{:4}{:8}{:8}\n{:4}{:8}{:8}\n{:4}{:8}{:8}'.format(' ', 'R^2', 'RMSE',\
+#                 'All', rsqall, RMSEall, 'OR', rsqorg, RMSEorg, 'OM', rsqorm, RMSEorm)
+        Rsqvalues='{:4}{:8}\n{:4}{:8}\n{:4}{:8}\n{:4}{:8}'.format(' ', 'R^2',\
+                   'All', rsqall, 'OR', rsqorg, 'OM', rsqorm)
         
-        axsolv.legend([organic, organometallic, extra], ('Organic (OR)', 'Organometallic (OM)',RsqRMSE), prop={'family': 'monospace'})
+        axsolv.legend([organic, organometallic, extra], ('Organic (OR)', 'Organometallic (OM)', Rsqvalues), prop={'family': 'monospace'})
         
         #Save plot to pdf
         figsolv.savefig(os.path.join(plotdir, '%s_%s.pdf' % (PID, solname)))
