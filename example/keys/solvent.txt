@@ -1,0 +1,3 @@
+Number    Name                Dielectric constant
+------    ----                -------------------
+S01       acetonitrile        37.5
