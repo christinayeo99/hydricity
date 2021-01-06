@@ -30,3 +30,7 @@ Can be installed by typing "conda install ______" on terminal
 * numpy
 * shutil
 * forcebalance
+
+## Important Notes
+* The "Calculated Hydricity" stored to the dat files do NOT include the free energy of the hydride anion in solvent, meaning it is technically the free energy of the "hydricity half reaction" (HHR), i.e. G(acceptor) - G(donor).
+* If you have 2 or more data points for a given solvent, this code will calculate an "average y-intercept" (see the code for what this means), and shift the calculated hydricities accordingly. This shift corresponds to the free energy of the hydride anion in solvent. The "average y-intercepts" will be stored to a dat file as well.
