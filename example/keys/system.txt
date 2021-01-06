@@ -1,7 +1,0 @@
-ID       Molecule ID  Molecule Name          Solvent ID   Solvent Name     Experimental Hydricity (kcal/mol)   Citation #
---       -----------  -------------          ----------   ------------     ---------------------------------   ----------
-Y0005    M0004        Formate                S01          Acetonitrile     44.2                                24
-#Y0006A   M0004        Formate                S03          Water            24.1                                20
-#Y0006B   M0004        Formate                S03          Water            23                                  23
-#Below is the average of the experimental hydricities for formate in water.
-Y0006    M0004        Formate                S03          Water            23.55			       n/a
