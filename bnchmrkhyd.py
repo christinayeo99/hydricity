@@ -622,8 +622,6 @@ def main():
             #Same thing for acceptor structures
             for key in mold[MID]['accspn']:
                 bigbraintime(MID,SID,PID,mold,lvld,sold,jobtype,'acceptor',key)
-                
-#PLEAAAAAASE WORK pleasepleasepleasepleaseplease
 
 if __name__ == "__main__":
     main()
