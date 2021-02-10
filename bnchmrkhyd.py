@@ -423,7 +423,7 @@ def dataanalysis(xlist, ylist, fixedslope):
     #Get RMSE
     difflist=[]
     for i in range(len(xlist)):
-        diffexpcalsq = (xlist[i]-ylist[i])**2
+        diffexpcalsq = (predictedy[i]-ylist[i])**2
         difflist.append(diffexpcalsq)
     diffsqsum = np.sum(difflist)
     RMSE = np.sqrt(diffsqsum/len(xlist))
@@ -622,8 +622,6 @@ def main():
             #Same thing for acceptor structures
             for key in mold[MID]['accspn']:
                 bigbraintime(MID,SID,PID,mold,lvld,sold,jobtype,'acceptor',key)
-                
-#PLEAAAAAASE WORK pleasepleasepleasepleaseplease
 
 if __name__ == "__main__":
     main()
