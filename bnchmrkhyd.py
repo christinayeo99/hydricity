@@ -568,12 +568,12 @@ def savedata(PID, sysd, mold, sold):
         axsolv.set_aspect('equal', adjustable='box')
         extra = Rectangle((0, 0), 1, 1, fc="w", fill=False, edgecolor='none', linewidth=0)
         
-#        RsqRMSE='{:4}{:8}{:8}\n{:4}{:8}{:8}\n{:4}{:8}{:8}\n{:4}{:8}{:8}'.format(' ', 'R^2', 'RMSE',\
-#                 'All', rsqall, RMSEall, 'OR', rsqorg, RMSEorg, 'OM', rsqorm, RMSEorm)
-        Rsqvalues='{:4}{:8}\n{:4}{:8}\n{:4}{:8}\n{:4}{:8}'.format(' ', 'R^2',\
-                   'All', rsqall, 'OR', rsqorg, 'OM', rsqorm)
+        RsqRMSE='{:4}{:8}{:8}\n{:4}{:8}{:8}\n{:4}{:8}{:8}\n{:4}{:8}{:8}'.format(' ', 'R^2', 'RMSE',\
+                 'All', rsqall, RMSEall, 'OR', rsqorg, RMSEorg, 'OM', rsqorm, RMSEorm)
+#        Rsqvalues='{:4}{:8}\n{:4}{:8}\n{:4}{:8}\n{:4}{:8}'.format(' ', 'R^2',\
+#                   'All', rsqall, 'OR', rsqorg, 'OM', rsqorm)
         
-        axsolv.legend([organic, organometallic, extra], ('Organic (OR)', 'Organometallic (OM)', Rsqvalues), prop={'family': 'monospace'})
+        axsolv.legend([organic, organometallic, extra], ('Organic (OR)', 'Organometallic (OM)', RsqRMSE), prop={'family': 'monospace'})
         
         #Save plot to pdf
         figsolv.savefig(os.path.join(plotdir, '%s_%s.pdf' % (PID, solname)))
