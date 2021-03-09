@@ -8,10 +8,15 @@ from forcebalance.nifty import _exec
 import matplotlib.pyplot as plt
 from matplotlib.patches import Rectangle
 
-def parser(molfile):
+def parser(project, molfile):
     """
     Parse out info from system.txt, molecule.txt, lvlthry.txt, and solvent.txt
 
+    Parameters
+    ----------
+    project: str
+             Determines which class of molecules to create dictionaries for (just organic,
+             just organometallic, or both)
     Returns
     -------
     mold: dict
@@ -86,7 +91,13 @@ def parser(molfile):
 
     sysd = {}
     
-    for line in open(os.path.join('keys', 'system.txt')):
+    if project == 'organic':
+        sysfile = 'system-org.txt'
+    if project == 'organometallic':
+        sysfile = 'system-met.txt'
+    if project == 'both':
+        sysfile = 'system.txt'
+    for line in open(os.path.join('keys', sysfile)):
         #System IDs start with Y (Y####)
         if line.startswith('Y'):
             #Make dictionaries inside sysd, each labelled with their respective system IDs.
@@ -430,11 +441,20 @@ def dataanalysis(xlist, ylist, fixedslope):
     
     return Rsquared, RMSE, yint
 
-def savedata(PID, sysd, mold, sold):
+def savedata(project, PID, sysd, mold, sold):
     """
     Saves free energy of hydricity half reaction to dat file, vertically shifts data points according to solvent,
     which gives hydricity, and makes plots for each solvent and one plot that includes points for all solvents.
     """
+    if project == 'organic':
+        doorg = True
+        doorm = False
+    if project == 'organometallic':
+        doorg = False
+        doorm = True
+    if project == 'both':
+        doorg = True
+        doorm = True
     #Lists to store calculated delta G_HHRs and experimental hydricities, according to solvent and molecule type
     HHRdict = {}
     #Lists to store vertically shifted calculated values
@@ -443,19 +463,23 @@ def savedata(PID, sysd, mold, sold):
     for solvent in sold:
         solname = sold[solvent]['sname']
         
+        
         calOR = "cal_%s_OR" % solname
         expOR = "exp_%s_OR" % solname
         calOM = "cal_%s_OM" % solname
         expOM = "exp_%s_OM" % solname
         
-        HHRdict[calOR] = []
-        HHRdict[calOM] = []
+        if doorg == True:
+            HHRdict[calOR] = []
+            
+            hyddict[calOR] = []
+            hyddict[expOR] = []
+        if doorm == True:
+            HHRdict[calOM] = []
+            
+            hyddict[calOM] = []
+            hyddict[expOM] = []
         
-        hyddict[calOR] = []
-        hyddict[expOR] = []
-        hyddict[calOM] = []
-        hyddict[expOM] = []
-    
     #Make directories for data
     datadir = os.path.join('data', '%s' %PID)
     if not os.path.exists(datadir): os.makedirs(datadir)
@@ -477,17 +501,19 @@ def savedata(PID, sysd, mold, sold):
         with open(os.path.join(datadir, 'delG_HHR-%s.dat' % PID), 'a+') as f:
             f.write('{0:10}{1:10}{2:10}{3:10}{4:10}{5:25}{6:25}\n'.format(YID, mold[MID]['donchg'], donminspn, mold[MID]['accchg'], accminspn, str(delG_HHR), sysd[YID]['hyd']))
         
-        #Store points to lists accordingly
-        if mold[MID]['type'] == 'OR':
-            calOR = "cal_%s_OR" % sold[SID]['sname']
-            expOR = "exp_%s_OR" % sold[SID]['sname']
-            HHRdict[calOR].append(delG_HHR)
-            hyddict[expOR].append(float(sysd[YID]['hyd']))
-        else:
-            calOM = "cal_%s_OM" % sold[SID]['sname']
-            expOM = "exp_%s_OM" % sold[SID]['sname']
-            HHRdict[calOM].append(delG_HHR)
-            hyddict[expOM].append(float(sysd[YID]['hyd']))
+        #Store points to lists accordingly        
+        if doorg == True:
+            if mold[MID]['type'] == 'OR':
+                calOR = "cal_%s_OR" % sold[SID]['sname']
+                expOR = "exp_%s_OR" % sold[SID]['sname']
+                HHRdict[calOR].append(delG_HHR)
+                hyddict[expOR].append(float(sysd[YID]['hyd']))
+        if doorm == True:
+            if mold[MID]['type'] == 'OM':
+                calOM = "cal_%s_OM" % sold[SID]['sname']
+                expOM = "exp_%s_OM" % sold[SID]['sname']
+                HHRdict[calOM].append(delG_HHR)
+                hyddict[expOM].append(float(sysd[YID]['hyd']))
 
 
     #Make directories for plots
@@ -510,54 +536,85 @@ def savedata(PID, sysd, mold, sold):
         figsolv, axsolv = plt.subplots()
 
         #Combine HHR data to single list
-        solvcal = HHRdict[calOR] + HHRdict[calOM]
-        solvexp = hyddict[expOR] + hyddict[expOM]
+        if project == 'both':
+            solvcal = HHRdict[calOR] + HHRdict[calOM]
+            solvexp = hyddict[expOR] + hyddict[expOM]
         
         #Calculate vertical shift that corresponds to free energy of hydride anion in solvent
         #and get R^2 and RMSE for all, organic, and organometallic molecules
         fixedslope = 1
         
-        rsqall, RMSEall, yintall = dataanalysis(solvexp, solvcal, fixedslope)
-        rsqall = str(round(rsqall, 3))
-        RMSEall = str(round(RMSEall, 3))
+        if project == 'both':
+            rsqall, RMSEall, yintall = dataanalysis(solvexp, solvcal, fixedslope)
+            rsqall = str(round(rsqall, 3))
+            RMSEall = str(round(RMSEall, 3))
         
-        if len(hyddict[expOR])>1:
-            rsqorg, RMSEorg, yintorg = dataanalysis(hyddict[expOR], HHRdict[calOR], fixedslope)
-            rsqorg = str(round(rsqorg, 3))
-            RMSEorg = str(round(RMSEorg, 3))
-        else:
-            rsqorg = "N/A"
-            RMSEorg = "N/A"
-            yintorg = "N/A"
-            
-        if len(hyddict[expOM])>1:
-            rsqorm, RMSEorm, yintorm = dataanalysis(hyddict[expOM], HHRdict[calOM], fixedslope)
-            rsqorm = str(round(rsqorm, 3))
-            RMSEorm = str(round(RMSEorm, 3))
-        else:
-            rsqorm = "N/A"
-            RMSEorm = "N/A"
-            yintorm = "N/A"
-            
-        #Store y-intercepts to dat file.
-        with open(os.path.join(datadir, 'yint-%s-%s.dat' % (PID, solname)), 'w') as g:
-            g.write('{:20}{:20}{:20}\n{:20}{:20}{:20}'.format("All", "Organic", "Organometallic",\
-                    str(yintall), str(yintorg), str(yintorm)))
+        if doorg == True:
+            if len(hyddict[expOR])>1:
+                rsqorg, RMSEorg, yintorg = dataanalysis(hyddict[expOR], HHRdict[calOR], fixedslope)
+                rsqorg = str(round(rsqorg, 3))
+                RMSEorg = str(round(RMSEorg, 3))
+            else:
+                rsqorg = "N/A"
+                RMSEorg = "N/A"
+                yintorg = "N/A"
         
-        #Apply vertical shift and save to hydricity dictionary
-        for i in range(len(HHRdict[calOR])):
-            hyddict[calOR].append(HHRdict[calOR][i] - yintall)
+        if doorm == True:
+            if len(hyddict[expOM])>1:
+                rsqorm, RMSEorm, yintorm = dataanalysis(hyddict[expOM], HHRdict[calOM], fixedslope)
+                rsqorm = str(round(rsqorm, 3))
+                RMSEorm = str(round(RMSEorm, 3))
+            else:
+                rsqorm = "N/A"
+                RMSEorm = "N/A"
+                yintorm = "N/A"
             
-        for i in range(len(HHRdict[calOM])):
-            hyddict[calOM].append(HHRdict[calOM][i] - yintall)
+        if project == 'both':
+            #Store y-intercepts to dat file.
+            with open(os.path.join(datadir, 'yint-%s-%s.dat' % (PID, solname)), 'w') as g:
+                g.write('{:20}{:20}{:20}\n{:20}{:20}{:20}'.format("All", "Organic", "Organometallic",\
+                        str(yintall), str(yintorg), str(yintorm)))
+            
+            #Apply vertical shift and save to hydricity dictionary
+            for i in range(len(HHRdict[calOR])):
+                hyddict[calOR].append(HHRdict[calOR][i] - yintall)
+                
+            for i in range(len(HHRdict[calOM])):
+                hyddict[calOM].append(HHRdict[calOM][i] - yintall)
+        if project == 'organic':
+            #Store y-intercepts to dat file.
+            with open(os.path.join(datadir, 'yint-%s-%s.dat' % (PID, solname)), 'w') as g:
+                g.write(str(yintorg))
+            
+            #Apply vertical shift and save to hydricity dictionary
+            if type(yintorg)==str:
+                for i in range(len(HHRdict[calOR])):
+                    hyddict[calOR].append(HHRdict[calOR][i])
+            else:
+                for i in range(len(HHRdict[calOR])):
+                    hyddict[calOR].append(HHRdict[calOR][i] - yintorg)
+        if project == 'organometallic':
+            #Store y-intercepts to dat file.
+            with open(os.path.join(datadir, 'yint-%s-%s.dat' % (PID, solname)), 'w') as g:
+                g.write(str(yintorm))
+            
+            #Apply vertical shift and save to hydricity dictionary
+            if type(yintorm)==str:
+                for i in range(len(HHRdict[calOM])):
+                    hyddict[calOM].append(HHRdict[calOM][i])
+            else:
+                for i in range(len(HHRdict[calOM])):
+                    hyddict[calOM].append(HHRdict[calOM][i] - yintorm)
 
         #Add trendline
         x = np.linspace(0, 140, 1000)
         axsolv.plot(x, fixedslope*x, linestyle = 'dashed', color = 'black')
         
         #Plot points
-        organic = axsolv.scatter(hyddict[expOR], hyddict[calOR], c='turquoise')
-        organometallic = axsolv.scatter(hyddict[expOM], hyddict[calOM], c='darkgray')
+        if doorg == True:
+            organic = axsolv.scatter(hyddict[expOR], hyddict[calOR], c='turquoise')
+        if doorm == True:
+            organometallic = axsolv.scatter(hyddict[expOM], hyddict[calOM], c='darkgray')
 
         #Add labels and legend
         axsolv.set_title('Calculated vs Experimental Hydricities in %s' % solname.capitalize())
@@ -568,23 +625,31 @@ def savedata(PID, sysd, mold, sold):
         axsolv.set_aspect('equal', adjustable='box')
         extra = Rectangle((0, 0), 1, 1, fc="w", fill=False, edgecolor='none', linewidth=0)
         
-        RsqRMSE='{:4}{:8}{:8}\n{:4}{:8}{:8}\n{:4}{:8}{:8}\n{:4}{:8}{:8}'.format(' ', 'R^2', 'RMSE',\
-                 'All', rsqall, RMSEall, 'OR', rsqorg, RMSEorg, 'OM', rsqorm, RMSEorm)
-#        Rsqvalues='{:4}{:8}\n{:4}{:8}\n{:4}{:8}\n{:4}{:8}'.format(' ', 'R^2',\
-#                   'All', rsqall, 'OR', rsqorg, 'OM', rsqorm)
+        color = next(axall._get_lines.prop_cycler)['color']
         
-        axsolv.legend([organic, organometallic, extra], ('Organic (OR)', 'Organometallic (OM)', RsqRMSE), prop={'family': 'monospace'})
+        if project == 'both':
+            RsqRMSE='{:4}{:8}{:8}\n{:4}{:8}{:8}\n{:4}{:8}{:8}\n{:4}{:8}{:8}'.format(' ', 'R^2', 'RMSE',\
+                     'All', rsqall, RMSEall, 'OR', rsqorg, RMSEorg, 'OM', rsqorm, RMSEorm)
+            axsolv.legend([organic, organometallic, extra], ('Organic (OR)', 'Organometallic (OM)', RsqRMSE), prop={'family': 'monospace'})
+            
+            labelOR = solname + ', organic'
+            labelOM = solname + ', organometallic'
+            
+            axall.scatter(hyddict[expOR], hyddict[calOR], color=color, marker='x', label=labelOR)
+            axall.scatter(hyddict[expOM], hyddict[calOM], color=color, marker='.', label=labelOM)
+        if project == 'organic':
+            RsqRMSE='{:8}{:8}\n{:8}{:8}'.format('R^2', 'RMSE', rsqorg, RMSEorg)
+            axsolv.legend([organic, extra], ('Organic', RsqRMSE), prop={'family': 'monospace'})
+            
+            axall.scatter(hyddict[expOR], hyddict[calOR], color=color, label=solname)
+        if project == 'organometallic':
+            RsqRMSE='{:8}{:8}\n{:8}{:8}'.format('R^2', 'RMSE', rsqorm, RMSEorm)
+            axsolv.legend([organometallic, extra], ('Organometallic', RsqRMSE), prop={'family': 'monospace'})
+            
+            axall.scatter(hyddict[expOM], hyddict[calOM], color=color, label=solname)
         
         #Save plot to pdf
         figsolv.savefig(os.path.join(plotdir, '%s_%s.pdf' % (PID, solname)))
-        
-        color = next(axall._get_lines.prop_cycler)['color']
-        
-        labelOR = solname + ', organic'
-        labelOM = solname + ', organometallic'
-        
-        axall.scatter(hyddict[expOR], hyddict[calOR], color=color, marker='x', label=labelOR)
-        axall.scatter(hyddict[expOM], hyddict[calOM], color=color, marker='.', label=labelOM)
     
     #Add labels and legend
     axall.set_title('All Solvents')
@@ -601,16 +666,17 @@ def savedata(PID, sysd, mold, sold):
 
 def main():
     #Ask user to provide level of theory, job type, and name of file containing molecule info
+    project = str(input('Enter molecule class: \n'))
     PID = str(input('Enter level of theory ID: \n'))
     jobtype = str(input('Enter job type: \n'))
     molfile = str(input('Enter name of file containing molecule info: \n'))
     
     #Create dictionaries
-    mold, lvld, sold, sysd = parser(molfile)
+    mold, lvld, sold, sysd = parser(project, molfile)
     
     #If freq analysis done for all spin mults, calculate hydricity, then store data to dat file and plots
     if jobtype == "hydricity":
-        savedata(PID, sysd, mold, sold)
+        savedata(project, PID, sysd, mold, sold)
     
     else:
         for YID in sysd:
