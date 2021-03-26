@@ -7,6 +7,7 @@ import shutil
 from forcebalance.nifty import _exec
 import matplotlib.pyplot as plt
 from matplotlib.patches import Rectangle
+from forcebalance.molecule import Molecule
 
 def parser(project, molfile):
     """
@@ -75,6 +76,17 @@ def parser(project, molfile):
             lvld[label]['dft']=info[1]
             lvld[label]['basis']=info[2]
             lvld[label]['solvmod']=info[3]
+            
+    modd = {}
+    
+    for line in open(os.path.join('keys', 'models.txt')):
+        if line.startswith('D'):
+            info=line.split()
+            label=info[0]
+            modd[label]={}
+            modd[label]['optfreq']=info[1]
+            if len(info)==3:
+                modd[label]['sglpt']=info[2]
 
     sold = {}
             
@@ -110,7 +122,7 @@ def parser(project, molfile):
             sysd[label]['hyd']=info[5]
             sysd[label]['cit']=info[6]
             
-    return mold, lvld, sold, sysd
+    return mold, lvld, sold, sysd, modd
 
 def checkjobstatus(MID,SID,PID,sold,job,donacc,spin):
     """
@@ -122,7 +134,7 @@ def checkjobstatus(MID,SID,PID,sold,job,donacc,spin):
     sold: dict
           Nested dictionary created by parser, contains information about solvents
     job: str
-         type of job to submit, e.g. minimize (optimization), frequencies (frequency analysis), etc.
+         type of job to submit
     donacc: str
             type of structure (donor or acceptor)
     spin: str
@@ -135,19 +147,22 @@ def checkjobstatus(MID,SID,PID,sold,job,donacc,spin):
             -queued: job is queued (running or pending)
             -done: job finished successfully
             -failed: job didn't finish correctly
-            -optinc: user requested frequency analysis when optimization for that molecule is incomplete
+            -optinc: user requested frequency analysis or single point calculation when
+            optimization for that molecule is incomplete
     """
     solname = sold[SID]['sname']
     status = 'DNE'
     username = os.environ.get('USER')
     
     if job == 'minimize':
-        optfreq = 'opt'
+        jobword = 'opt'
     if job == 'frequencies':
-        optfreq = 'freq'
+        jobword = 'freq'
+    if job == 'energy':
+        jobword = 'sglpt'
     
     #String containing the folder path
-    jobdir = os.path.join('molecules', PID, MID, solname, spin, donacc, optfreq)
+    jobdir = os.path.join('molecules', PID, MID, solname, spin, donacc, jobword)
     
     #Check if folder contains running or queued job
     if os.path.exists(os.path.join(jobdir, 'submittedjob.txt')):
@@ -173,21 +188,28 @@ def checkjobstatus(MID,SID,PID,sold,job,donacc,spin):
                 status = 'queued'
             
         if status == 'DNE':
-            if optfreq == 'opt':
+            if jobword == 'opt':
                 if os.path.exists(os.path.join(jobdir, 'end.xyz')):
                     status = 'done'
                 else:
                     status = 'failed'
-            if optfreq == 'freq':
+            if jobword == 'freq':
                 output = _exec('grep Gibbs run.out', cwd=jobdir)
                 line = output[0]
                 if line.startswith('Gibbs'):
                     status = 'done'
                 else:
                     status = 'failed'
+            if jobword == 'sglpt':
+                output = _exec('grep FINAL run.out', cwd = jobdir)
+                line = output[0]
+                if line.startswith('FINAL'):
+                    status = 'done'
+                else:
+                    status = 'failed'
                     
     else:
-        if optfreq == 'freq':
+        if jobword == 'freq' or 'sglpt':
             optdir = os.path.join('molecules', PID, MID, solname, spin, donacc, 'opt')
             if not os.path.exists(os.path.join(optdir, 'end.xyz')):
                 status = 'optinc'
@@ -206,7 +228,7 @@ def submit(MID,SID,PID,mold,lvld,sold,job,donacc,spin):
     mold, lvld, sold: dict
                       Nested dictionaries created by parser
     job: str
-         type of job to submit, e.g. minimize (optimization), frequencies (frequency analysis), etc.
+         type of job to submit
     donacc: str
             type of structure (donor or acceptor)
     spin: str
@@ -220,11 +242,14 @@ def submit(MID,SID,PID,mold,lvld,sold,job,donacc,spin):
         key = "accchg"
         
     if job == "minimize":
-        optfreq = "opt"
-        optorfreq = "na=$(head -1 scr/optim.xyz) && tail -$((na+2)) scr/optim.xyz > end.xyz"
-    else:
-        optfreq = "freq"
-        optorfreq = ""
+        jobword = "opt"
+        ofs = "na=$(head -1 scr/optim.xyz) && tail -$((na+2)) scr/optim.xyz > end.xyz"
+    if job == 'frequencies':
+        jobword = "freq"
+        ofs = ""
+    if job == 'energy':
+        jobword = "sglpt"
+        ofs = ""
     
     solname = sold[SID]['sname']
     dft = lvld[PID]['dft']
@@ -232,7 +257,7 @@ def submit(MID,SID,PID,mold,lvld,sold,job,donacc,spin):
     chg = mold[MID][key]
     dec = sold[SID]['epsilon']
     
-    dirname = os.path.join('molecules', PID, MID, solname, spin, donacc, optfreq)
+    dirname = os.path.join('molecules', PID, MID, solname, spin, donacc, jobword)
     if not os.path.exists(dirname): os.makedirs(dirname)
     optdir = os.path.join('molecules', PID, MID, solname, spin, donacc, 'opt')
     if not os.path.exists(optdir): os.makedirs(optdir)
@@ -293,7 +318,7 @@ export LD_LIBRARY_PATH=$TeraChem/lib:$LD_LIBRARY_PATH
 
 terachem  run.in &> run.out
 
-{optorfreq}
+{ofs}
 """     
     #Write run.in file
     with open(os.path.join(dirname, 'run.in'), 'w') as f:    
@@ -304,9 +329,9 @@ terachem  run.in &> run.out
         shutil.copy(os.path.join('startxyz', "%s-%s.xyz" % (MID, name)), dirname)
         os.rename(os.path.join(optdir, "%s-%s.xyz" % (MID, name)), os.path.join(dirname, "start.xyz"))
     else:
-        #Copy over end.xyz file from opt, rename as start.xyz
-        shutil.copy(os.path.join(optdir, 'end.xyz'), dirname)
-        os.rename(os.path.join(dirname, 'end.xyz'), os.path.join(dirname, 'start.xyz'))
+        #Copy over last frame of optim.xyz from opt, rename as start.xyz
+        M = Molecule(os.path.join(optdir, 'scr', 'optim.xyz'))
+        M[-1].write(os.path.join(dirname, 'start.xyz'))
 
     #Read start.xyz file to check for number of atoms
     startcoord = open(os.path.join(dirname, "start.xyz"), "r")
@@ -325,7 +350,7 @@ terachem  run.in &> run.out
         mem = 32000
     #Write batch.script (doing this so that time limit can be set to 7 days, not 2 days (the default)
     with open(os.path.join(dirname, 'batch.script'), 'w') as g:
-        g.write(batchscriptstr.format(gpus=gpus, mem=mem, MID=MID, optorfreq=optorfreq))
+        g.write(batchscriptstr.format(gpus=gpus, mem=mem, MID=MID, ofs=ofs))
         
     #Submit job
     submit = _exec('sbatch batch.script', cwd=dirname)
@@ -337,16 +362,17 @@ terachem  run.in &> run.out
         h.write(jobnum)
 
 
-def gethyd(MID,SID,PID,mold,sold,donacc):
+def gethyd(MID,SID,DID,mold,sold,modd,donacc):
+    #---get sgl pt seperately---
     """
     Reads run.out file to get the Gibbs free energy of the optimal structure for a molecule.
     
     Parameters
     ----------
-    MID, SID, PID: str
-                   molecule, solvent, and level of theory ID
-    mold, sold: dict
-                nested dictionaries created by parser
+    MID, SID, DID: str
+                   molecule, solvent, and model ID
+    mold, sold, modd: dict
+                      nested dictionaries created by parser
     donacc: str
             type of structure (donor or acceptor)
     
@@ -364,13 +390,28 @@ def gethyd(MID,SID,PID,mold,sold,donacc):
     solname = sold[SID]['sname']
     Edict= {}
 
-    #Loop over all spin multiplicities for the molecule of interest
-    for sm in mold[MID][key]:
-        freqdir = os.path.join('molecules', PID, MID, solname, sm, donacc, 'freq')
-        energy = _exec('grep Gibbs run.out', cwd=freqdir)
-        Gibbs = float(energy[0].split()[-2])
-        #Store to dictionary
-        Edict[sm] = Gibbs
+    if len(modd)==1:
+        PID = modd[DID]['optfreq']
+        #Loop over all spin multiplicities for the molecule of interest
+        for sm in mold[MID][key]:
+            freqdir = os.path.join('molecules', PID, MID, solname, sm, donacc, 'freq')
+            energy = _exec('grep Gibbs run.out', cwd=freqdir)
+            Gibbs = float(energy[0].split()[-2])
+            #Store to dictionary
+            Edict[sm] = Gibbs
+    else:
+        PIDof = modd[DID]['optfreq']
+        PIDsp = modd[DID]['sglpt']
+        for sm in mold[MID][key]:
+            freqdir = os.path.join('molecules', PIDof, MID, solname, sm, donacc, 'freq')
+            sglptdir = os.path.join('molecules', PIDsp, MID, solname, sm, donacc, 'sglpt')
+            freqout = _exec("grep 'Free Energy Correction' run.out", cwd=freqdir)
+            sglptout = _exec('grep FINAL run.out', cwd=sglptdir)
+            freeEcorr = float(freqout[0].split()[-2])
+            finalE = float(sglptout[0].split()[-2]) * 627.509 #convert from AU to kcal/mol
+            Gibbs = freeEcorr + finalE
+            Edict[sm] = Gibbs
+            
     #Search dictionary for spin mult with lowest energy
     minsm = min(Edict, key=Edict.get)
     minG = Edict[minsm]
@@ -383,9 +424,12 @@ def bigbraintime(MID,SID,PID,mold,lvld,sold,jobtype,donacc,spin):
     """
     if jobtype == "minimize":
         name = "Geometry optimization"
-        nextstep = "submit frequency jobs."
+        nextstep = "submit frequency or single point jobs."
     if jobtype == "frequencies":
         name = "Frequency analysis"
+        nextstep = "calculate hydricity."
+    if jobtype == "energy":
+        name = "Single point calculation"
         nextstep = "calculate hydricity."
         
     stat = checkjobstatus(MID,SID,PID,sold,jobtype,donacc,spin)
@@ -441,7 +485,7 @@ def dataanalysis(xlist, ylist, fixedslope):
     
     return Rsquared, RMSE, yint
 
-def savedata(project, PID, sysd, mold, sold):
+def savedata(project, DID, sysd, mold, sold):
     """
     Saves free energy of hydricity half reaction to dat file, vertically shifts data points according to solvent,
     which gives hydricity, and makes plots for each solvent and one plot that includes points for all solvents.
@@ -481,11 +525,11 @@ def savedata(project, PID, sysd, mold, sold):
             hyddict[expOM] = []
         
     #Make directories for data
-    datadir = os.path.join('data', '%s' %PID)
+    datadir = os.path.join('data', '%s' %DID)
     if not os.path.exists(datadir): os.makedirs(datadir)
 
     #Add column titles
-    with open(os.path.join(datadir, 'delG_HHR-%s.dat' % PID), 'w') as f:
+    with open(os.path.join(datadir, 'delG_HHR-%s.dat' % DID), 'w') as f:
         f.write("YID       don chg   don spin  acc chg   acc spin  Calculated Hydricity     Experimental Hydricity\n")
         f.write("---       -------   --------  -------   --------  --------------------     ----------------------\n")
 
@@ -493,12 +537,12 @@ def savedata(project, PID, sysd, mold, sold):
         #Calculate delta G_HHR
         MID = sysd[YID]['molecule']
         SID = sysd[YID]['solvent']
-        donminspn, donfreeE = gethyd(MID,SID,PID,mold,sold,'donor')
-        accminspn, accfreeE = gethyd(MID,SID,PID,mold,sold,'acceptor')
+        donminspn, donfreeE = gethyd(MID,SID,DID,mold,sold,'donor')
+        accminspn, accfreeE = gethyd(MID,SID,DID,mold,sold,'acceptor')
         delG_HHR = accfreeE - donfreeE
             
         #Save results to dat file (YID, donor charge, donor spin, acceptor charge, acceptor spin, free energy of hydricity half reaction)
-        with open(os.path.join(datadir, 'delG_HHR-%s.dat' % PID), 'a+') as f:
+        with open(os.path.join(datadir, 'delG_HHR-%s.dat' % DID), 'a+') as f:
             f.write('{0:10}{1:10}{2:10}{3:10}{4:10}{5:25}{6:25}\n'.format(YID, mold[MID]['donchg'], donminspn, mold[MID]['accchg'], accminspn, str(delG_HHR), sysd[YID]['hyd']))
         
         #Store points to lists accordingly        
@@ -517,7 +561,7 @@ def savedata(project, PID, sysd, mold, sold):
 
 
     #Make directories for plots
-    plotdir = os.path.join('plots', '%s' %PID)
+    plotdir = os.path.join('plots', '%s' %DID)
     if not os.path.exists(plotdir): os.makedirs(plotdir)
     
     #For all molecules: This plot is PURELY for visual purposes
@@ -571,7 +615,7 @@ def savedata(project, PID, sysd, mold, sold):
             
         if project == 'both':
             #Store y-intercepts to dat file.
-            with open(os.path.join(datadir, 'yint-%s-%s.dat' % (PID, solname)), 'w') as g:
+            with open(os.path.join(datadir, 'yint-%s-%s.dat' % (DID, solname)), 'w') as g:
                 g.write('{:20}{:20}{:20}\n{:20}{:20}{:20}'.format("All", "Organic", "Organometallic",\
                         str(yintall), str(yintorg), str(yintorm)))
             
@@ -583,7 +627,7 @@ def savedata(project, PID, sysd, mold, sold):
                 hyddict[calOM].append(HHRdict[calOM][i] - yintall)
         if project == 'organic':
             #Store y-intercepts to dat file.
-            with open(os.path.join(datadir, 'yint-%s-%s.dat' % (PID, solname)), 'w') as g:
+            with open(os.path.join(datadir, 'yint-%s-%s.dat' % (DID, solname)), 'w') as g:
                 g.write(str(yintorg))
             
             #Apply vertical shift and save to hydricity dictionary
@@ -595,7 +639,7 @@ def savedata(project, PID, sysd, mold, sold):
                     hyddict[calOR].append(HHRdict[calOR][i] - yintorg)
         if project == 'organometallic':
             #Store y-intercepts to dat file.
-            with open(os.path.join(datadir, 'yint-%s-%s.dat' % (PID, solname)), 'w') as g:
+            with open(os.path.join(datadir, 'yint-%s-%s.dat' % (DID, solname)), 'w') as g:
                 g.write(str(yintorm))
             
             #Apply vertical shift and save to hydricity dictionary
@@ -649,7 +693,7 @@ def savedata(project, PID, sysd, mold, sold):
             axall.scatter(hyddict[expOM], hyddict[calOM], color=color, label=solname)
         
         #Save plot to pdf
-        figsolv.savefig(os.path.join(plotdir, '%s_%s.pdf' % (PID, solname)))
+        figsolv.savefig(os.path.join(plotdir, '%s_%s.pdf' % (DID, solname)))
     
     #Add labels and legend
     axall.set_title('All Solvents')
@@ -661,24 +705,28 @@ def savedata(project, PID, sysd, mold, sold):
     axall.legend(fontsize=9.8)
     
     #Save plot to pdf
-    figall.savefig(os.path.join(plotdir, '%s_all.pdf' % PID))
+    figall.savefig(os.path.join(plotdir, '%s_all.pdf' % DID))
     
 
 def main():
     #Ask user to provide level of theory, job type, and name of file containing molecule info
     project = str(input('Enter molecule class: \n'))
-    PID = str(input('Enter level of theory ID: \n'))
+    DID = str(input('Enter model ID: \n'))
     jobtype = str(input('Enter job type: \n'))
     molfile = str(input('Enter name of file containing molecule info: \n'))
     
     #Create dictionaries
-    mold, lvld, sold, sysd = parser(project, molfile)
+    mold, lvld, sold, sysd, modd = parser(project, molfile)
     
     #If freq analysis done for all spin mults, calculate hydricity, then store data to dat file and plots
     if jobtype == "hydricity":
-        savedata(project, PID, sysd, mold, sold)
+        savedata(project, DID, sysd, mold, sold)
     
     else:
+        if jobtype == 'minimize' or 'frequencies':
+            PID = modd[DID]['optfreq']
+        else:
+            PID = modd[DID]['sglpt']
         for YID in sysd:
             MID = sysd[YID]['molecule']
             SID = sysd[YID]['solvent']
