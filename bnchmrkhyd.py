@@ -485,7 +485,7 @@ def dataanalysis(xlist, ylist, fixedslope):
     
     return Rsquared, RMSE, yint
 
-def savedata(project, DID, sysd, mold, sold):
+def savedata(project, DID, sysd, mold, sold, modd):
     """
     Saves free energy of hydricity half reaction to dat file, vertically shifts data points according to solvent,
     which gives hydricity, and makes plots for each solvent and one plot that includes points for all solvents.
@@ -537,8 +537,8 @@ def savedata(project, DID, sysd, mold, sold):
         #Calculate delta G_HHR
         MID = sysd[YID]['molecule']
         SID = sysd[YID]['solvent']
-        donminspn, donfreeE = gethyd(MID,SID,DID,mold,sold,'donor')
-        accminspn, accfreeE = gethyd(MID,SID,DID,mold,sold,'acceptor')
+        donminspn, donfreeE = gethyd(MID,SID,DID,mold,sold,modd,'donor')
+        accminspn, accfreeE = gethyd(MID,SID,DID,mold,sold,modd,'acceptor')
         delG_HHR = accfreeE - donfreeE
             
         #Save results to dat file (YID, donor charge, donor spin, acceptor charge, acceptor spin, free energy of hydricity half reaction)
@@ -720,7 +720,7 @@ def main():
     
     #If freq analysis done for all spin mults, calculate hydricity, then store data to dat file and plots
     if jobtype == "hydricity":
-        savedata(project, DID, sysd, mold, sold)
+        savedata(project, DID, sysd, mold, sold, modd)
     
     else:
         if jobtype == 'minimize' or 'frequencies':
