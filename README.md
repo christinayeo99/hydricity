@@ -8,6 +8,7 @@ This code will loop through all "systems" (combination of solute and solvent) fo
 * Calculate hydricities from output files
 * Store results to a dat file
 * Make scatter plots with a linear trendline
+
 A model may use one or two different levels of theory. If it uses one, it just does geometry optimization and frequency analysis using that level of theory. If it uses two, the less expensive level of theory is used for geometry optimization and frequency analysis, and the more expensive level of theory is used for the single point energy calculation.
 
 ## Organization
