@@ -121,10 +121,11 @@ def parser(project, molfile):
             sysd[label]['solvent']=info[3]
             sysd[label]['hyd']=info[5]
             sysd[label]['cit']=info[6]
+    IPython.embed()
             
     return mold, lvld, sold, sysd, modd
 
-def checkjobstatus(MID,SID,PID,sold,job,donacc,spin):
+def checkjobstatus(MID,SID,PIDof,PIDsp,sold,job,donacc,spin):
     """
     Checks for prerequisites that need to be met before a job can be submitted.
     Parameters
@@ -156,10 +157,13 @@ def checkjobstatus(MID,SID,PID,sold,job,donacc,spin):
     
     if job == 'minimize':
         jobword = 'opt'
+        PID=PIDof
     if job == 'frequencies':
         jobword = 'freq'
+        PID=PIDof
     if job == 'energy':
-        jobword = 'sglpt'
+        jobword = 'sglpt_fr_%s' % PIDof
+        PID=PIDsp
     
     #String containing the folder path
     jobdir = os.path.join('molecules', PID, MID, solname, spin, donacc, jobword)
@@ -186,7 +190,8 @@ def checkjobstatus(MID,SID,PID,sold,job,donacc,spin):
         for i in range(len(jqlist)):
             if jqlist[i] == jobID:
                 status = 'queued'
-            
+        
+        #Job not queued but was submitted
         if status == 'DNE':
             if jobword == 'opt':
                 if os.path.exists(os.path.join(jobdir, 'end.xyz')):
@@ -200,24 +205,25 @@ def checkjobstatus(MID,SID,PID,sold,job,donacc,spin):
                     status = 'done'
                 else:
                     status = 'failed'
-            if jobword == 'sglpt':
+            if job == 'energy':
                 output = _exec('grep FINAL run.out', cwd = jobdir)
                 line = output[0]
                 if line.startswith('FINAL'):
                     status = 'done'
                 else:
                     status = 'failed'
-                    
+          
+    #Nothing's been submitted yet
     else:
-        if jobword == 'freq' or 'sglpt':
-            optdir = os.path.join('molecules', PID, MID, solname, spin, donacc, 'opt')
+        optdir = os.path.join('molecules', PIDof, MID, solname, spin, donacc, 'opt')
+        if jobword != 'opt':
             if not os.path.exists(os.path.join(optdir, 'end.xyz')):
                 status = 'optinc'
         
     return status
 
                 
-def submit(MID,SID,PID,mold,lvld,sold,job,donacc,spin):
+def submit(MID,SID,PIDof,PIDsp,mold,lvld,sold,job,donacc,spin):
     """
     Creates necessary files then submits a TeraChem calculation job.
     
@@ -244,12 +250,15 @@ def submit(MID,SID,PID,mold,lvld,sold,job,donacc,spin):
     if job == "minimize":
         jobword = "opt"
         ofs = "na=$(head -1 scr/optim.xyz) && tail -$((na+2)) scr/optim.xyz > end.xyz"
+        PID=PIDof
     if job == 'frequencies':
         jobword = "freq"
         ofs = ""
+        PID=PIDof
     if job == 'energy':
-        jobword = "sglpt"
+        jobword = 'sglpt_fr_%s' % PIDof
         ofs = ""
+        PID=PIDsp
     
     solname = sold[SID]['sname']
     dft = lvld[PID]['dft']
@@ -259,7 +268,7 @@ def submit(MID,SID,PID,mold,lvld,sold,job,donacc,spin):
     
     dirname = os.path.join('molecules', PID, MID, solname, spin, donacc, jobword)
     if not os.path.exists(dirname): os.makedirs(dirname)
-    optdir = os.path.join('molecules', PID, MID, solname, spin, donacc, 'opt')
+    optdir = os.path.join('molecules', PIDof, MID, solname, spin, donacc, 'opt')
     if not os.path.exists(optdir): os.makedirs(optdir)
     
     #What to write if solvent model is PCM
@@ -302,7 +311,7 @@ min_converge_dmax 1.8e-4
 #SBATCH --gres=gpu:{gpus}
 #SBATCH --mem={mem}
 #SBATCH -J {MID}
-#SBATCH -t 7-00:00:00
+#SBATCH -t 3-00:00:00
 
 #SBATCH --no-requeue
 
@@ -390,7 +399,7 @@ def gethyd(MID,SID,DID,mold,sold,modd,donacc):
     solname = sold[SID]['sname']
     Edict= {}
 
-    if len(modd)==1:
+    if len(modd[DID])==1:
         PID = modd[DID]['optfreq']
         #Loop over all spin multiplicities for the molecule of interest
         for sm in mold[MID][key]:
@@ -402,9 +411,10 @@ def gethyd(MID,SID,DID,mold,sold,modd,donacc):
     else:
         PIDof = modd[DID]['optfreq']
         PIDsp = modd[DID]['sglpt']
+        sglptname = 'sglpt_fr_%s' % PIDof
         for sm in mold[MID][key]:
             freqdir = os.path.join('molecules', PIDof, MID, solname, sm, donacc, 'freq')
-            sglptdir = os.path.join('molecules', PIDsp, MID, solname, sm, donacc, 'sglpt')
+            sglptdir = os.path.join('molecules', PIDsp, MID, solname, sm, donacc, sglptname)
             freqout = _exec("grep 'Free Energy Correction' run.out", cwd=freqdir)
             sglptout = _exec('grep FINAL run.out', cwd=sglptdir)
             freeEcorr = float(freqout[0].split()[-2])
@@ -418,7 +428,7 @@ def gethyd(MID,SID,DID,mold,sold,modd,donacc):
     
     return minsm, minG
 
-def bigbraintime(MID,SID,PID,mold,lvld,sold,jobtype,donacc,spin):
+def bigbraintime(MID,SID,PIDof,PIDsp,mold,lvld,sold,jobtype,donacc,spin):
     """
     Decides what to do based on job status
     """
@@ -432,10 +442,10 @@ def bigbraintime(MID,SID,PID,mold,lvld,sold,jobtype,donacc,spin):
         name = "Single point calculation"
         nextstep = "calculate hydricity."
         
-    stat = checkjobstatus(MID,SID,PID,sold,jobtype,donacc,spin)
+    stat = checkjobstatus(MID,SID,PIDof,PIDsp,sold,jobtype,donacc,spin)
     
     if stat == "DNE":
-        submit(MID,SID,PID,mold,lvld,sold,jobtype,donacc,spin)
+        submit(MID,SID,PIDof,PIDsp,mold,lvld,sold,jobtype,donacc,spin)
     if stat == "queued":
         print("%s for %s %s already queued." % (name, MID, donacc))
     if stat == "failed":
@@ -723,19 +733,21 @@ def main():
         savedata(project, DID, sysd, mold, sold, modd)
     
     else:
-        if jobtype == 'minimize' or 'frequencies':
-            PID = modd[DID]['optfreq']
+        PIDof = modd[DID]['optfreq']
+        if len(modd[DID])>1:
+            PIDsp = modd[DID]['sglpt']
         else:
-            PID = modd[DID]['sglpt']
+            PIDsp = PIDof
+            
         for YID in sysd:
             MID = sysd[YID]['molecule']
             SID = sysd[YID]['solvent']
             #Using spin mults as key since number of files to be created depends on number of possible spin mults
             for key in mold[MID]['donspn']:
-                bigbraintime(MID,SID,PID,mold,lvld,sold,jobtype,'donor',key)
+                bigbraintime(MID,SID,PIDof,PIDsp,mold,lvld,sold,jobtype,'donor',key)
             #Same thing for acceptor structures
             for key in mold[MID]['accspn']:
-                bigbraintime(MID,SID,PID,mold,lvld,sold,jobtype,'acceptor',key)
+                bigbraintime(MID,SID,PIDof,PIDsp,mold,lvld,sold,jobtype,'acceptor',key)
 
 if __name__ == "__main__":
     main()
