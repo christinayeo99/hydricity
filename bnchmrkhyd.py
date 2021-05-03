@@ -121,7 +121,6 @@ def parser(project, molfile):
             sysd[label]['solvent']=info[3]
             sysd[label]['hyd']=info[5]
             sysd[label]['cit']=info[6]
-    IPython.embed()
             
     return mold, lvld, sold, sysd, modd
 
@@ -312,6 +311,7 @@ min_converge_dmax 1.8e-4
 #SBATCH --mem={mem}
 #SBATCH -J {MID}
 #SBATCH -t 3-00:00:00
+#SBATCH --exclude=g7-20
 
 #SBATCH --no-requeue
 
