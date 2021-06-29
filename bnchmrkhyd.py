@@ -311,7 +311,6 @@ min_converge_dmax 1.8e-4
 #SBATCH --mem={mem}
 #SBATCH -J {MID}
 #SBATCH -t 3-00:00:00
-#SBATCH --exclude=g7-20
 
 #SBATCH --no-requeue
 
@@ -544,30 +543,33 @@ def savedata(project, DID, sysd, mold, sold, modd):
         f.write("---       -------   --------  -------   --------  --------------------     ----------------------\n")
 
     for YID in sysd:
-        #Calculate delta G_HHR
-        MID = sysd[YID]['molecule']
-        SID = sysd[YID]['solvent']
-        donminspn, donfreeE = gethyd(MID,SID,DID,mold,sold,modd,'donor')
-        accminspn, accfreeE = gethyd(MID,SID,DID,mold,sold,modd,'acceptor')
-        delG_HHR = accfreeE - donfreeE
+        try:
+            #Calculate delta G_HHR
+            MID = sysd[YID]['molecule']
+            SID = sysd[YID]['solvent']
+            donminspn, donfreeE = gethyd(MID,SID,DID,mold,sold,modd,'donor')
+            accminspn, accfreeE = gethyd(MID,SID,DID,mold,sold,modd,'acceptor')
+            delG_HHR = accfreeE - donfreeE
+                
+            #Save results to dat file (YID, donor charge, donor spin, acceptor charge, acceptor spin, free energy of hydricity half reaction)
+            with open(os.path.join(datadir, 'delG_HHR-%s.dat' % DID), 'a+') as f:
+                f.write('{0:10}{1:10}{2:10}{3:10}{4:10}{5:25}{6:25}\n'.format(YID, mold[MID]['donchg'], donminspn, mold[MID]['accchg'], accminspn, str(delG_HHR), sysd[YID]['hyd']))
             
-        #Save results to dat file (YID, donor charge, donor spin, acceptor charge, acceptor spin, free energy of hydricity half reaction)
-        with open(os.path.join(datadir, 'delG_HHR-%s.dat' % DID), 'a+') as f:
-            f.write('{0:10}{1:10}{2:10}{3:10}{4:10}{5:25}{6:25}\n'.format(YID, mold[MID]['donchg'], donminspn, mold[MID]['accchg'], accminspn, str(delG_HHR), sysd[YID]['hyd']))
-        
-        #Store points to lists accordingly        
-        if doorg == True:
-            if mold[MID]['type'] == 'OR':
-                calOR = "cal_%s_OR" % sold[SID]['sname']
-                expOR = "exp_%s_OR" % sold[SID]['sname']
-                HHRdict[calOR].append(delG_HHR)
-                hyddict[expOR].append(float(sysd[YID]['hyd']))
-        if doorm == True:
-            if mold[MID]['type'] == 'OM':
-                calOM = "cal_%s_OM" % sold[SID]['sname']
-                expOM = "exp_%s_OM" % sold[SID]['sname']
-                HHRdict[calOM].append(delG_HHR)
-                hyddict[expOM].append(float(sysd[YID]['hyd']))
+            #Store points to lists accordingly        
+            if doorg == True:
+                if mold[MID]['type'] == 'OR':
+                    calOR = "cal_%s_OR" % sold[SID]['sname']
+                    expOR = "exp_%s_OR" % sold[SID]['sname']
+                    HHRdict[calOR].append(delG_HHR)
+                    hyddict[expOR].append(float(sysd[YID]['hyd']))
+            if doorm == True:
+                if mold[MID]['type'] == 'OM':
+                    calOM = "cal_%s_OM" % sold[SID]['sname']
+                    expOM = "exp_%s_OM" % sold[SID]['sname']
+                    HHRdict[calOM].append(delG_HHR)
+                    hyddict[expOM].append(float(sysd[YID]['hyd']))
+        except:
+            print("Calculation failed, check %s" %MID)
 
 
     #Make directories for plots
@@ -723,7 +725,7 @@ def main():
     project = str(input('Enter molecule class: \n'))
     DID = str(input('Enter model ID: \n'))
     jobtype = str(input('Enter job type: \n'))
-    molfile = str(input('Enter name of file containing molecule info: \n'))
+    molfile = "keys/molecules.txt" #str(input('Enter name of file containing molecule info: \n'))
     
     #Create dictionaries
     mold, lvld, sold, sysd, modd = parser(project, molfile)
