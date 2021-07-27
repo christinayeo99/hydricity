@@ -261,6 +261,14 @@ def submit(MID,SID,PIDof,PIDsp,mold,lvld,sold,job,donacc,spin):
     
     solname = sold[SID]['sname']
     dft = lvld[PID]['dft']
+    if dft == "ub3lyp":
+        dft = "b3lyp"
+        unr = "unrestricted          true"
+    if dft == "ubp86":
+        dft = "bp86"
+        unr = "unrestricted          true"
+    else:
+        unr = ""
     basis = lvld[PID]['basis']
     chg = mold[MID][key]
     dec = sold[SID]['epsilon']
@@ -270,15 +278,128 @@ def submit(MID,SID,PIDof,PIDsp,mold,lvld,sold,job,donacc,spin):
     optdir = os.path.join('molecules', PIDof, MID, solname, spin, donacc, 'opt')
     if not os.path.exists(optdir): os.makedirs(optdir)
     
-    #What to write if solvent model is PCM
-    if lvld[PID]['solvmod'] == 'pcm':
-        pcmorgas = "pcm cosmo\nepsilon %s" % dec
-    #What to write if using "gas phase"
-    if lvld[PID]['solvmod'] == 'gas':
-        pcmorgas = ""
-    
-    #String that will be written in to the run.in file
-    runinstr = """\
+    #QChem
+    if lvld[PID]['solvmod'] == 'smd':
+      
+        #String that will be written in to the run.in file
+        qcinstr = """\
+$molecule
+{chg} {spin}
+{coords}
+$end
+
+$rem
+jobtype               sp
+method                {dft}
+basis                 gen
+symmetry              off
+sym_ignore            true
+{unr}
+incdft                false
+incfock               0
+scf_convergence       8
+thresh                14
+max_scf_cycles        200
+solvent_method        smd
+$end
+
+$smx
+solvent               {solname}
+$end
+
+$basis
+{coeffs}
+$end
+"""
+            
+        #String that will be written in to the batch.script file
+        batchscriptstr = """\
+#!/bin/bash -l
+#SBATCH -p med
+#SBATCH -N 1
+#SBATCH -n {cpus}
+#SBATCH -c 2
+#SBATCH --gres=gpu:0
+#SBATCH --mem={mem}
+#SBATCH -J {MID}
+#SBATCH -t 7-00:00:00
+
+#SBATCH --no-requeue
+
+
+# Record job info
+echo -e "$SLURM_JOB_ID  $HOSTNAME  $(pwd)" >> ~/.myslurmhistory
+
+export QC=/home/leeping/opt/qchem/5.1.1-openmp
+export PATH=$QC/bin:$PATH
+mkdir -p /scratch/cyeo99/$SLURM_JOB_ID
+export QCLOCALSCR=/scratch/cyeo99/$SLURM_JOB_ID
+export QCSCRATCH=.
+
+
+qchem  -nt 4  qc.in qc.out
+
+rm -r /scratch/cyeo99/$SLURM_JOB_ID
+"""     
+        #Write qc.in file
+        if job == "minimize":
+            startcoord = open(os.path.join('startxyz', "%s-%s.xyz" % (MID, name)), "r")
+        else:
+            startcoord = open(os.path.join(optdir, "end.xyz"), "r")
+        coords = list(startcoord.readlines())[2:]
+        coords = ''.join(coords)
+        atomnum = int(list(startcoord.readlines())[0].split()[0])
+        startcoord.close()
+        
+        #GET BASIS SET COEFFS
+        if basis == "6-31gs_ldz":
+            basisloc = os.path.join('molecules', "P01", MID, solname, spin, donacc, "opt", "scr", "start.basis")
+        if basis == "tzvp_ltz":
+            basisloc = os.path.join('molecules', "P02", MID, solname, spin, donacc, "opt", "scr", "start.basis")
+        if basis == "6-31gs_ldz":
+            basisloc = os.path.join('molecules', "P08", MID, solname, spin, donacc, "sglpt_fr_P02", "scr", "start.basis")
+        basisfile = open(basisloc, "r")
+        startbasis = list(basisfile.readlines())
+        del startbasis[:3]
+        for i in range(len(startbasis)):
+            if "ATOM" in startbasis[i]:
+                atomstr = startbasis[i].split()
+                startbasis[i] = atomstr[-1] + " 0\n"
+            if "S" or "P" or "D" or "F" in startbasis[i]:
+                startbasis[i] = startbasis[i].replace("\n", " 1.0\n")
+            if startbasis[i] == "\n":
+                startbasis[i] = startbasis[i].replace("\n", "****\n")
+        coeffs = ''.join(startbasis)
+        basisfile.close()
+        
+        with open(os.path.join(dirname, 'qc.in'), 'w') as f:    
+            f.write(qcinstr.format(unr=unr,chg=chg,spin=spin,coords=coords,dft=dft,solname=solname,coeffs=coeffs))
+
+        #Depending on the number of atoms, set the number of CPUs and mem
+        if atomnum < 30:
+            cpus = 1
+            mem = 8000
+        if 30 <= atomnum < 50:
+            cpus = 2
+            mem = 16000
+        if atomnum >= 50:
+            cpus = 4
+            mem = 32000
+        #Write batch.script (doing this so that time limit can be set to 7 days, not 2 days (the default)
+        with open(os.path.join(dirname, 'batch.script'), 'w') as g:
+            g.write(batchscriptstr.format(mem=mem,MID=MID,cpus=cpus))
+        
+    #TeraChem
+    else:
+        #What to write if solvent model is PCM
+        if lvld[PID]['solvmod'] == 'pcm':
+            pcmorgas = "pcm cosmo\nepsilon %s" % dec
+        #What to write if using "gas phase"
+        if lvld[PID]['solvmod'] == 'gas':
+            pcmorgas = ""
+      
+        #String that will be written in to the run.in file
+        runinstr = """\
 run {job}
 method {dft}
 dispersion yes
@@ -299,9 +420,9 @@ min_converge_gmax 4.5e-5
 min_converge_drms 1.2e-4
 min_converge_dmax 1.8e-4
 """
-        
-    #String that will be written in to the batch.script file
-    batchscriptstr = """\
+            
+        #String that will be written in to the batch.script file
+        batchscriptstr = """\
 #!/bin/bash -l
 #SBATCH -p gpu
 #SBATCH -N 1
@@ -310,7 +431,7 @@ min_converge_dmax 1.8e-4
 #SBATCH --gres=gpu:{gpus}
 #SBATCH --mem={mem}
 #SBATCH -J {MID}
-#SBATCH -t 3-00:00:00
+#SBATCH -t 7-00:00:00
 
 #SBATCH --no-requeue
 
@@ -322,44 +443,44 @@ export CUDA_CACHE_PATH=/scratch/$USER/.nv/ComputeCache
 export TeraChem=/home/leeping/opt/terachem/current
 export PATH=$TeraChem/bin:$PATH
 export LD_LIBRARY_PATH=$TeraChem/lib:$LD_LIBRARY_PATH
-
-
+    
+    
 terachem  run.in &> run.out
 
 {ofs}
 """     
-    #Write run.in file
-    with open(os.path.join(dirname, 'run.in'), 'w') as f:    
-        f.write(runinstr.format(job=job, dft=dft, basis=basis, chg=chg, spin=spin, pcmorgas=pcmorgas))
-        
-    if job == "minimize":
-        #Copy over starting structure and rename as start.xyz     
-        shutil.copy(os.path.join('startxyz', "%s-%s.xyz" % (MID, name)), dirname)
-        os.rename(os.path.join(optdir, "%s-%s.xyz" % (MID, name)), os.path.join(dirname, "start.xyz"))
-    else:
-        #Copy over last frame of optim.xyz from opt, rename as start.xyz
-        M = Molecule(os.path.join(optdir, 'scr', 'optim.xyz'))
-        M[-1].write(os.path.join(dirname, 'start.xyz'))
-
-    #Read start.xyz file to check for number of atoms
-    startcoord = open(os.path.join(dirname, "start.xyz"), "r")
-    #Turn the first word of the first line into an integer
-    atomnum = int(list(startcoord.readlines())[0].split()[0])
-    startcoord.close()
-    #Depending on the number of atoms, set the number of GPUs to either 1, 2, or 4.
-    if atomnum < 30:
-        gpus = 1
-        mem = 8000
-    if 30 <= atomnum < 50:
-        gpus = 2
-        mem = 16000
-    if atomnum >= 50:
-        gpus = 4
-        mem = 32000
-    #Write batch.script (doing this so that time limit can be set to 7 days, not 2 days (the default)
-    with open(os.path.join(dirname, 'batch.script'), 'w') as g:
-        g.write(batchscriptstr.format(gpus=gpus, mem=mem, MID=MID, ofs=ofs))
-        
+        #Write run.in file
+        with open(os.path.join(dirname, 'run.in'), 'w') as f:    
+            f.write(runinstr.format(job=job, dft=dft, basis=basis, chg=chg, spin=spin, pcmorgas=pcmorgas))
+            
+        if job == "minimize":
+            #Copy over starting structure and rename as start.xyz     
+            shutil.copy(os.path.join('startxyz', "%s-%s.xyz" % (MID, name)), dirname)
+            os.rename(os.path.join(optdir, "%s-%s.xyz" % (MID, name)), os.path.join(dirname, "start.xyz"))
+        else:
+            #Copy over last frame of optim.xyz from opt, rename as start.xyz
+            M = Molecule(os.path.join(optdir, 'scr', 'optim.xyz'))
+            M[-1].write(os.path.join(dirname, 'start.xyz'))
+    
+        #Read start.xyz file to check for number of atoms
+        startcoord = open(os.path.join(dirname, "start.xyz"), "r")
+        #Turn the first word of the first line into an integer
+        atomnum = int(list(startcoord.readlines())[0].split()[0])
+        startcoord.close()
+        #Depending on the number of atoms, set the number of GPUs to either 1, 2, or 4.
+        if atomnum < 30:
+            gpus = 1
+            mem = 8000
+        if 30 <= atomnum < 50:
+            gpus = 2
+            mem = 16000
+        if atomnum >= 50:
+            gpus = 4
+            mem = 32000
+        #Write batch.script (doing this so that time limit can be set to 7 days, not 2 days (the default)
+        with open(os.path.join(dirname, 'batch.script'), 'w') as g:
+            g.write(batchscriptstr.format(gpus=gpus, mem=mem, MID=MID, ofs=ofs))
+      
     #Submit job
     submit = _exec('sbatch batch.script', cwd=dirname)
     submitstring = submit[0]
@@ -725,7 +846,7 @@ def main():
     project = str(input('Enter molecule class: \n'))
     DID = str(input('Enter model ID: \n'))
     jobtype = str(input('Enter job type: \n'))
-    molfile = "keys/molecules.txt" #str(input('Enter name of file containing molecule info: \n'))
+    molfile = os.path.join("keys", "molecules.txt")
     
     #Create dictionaries
     mold, lvld, sold, sysd, modd = parser(project, molfile)
