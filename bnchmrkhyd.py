@@ -346,9 +346,10 @@ rm -r /scratch/cyeo99/$SLURM_JOB_ID
             startcoord = open(os.path.join('startxyz', "%s-%s.xyz" % (MID, name)), "r")
         else:
             startcoord = open(os.path.join(optdir, "end.xyz"), "r")
-        coords = list(startcoord.readlines())[2:]
+        coordlist = list(startcoord.readlines())
+        atomnum = int(coordlist[0].replace("\n", ""))
+        coords = coordlist[2:]
         coords = ''.join(coords)
-        atomnum = int(list(startcoord.readlines())[0].split()[0])
         startcoord.close()
         
         #GET BASIS SET COEFFS
