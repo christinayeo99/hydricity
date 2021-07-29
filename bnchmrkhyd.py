@@ -363,13 +363,19 @@ rm -r /scratch/cyeo99/$SLURM_JOB_ID
         startbasis = list(basisfile.readlines())
         del startbasis[:3]
         for i in range(len(startbasis)):
-            if "ATOM" in startbasis[i]:
+            if startbasis[i].startswith("ATOM"):
                 atomstr = startbasis[i].split()
                 startbasis[i] = atomstr[-1] + " 0\n"
-            if "S" or "P" or "D" or "F" in startbasis[i]:
+            if startbasis[i].startswith("S"):
+                startbasis[i] = startbasis[i].replace("\n", " 1.0\n")
+            if startbasis[i].startswith("P"):
+                startbasis[i] = startbasis[i].replace("\n", " 1.0\n")
+            if startbasis[i].startswith("D"):
+                startbasis[i] = startbasis[i].replace("\n", " 1.0\n")
+            if startbasis[i].startswith("F"):
                 startbasis[i] = startbasis[i].replace("\n", " 1.0\n")
             if startbasis[i] == "\n":
-                startbasis[i] = startbasis[i].replace("\n", "****\n")
+                startbasis[i] = startbasis[i].replace("\n", "****\n\n")
         coeffs = ''.join(startbasis)
         basisfile.close()
         
