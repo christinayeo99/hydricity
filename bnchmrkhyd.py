@@ -498,7 +498,7 @@ terachem  run.in &> run.out
         h.write(jobnum)
 
 
-def gethyd(MID,SID,DID,mold,sold,modd,donacc):
+def gethyd(MID,SID,DID,mold,sold,modd,lvld,donacc):
     #---get sgl pt seperately---
     """
     Reads run.out file to get the Gibbs free energy of the optimal structure for a molecule.
@@ -543,7 +543,10 @@ def gethyd(MID,SID,DID,mold,sold,modd,donacc):
             freqdir = os.path.join('molecules', PIDof, MID, solname, sm, donacc, 'freq')
             sglptdir = os.path.join('molecules', PIDsp, MID, solname, sm, donacc, sglptname)
             freqout = _exec("grep 'Free Energy Correction' run.out", cwd=freqdir)
-            sglptout = _exec('grep FINAL run.out', cwd=sglptdir)
+            if lvld[PIDsp]['solvmod'] == 'smd':
+                sglptout = _exec("grep '(6)  G-S(liq) free energy of system' qc.out", cwd=sglptdir)
+            else:
+                sglptout = _exec('grep FINAL run.out', cwd=sglptdir)
             freeEcorr = float(freqout[0].split()[-2])
             finalE = float(sglptout[0].split()[-2]) * 627.509 #convert from AU to kcal/mol
             Gibbs = freeEcorr + finalE
@@ -622,7 +625,7 @@ def dataanalysis(xlist, ylist, fixedslope):
     
     return Rsquared, RMSE, yint
 
-def savedata(project, DID, sysd, mold, sold, modd):
+def savedata(project, DID, sysd, mold, sold, modd,lvld):
     """
     Saves free energy of hydricity half reaction to dat file, vertically shifts data points according to solvent,
     which gives hydricity, and makes plots for each solvent and one plot that includes points for all solvents.
@@ -675,8 +678,8 @@ def savedata(project, DID, sysd, mold, sold, modd):
             #Calculate delta G_HHR
             MID = sysd[YID]['molecule']
             SID = sysd[YID]['solvent']
-            donminspn, donfreeE = gethyd(MID,SID,DID,mold,sold,modd,'donor')
-            accminspn, accfreeE = gethyd(MID,SID,DID,mold,sold,modd,'acceptor')
+            donminspn, donfreeE = gethyd(MID,SID,DID,mold,sold,modd,lvld,'donor')
+            accminspn, accfreeE = gethyd(MID,SID,DID,mold,sold,modd,lvld,'acceptor')
             delG_HHR = accfreeE - donfreeE
                 
             #Save results to dat file (YID, donor charge, donor spin, acceptor charge, acceptor spin, free energy of hydricity half reaction)
@@ -860,7 +863,7 @@ def main():
     
     #If freq analysis done for all spin mults, calculate hydricity, then store data to dat file and plots
     if jobtype == "hydricity":
-        savedata(project, DID, sysd, mold, sold, modd)
+        savedata(project, DID, sysd, mold, sold, modd, lvld)
     
     else:
         PIDof = modd[DID]['optfreq']
