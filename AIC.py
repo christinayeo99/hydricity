@@ -73,3 +73,5 @@ with open(os.path.join("data", "AIC_%s.dat" % solname), "w") as f:
         with open(os.path.join("data", "AIC_%s.dat" % solname), 'a+') as f:
             f.write('{0:<10}{1:<24}{2:<24}\n'.format(modelID[i], AICdict[modelID[i]], relprobdict[modelID[i]]))
             
+
+#test for PAT
