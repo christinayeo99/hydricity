@@ -55,7 +55,6 @@ for k in range(len(modelID)):
     maxindex = lnLlist.index(maxlnL)
     
     unc = unclist[maxindex]
-    IPython.embed()
     print("Final uncertainty: ", unc, "\nIndex # (out of %s): " % len(unclist), maxindex, "\n")
     
     AIC = -2*maxlnL + 2*K + (2*K*(K+1))/(len(calHHR)-K-1)
@@ -71,6 +70,6 @@ with open(os.path.join("data", "AIC_%s.dat" % solname), "w") as f:
     f.write("MID       AIC                     exp((AIC_min - AIC_i)/2)\n")
     f.write("---       ---                     ------------------------\n")
     for i in range(len(modelID)):
-        with open(os.path.join("data", "AIC_%s" % solname), 'a+') as f:
-            f.write('{0:10}{1:24}{2:24}\n'.format(modelID[i], AICdict[modelID[i]], relprobdict[modelID[i]]))
+        with open(os.path.join("data", "AIC_%s.dat" % solname), 'a+') as f:
+            f.write('{0:<10}{1:<24}{2:<24}\n'.format(modelID[i], AICdict[modelID[i]], relprobdict[modelID[i]]))
             
