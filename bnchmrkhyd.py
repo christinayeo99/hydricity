@@ -291,7 +291,7 @@ $end
 $rem
 jobtype               sp
 method                {dft}
-basis                 gen
+basis                 mixed
 symmetry              off
 sym_ignore            true
 {unr}
@@ -365,7 +365,7 @@ rm -r /scratch/cyeo99/$SLURM_JOB_ID
         for i in range(len(startbasis)):
             if startbasis[i].startswith("ATOM"):
                 atomstr = startbasis[i].split()
-                startbasis[i] = atomstr[-1] + " 0\n"
+                startbasis[i] = atomstr[-1] + "  " + atomstr[1].replace(":", "") + "\n"
             if startbasis[i].startswith("S"):
                 startbasis[i] = startbasis[i].replace("\n", " 1.0\n")
             if startbasis[i].startswith("P"):
@@ -375,7 +375,7 @@ rm -r /scratch/cyeo99/$SLURM_JOB_ID
             if startbasis[i].startswith("F"):
                 startbasis[i] = startbasis[i].replace("\n", " 1.0\n")
             if startbasis[i] == "\n":
-                startbasis[i] = startbasis[i].replace("\n", "****\n\n")
+                startbasis[i] = "****\n"
         coeffs = ''.join(startbasis)
         basisfile.close()
         
