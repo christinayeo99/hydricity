@@ -124,7 +124,7 @@ def parser(project, molfile):
             
     return mold, lvld, sold, sysd, modd
 
-def checkjobstatus(MID,SID,PIDof,PIDsp,sold,job,donacc,spin):
+def checkjobstatus(MID,SID,PIDof,PIDsp,sold,lvld,job,donacc,spin):
     """
     Checks for prerequisites that need to be met before a job can be submitted.
     Parameters
@@ -205,13 +205,25 @@ def checkjobstatus(MID,SID,PIDof,PIDsp,sold,job,donacc,spin):
                 else:
                     status = 'failed'
             if job == 'energy':
-                output = _exec('grep FINAL run.out', cwd = jobdir)
-                line = output[0]
-                if line.startswith('FINAL'):
-                    status = 'done'
+                if lvld[PIDsp]['solvmod'] == 'smd':
+                    try:
+                        output = _exec("grep '(6)  G-S(liq) free energy of system' qc.out", cwd=jobdir)
+                        line = output[0]
+                        if line.startswith('(6)  G-S(liq) free energy of system'):
+                            status = 'done'
+                        else:
+                            status = 'failed'
+                    except:
+                        status = 'failed'
                 else:
-                    status = 'failed'
-          
+                    output = _exec('grep FINAL run.out', cwd = jobdir)
+                    line = output[0]
+                    if line.startswith('FINAL'):
+                        status = 'done'
+                    else:
+                        status = 'failed'
+                    
+                    
     #Nothing's been submitted yet
     else:
         optdir = os.path.join('molecules', PIDof, MID, solname, spin, donacc, 'opt')
@@ -320,6 +332,7 @@ $end
 #SBATCH -n {cpus}
 #SBATCH -c 2
 #SBATCH --gres=gpu:0
+#SBATCH --exclude=g6-22
 #SBATCH --mem={mem}
 #SBATCH -J {MID}
 #SBATCH -t 7-00:00:00
@@ -367,13 +380,16 @@ rm -r /scratch/cyeo99/$SLURM_JOB_ID
                 atomstr = startbasis[i].split()
                 startbasis[i] = atomstr[-1] + "  " + atomstr[1].replace(":", "") + "\n"
             if startbasis[i].startswith("S"):
-                startbasis[i] = startbasis[i].replace("\n", " 1.0\n")
+                if not startbasis[i+1].startswith("S"):
+                    startbasis[i] = startbasis[i].replace("\n", " 1.0\n")
             if startbasis[i].startswith("P"):
-                startbasis[i] = startbasis[i].replace("\n", " 1.0\n")
+                if not startbasis[i+1].startswith("S"):
+                    startbasis[i] = startbasis[i].replace("\n", " 1.0\n")
             if startbasis[i].startswith("D"):
                 startbasis[i] = startbasis[i].replace("\n", " 1.0\n")
             if startbasis[i].startswith("F"):
-                startbasis[i] = startbasis[i].replace("\n", " 1.0\n")
+                if not startbasis[i+1].startswith("S"):
+                    startbasis[i] = startbasis[i].replace("\n", " 1.0\n")
             if startbasis[i] == "\n":
                 startbasis[i] = "****\n"
         coeffs = ''.join(startbasis)
@@ -436,6 +452,7 @@ min_converge_dmax 1.8e-4
 #SBATCH -n {gpus}
 #SBATCH -c 2
 #SBATCH --gres=gpu:{gpus}
+#SBATCH --exclude=g6-22
 #SBATCH --mem={mem}
 #SBATCH -J {MID}
 #SBATCH -t 7-00:00:00
@@ -544,7 +561,10 @@ def gethyd(MID,SID,DID,mold,sold,modd,lvld,donacc):
             sglptdir = os.path.join('molecules', PIDsp, MID, solname, sm, donacc, sglptname)
             freqout = _exec("grep 'Free Energy Correction' run.out", cwd=freqdir)
             if lvld[PIDsp]['solvmod'] == 'smd':
-                sglptout = _exec("grep '(6)  G-S(liq) free energy of system' qc.out", cwd=sglptdir)
+                try:
+                    sglptout = _exec("grep '(6)  G-S(liq) free energy of system' qc.out", cwd=sglptdir)
+                except:
+                    print("Single point calculation failed, check %s" % sglptdir)
             else:
                 sglptout = _exec('grep FINAL run.out', cwd=sglptdir)
             freeEcorr = float(freqout[0].split()[-2])
@@ -572,7 +592,7 @@ def bigbraintime(MID,SID,PIDof,PIDsp,mold,lvld,sold,jobtype,donacc,spin):
         name = "Single point calculation"
         nextstep = "calculate hydricity."
         
-    stat = checkjobstatus(MID,SID,PIDof,PIDsp,sold,jobtype,donacc,spin)
+    stat = checkjobstatus(MID,SID,PIDof,PIDsp,sold,lvld,jobtype,donacc,spin)
     
     if stat == "DNE":
         submit(MID,SID,PIDof,PIDsp,mold,lvld,sold,jobtype,donacc,spin)
