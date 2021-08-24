@@ -814,7 +814,7 @@ def savedata(project, DID, sysd, mold, sold, modd,lvld):
                     hyddict[calOM].append(HHRdict[calOM][i] - yintorm)
 
         #Add trendline
-        x = np.linspace(0, 140, 1000)
+        x = np.linspace(0, 160, 1000)
         axsolv.plot(x, fixedslope*x, linestyle = 'dashed', color = 'black')
         
         #Plot points
