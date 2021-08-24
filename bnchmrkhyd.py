@@ -827,8 +827,8 @@ def savedata(project, DID, sysd, mold, sold, modd,lvld):
         axsolv.set_title('Calculated vs Experimental Hydricities in %s' % solname.capitalize())
         axsolv.set_xlabel('Experimental Hydricity (kcal/mol)')
         axsolv.set_ylabel('Calculated Hydricity (kcal/mol)')
-        axsolv.set_xlim([0,140])
-        axsolv.set_ylim([0,140])
+        axsolv.set_xlim([0,160])
+        axsolv.set_ylim([0,160])
         axsolv.set_aspect('equal', adjustable='box')
         extra = Rectangle((0, 0), 1, 1, fc="w", fill=False, edgecolor='none', linewidth=0)
         
@@ -863,8 +863,8 @@ def savedata(project, DID, sysd, mold, sold, modd,lvld):
     axall.set_xlabel('Experimental hydricity (kcal/mol)')
     axall.set_ylabel('Calculated Hydricity (kcal/mol)')
     axall.set_aspect('equal', adjustable='box')
-    axall.set_xlim([0,140])
-    axall.set_ylim([0,140])
+    axall.set_xlim([0,160])
+    axall.set_ylim([0,160])
     axall.legend(fontsize=9.8)
     
     #Save plot to pdf
