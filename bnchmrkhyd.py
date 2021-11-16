@@ -332,7 +332,6 @@ $end
 #SBATCH -n {cpus}
 #SBATCH -c 2
 #SBATCH --gres=gpu:0
-#SBATCH --exclude=g6-22
 #SBATCH --mem={mem}
 #SBATCH -J {MID}
 #SBATCH -t 7-00:00:00
@@ -372,48 +371,52 @@ rm -r /scratch/cyeo99/$SLURM_JOB_ID
             basisloc = os.path.join('molecules', "P02", MID, solname, spin, donacc, "opt", "scr", "start.basis")
         if basis == "6-31gs_ldz":
             basisloc = os.path.join('molecules', "P08", MID, solname, spin, donacc, "sglpt_fr_P02", "scr", "start.basis")
-        basisfile = open(basisloc, "r")
-        startbasis = list(basisfile.readlines())
-        del startbasis[:3]
-        for i in range(len(startbasis)):
-            if startbasis[i].startswith("ATOM"):
-                atomstr = startbasis[i].split()
-                startbasis[i] = atomstr[-1] + "  " + atomstr[1].replace(":", "") + "\n"
-            if startbasis[i].startswith("S"):
-                if not startbasis[i+1].startswith("S"):
+        try:
+            basisfile = open(basisloc, "r")
+            startbasis = list(basisfile.readlines())
+            del startbasis[:3]
+            for i in range(len(startbasis)):
+                if startbasis[i].startswith("ATOM"):
+                    atomstr = startbasis[i].split()
+                    startbasis[i] = atomstr[-1] + "  " + atomstr[1].replace(":", "") + "\n"
+                if startbasis[i].startswith("S"):
+                    if not startbasis[i+1].startswith("S"):
+                        startbasis[i] = startbasis[i].replace("\n", " 1.0\n")
+                if startbasis[i].startswith("P"):
+                    if not startbasis[i+1].startswith("S"):
+                        startbasis[i] = startbasis[i].replace("\n", " 1.0\n")
+                if startbasis[i].startswith("D"):
                     startbasis[i] = startbasis[i].replace("\n", " 1.0\n")
-            if startbasis[i].startswith("P"):
-                if not startbasis[i+1].startswith("S"):
-                    startbasis[i] = startbasis[i].replace("\n", " 1.0\n")
-            if startbasis[i].startswith("D"):
-                startbasis[i] = startbasis[i].replace("\n", " 1.0\n")
-            if startbasis[i].startswith("F"):
-                if not startbasis[i+1].startswith("S"):
-                    startbasis[i] = startbasis[i].replace("\n", " 1.0\n")
-            if startbasis[i] == "\n":
-                startbasis[i] = "****\n"
-        coeffs = ''.join(startbasis)
-        basisfile.close()
-        
-        with open(os.path.join(dirname, 'qc.in'), 'w') as f:    
-            f.write(qcinstr.format(unr=unr,chg=chg,spin=spin,coords=coords,dft=dft,solname=solname,coeffs=coeffs))
-
-        #Depending on the number of atoms, set the number of CPUs and mem
-        if atomnum < 30:
-            cpus = 1
-            mem = 8000
-        if 30 <= atomnum < 50:
-            cpus = 2
-            mem = 16000
-        if atomnum >= 50:
-            cpus = 4
-            mem = 32000
-        #Write batch.script (doing this so that time limit can be set to 7 days, not 2 days (the default)
-        with open(os.path.join(dirname, 'batch.script'), 'w') as g:
-            g.write(batchscriptstr.format(mem=mem,MID=MID,cpus=cpus))
-        
+                if startbasis[i].startswith("F"):
+                    if not startbasis[i+1].startswith("S"):
+                        startbasis[i] = startbasis[i].replace("\n", " 1.0\n")
+                if startbasis[i] == "\n":
+                    startbasis[i] = "****\n"
+            coeffs = ''.join(startbasis)
+            basisfile.close()
+            basisfile = "It's 1AM and I'm hungry"
+            
+            with open(os.path.join(dirname, 'qc.in'), 'w') as f:    
+                f.write(qcinstr.format(unr=unr,chg=chg,spin=spin,coords=coords,dft=dft,solname=solname,coeffs=coeffs))
+    
+            #Depending on the number of atoms, set the number of CPUs and mem
+            if atomnum < 30:
+                cpus = 1
+                mem = 8000
+            if 30 <= atomnum < 50:
+                cpus = 2
+                mem = 16000
+            if atomnum >= 50:
+                cpus = 4
+                mem = 32000
+            #Write batch.script (doing this so that time limit can be set to 7 days, not 2 days (the default)
+            with open(os.path.join(dirname, 'batch.script'), 'w') as g:
+                g.write(batchscriptstr.format(mem=mem,MID=MID,cpus=cpus))
+        except:
+            basisfile = "DNE"
     #TeraChem
     else:
+        basisfile = "I want hot soup but my housemates are asleep"
         #What to write if solvent model is PCM
         if lvld[PID]['solvmod'] == 'pcm':
             pcmorgas = "pcm cosmo\nepsilon %s" % dec
@@ -452,7 +455,6 @@ min_converge_dmax 1.8e-4
 #SBATCH -n {gpus}
 #SBATCH -c 2
 #SBATCH --gres=gpu:{gpus}
-#SBATCH --exclude=g6-22
 #SBATCH --mem={mem}
 #SBATCH -J {MID}
 #SBATCH -t 7-00:00:00
@@ -467,8 +469,8 @@ export CUDA_CACHE_PATH=/scratch/$USER/.nv/ComputeCache
 export TeraChem=/home/leeping/opt/terachem/current
 export PATH=$TeraChem/bin:$PATH
 export LD_LIBRARY_PATH=$TeraChem/lib:$LD_LIBRARY_PATH
-    
-    
+
+
 terachem  run.in &> run.out
 
 {ofs}
@@ -505,14 +507,17 @@ terachem  run.in &> run.out
         with open(os.path.join(dirname, 'batch.script'), 'w') as g:
             g.write(batchscriptstr.format(gpus=gpus, mem=mem, MID=MID, ofs=ofs))
       
-    #Submit job
-    submit = _exec('sbatch batch.script', cwd=dirname)
-    submitstring = submit[0]
-    submitsplt = submitstring.split()
-    jobnum = submitsplt[3]
-    #Save job number to txt file
-    with open(os.path.join(dirname, 'submittedjob.txt'), 'w') as h:
-        h.write(jobnum)
+    if basisfile == "DNE":
+        print("%s DNE, cannot write basis set coefficients" % basisloc)
+    else:
+        #Submit job
+        submit = _exec('sbatch batch.script', cwd=dirname)
+        submitstring = submit[0]
+        submitsplt = submitstring.split()
+        jobnum = submitsplt[3]
+        #Save job number to txt file
+        with open(os.path.join(dirname, 'submittedjob.txt'), 'w') as h:
+            h.write(jobnum)
 
 
 def gethyd(MID,SID,DID,mold,sold,modd,lvld,donacc):
@@ -731,6 +736,8 @@ def savedata(project, DID, sysd, mold, sold, modd,lvld):
     figall, axall = plt.subplots()
 
     #For each solvent
+    axlowlim = []
+    axupplim = []
     for solvent in sold:
         solname = sold[solvent]['sname']
         
@@ -812,23 +819,50 @@ def savedata(project, DID, sysd, mold, sold, modd,lvld):
             else:
                 for i in range(len(HHRdict[calOM])):
                     hyddict[calOM].append(HHRdict[calOM][i] - yintorm)
-
-        #Add trendline
-        x = np.linspace(0, 160, 1000)
-        axsolv.plot(x, fixedslope*x, linestyle = 'dashed', color = 'black')
         
-        #Plot points
+        #Plot points and determine axis limits
         if doorg == True:
             organic = axsolv.scatter(hyddict[expOR], hyddict[calOR], c='turquoise')
+            for i in range(len(hyddict[expOR])):
+                maxexp = max(hyddict[expOR])
+                minexp = min(hyddict[expOR])
+                maxcal = max(hyddict[calOR])
+                mincal = min(hyddict[calOR])
+                if maxexp >= maxcal:
+                    upperlim = maxexp
+                else:
+                    upperlim = maxcal
+                if minexp <= mincal:
+                    lowerlim = minexp
+                else:
+                    lowerlim = mincal
         if doorm == True:
             organometallic = axsolv.scatter(hyddict[expOM], hyddict[calOM], c='darkgray')
-
-        #Add labels and legend
+            for i in range(len(hyddict[expOM])):
+                maxexp = max(hyddict[expOM])
+                minexp = min(hyddict[expOM])
+                maxcal = max(hyddict[calOM])
+                mincal = min(hyddict[calOM])
+                if maxexp >= maxcal:
+                    upperlim = maxexp
+                else:
+                    upperlim = maxcal
+                if minexp <= mincal:
+                    lowerlim = minexp
+                else:
+                    lowerlim = mincal
+        #Add labels, trendline, and legend
         axsolv.set_title('Calculated vs Experimental Hydricities in %s' % solname.capitalize())
         axsolv.set_xlabel('Experimental Hydricity (kcal/mol)')
         axsolv.set_ylabel('Calculated Hydricity (kcal/mol)')
-        axsolv.set_xlim([0,160])
-        axsolv.set_ylim([0,160])
+        if lowerlim >= 10:
+            lowerlim = 10
+        axsolv.set_xlim([lowerlim-10,upperlim+10])
+        axsolv.set_ylim([lowerlim-10,upperlim+10])
+        x = np.linspace(lowerlim-10, upperlim+10, 1000)
+        axsolv.plot(x, fixedslope*x, linestyle = 'dashed', color = 'black')
+        axlowlim.append(lowerlim)
+        axupplim.append(upperlim)
         axsolv.set_aspect('equal', adjustable='box')
         extra = Rectangle((0, 0), 1, 1, fc="w", fill=False, edgecolor='none', linewidth=0)
         
@@ -863,8 +897,12 @@ def savedata(project, DID, sysd, mold, sold, modd,lvld):
     axall.set_xlabel('Experimental hydricity (kcal/mol)')
     axall.set_ylabel('Calculated Hydricity (kcal/mol)')
     axall.set_aspect('equal', adjustable='box')
-    axall.set_xlim([0,160])
-    axall.set_ylim([0,160])
+    if min(axlowlim) <= 0:
+        axall.set_xlim([min(axlowlim)-10,max(axupplim)+10])
+        axall.set_ylim([min(axlowlim)-10,max(axupplim)+10])
+    else:
+        axall.set_xlim([0,max(axupplim)+10])
+        axall.set_ylim([0,max(axupplim)+10])
     axall.legend(fontsize=9.8)
     
     #Save plot to pdf
