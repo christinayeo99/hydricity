@@ -205,7 +205,7 @@ def checkjobstatus(MID,SID,PIDof,PIDsp,sold,lvld,job,donacc,spin):
                 else:
                     status = 'failed'
             if job == 'energy':
-                if lvld[PIDsp]['solvmod'] == 'smd':
+                if lvld[PIDsp]['solvmod'] == 'smd' or lvld[PIDsp]['dft'] == 'm06-2x':
                     try:
                         output = _exec("grep '(6)  G-S(liq) free energy of system' qc.out", cwd=jobdir)
                         line = output[0]
@@ -291,8 +291,50 @@ def submit(MID,SID,PIDof,PIDsp,mold,lvld,sold,job,donacc,spin):
     if not os.path.exists(optdir): os.makedirs(optdir)
     
     #QChem
-    if lvld[PID]['solvmod'] == 'smd':
-      
+    if lvld[PID]['solvmod'] == 'smd' or lvld[PID]['dft'] == 'm06-2x':
+        convfail = "no"
+        effcore = "no"
+        
+        if MID == "M0008":
+            convfail = "yes"
+        if MID == "M0033":
+            convfail = "yes"
+            effcore = "yes"
+        if MID == "M0036":
+            convfail = "yes"
+
+            
+        if convfail == "yes":
+            rcadiis = "scf_algorithm         rca_diis"
+
+        if convfail == "no":
+            rcadiis = ""
+            
+        if effcore == "yes":
+            ecp1 = """\
+ecp                   gen
+ecp_fit               true
+"""
+            ecp2 = """\
+$ecp
+Br
+lanl2dz
+****
+$end
+"""
+        if effcore == "no":
+            ecp1 = ""
+            ecp2 = ""
+            
+        if lvld[PID]['solvmod'] == 'pcm':
+            pcmparam = """\
+$pcm
+solver               inversion
+theory               cpcm
+method               iswig
+$end
+"""
+    
         #String that will be written in to the run.in file
         qcinstr = """\
 $molecule
@@ -312,8 +354,15 @@ incfock               0
 scf_convergence       8
 thresh                14
 max_scf_cycles        200
-solvent_method        smd
+solvent_method        {solvmod}
+DFT_D                 D3_BJ
+{rcadiis}
+{ecp1}
 $end
+
+{pcmparam}
+
+{ecp2}
 
 $smx
 solvent               {solname}
@@ -327,14 +376,14 @@ $end
         #String that will be written in to the batch.script file
         batchscriptstr = """\
 #!/bin/bash -l
-#SBATCH -p med
+#SBATCH -p high2
 #SBATCH -N 1
 #SBATCH -n {cpus}
 #SBATCH -c 2
 #SBATCH --gres=gpu:0
 #SBATCH --mem={mem}
 #SBATCH -J {MID}
-#SBATCH -t 7-00:00:00
+#SBATCH -t 5-00:00:00
 
 #SBATCH --no-requeue
 
@@ -369,7 +418,7 @@ rm -r /scratch/cyeo99/$SLURM_JOB_ID
             basisloc = os.path.join('molecules', "P01", MID, solname, spin, donacc, "opt", "scr", "start.basis")
         if basis == "tzvp_ltz":
             basisloc = os.path.join('molecules', "P02", MID, solname, spin, donacc, "opt", "scr", "start.basis")
-        if basis == "6-31gs_ldz":
+        if basis == "ma-def2-tzvp-f_ltz+":
             basisloc = os.path.join('molecules', "P08", MID, solname, spin, donacc, "sglpt_fr_P02", "scr", "start.basis")
         try:
             basisfile = open(basisloc, "r")
@@ -397,7 +446,8 @@ rm -r /scratch/cyeo99/$SLURM_JOB_ID
             basisfile = "It's 1AM and I'm hungry"
             
             with open(os.path.join(dirname, 'qc.in'), 'w') as f:    
-                f.write(qcinstr.format(unr=unr,chg=chg,spin=spin,coords=coords,dft=dft,solname=solname,coeffs=coeffs))
+                f.write(qcinstr.format(unr=unr,chg=chg,spin=spin,coords=coords,dft=dft,solvmod=lvld[PID]['solvmod'],\
+                                       solname=solname,coeffs=coeffs,rcadiis=rcadiis,ecp1=ecp1,ecp2=ecp2,pcmparam=pcmparam))
     
             #Depending on the number of atoms, set the number of CPUs and mem
             if atomnum < 30:
@@ -520,7 +570,7 @@ terachem  run.in &> run.out
             h.write(jobnum)
 
 
-def gethyd(MID,SID,DID,mold,sold,modd,lvld,donacc):
+def gethyd(MID,SID,DID,mold,sold,modd,lvld,donacc,disp):
     #---get sgl pt seperately---
     """
     Reads run.out file to get the Gibbs free energy of the optimal structure for a molecule.
@@ -533,6 +583,9 @@ def gethyd(MID,SID,DID,mold,sold,modd,lvld,donacc):
                       nested dictionaries created by parser
     donacc: str
             type of structure (donor or acceptor)
+    disp: str
+          Turn dispersion correction on ("yes") or off ("no"). Only works for TeraChem
+          output files, ONLY FOR B3LYP (see line 571)!!!!!
     
     Returns
     -------
@@ -562,19 +615,35 @@ def gethyd(MID,SID,DID,mold,sold,modd,lvld,donacc):
         PIDsp = modd[DID]['sglpt']
         sglptname = 'sglpt_fr_%s' % PIDof
         for sm in mold[MID][key]:
-            freqdir = os.path.join('molecules', PIDof, MID, solname, sm, donacc, 'freq')
+            if disp == "yes":
+                freqdir = os.path.join('molecules', PIDof, MID, solname, sm, donacc, 'freq')
+            else:
+                freqdir = os.path.join('molecules', 'P02',  MID, solname, sm, donacc, 'freq')
+           
             sglptdir = os.path.join('molecules', PIDsp, MID, solname, sm, donacc, sglptname)
             freqout = _exec("grep 'Free Energy Correction' run.out", cwd=freqdir)
-            if lvld[PIDsp]['solvmod'] == 'smd':
+            if lvld[PIDsp]['solvmod'] == 'smd' or lvld[PIDsp]['dft'] == 'm06-2x':
                 try:
-                    sglptout = _exec("grep '(6)  G-S(liq) free energy of system' qc.out", cwd=sglptdir)
+                    if lvld[PIDsp]['solvmod'] == 'smd':
+                        sglptout = _exec("grep '(6)  G-S(liq) free energy of system' qc.out", cwd=sglptdir)
+                    else:
+                        sglptout = _exec("grep 'Total Free Energy (H0 + V/2 + non-elec)' qc.out", cwd=sglptdir)
                 except:
                     print("Single point calculation failed, check %s" % sglptdir)
             else:
                 sglptout = _exec('grep FINAL run.out', cwd=sglptdir)
+                if disp == "no": #remove dispersion correction
+                    dispersion = _exec("grep 'DFTD Dispersion Correction' run.out", cwd=sglptdir)
+                    
             freeEcorr = float(freqout[0].split()[-2])
-            finalE = float(sglptout[0].split()[-2]) * 627.509 #convert from AU to kcal/mol
-            Gibbs = freeEcorr + finalE
+            if disp == "yes":
+                finalE = float(sglptout[0].split()[-2]) * 627.509 #convert from AU to kcal/mol
+                Gibbs = freeEcorr + finalE
+            else:
+                finalE = float(sglptout[0].split()[-2])
+                dispcorr = float(dispersion[0].split()[-2])
+                Gibbs = freeEcorr + (finalE - dispcorr) * 627.509 #convert from AU to kcal/mol
+                
             Edict[sm] = Gibbs
             
     #Search dictionary for spin mult with lowest energy
@@ -611,6 +680,16 @@ def bigbraintime(MID,SID,PIDof,PIDsp,mold,lvld,sold,jobtype,donacc,spin):
         print("Geometry optimization for %s %s incomplete." % (MID, donacc))
         
 def dataanalysis(xlist, ylist, fixedslope):
+    """
+    Parameters
+    ----------
+    xlist : list
+        Experimental hydricities.
+    ylist : list
+        Calculated hydricities.
+    fixedslope : float
+        Slope of linear fit, set to 1.
+    """
     #Add trendline and calculate R^2 & RMSE
     #Get trendline with slope fixed
     yintlist = []
@@ -628,10 +707,10 @@ def dataanalysis(xlist, ylist, fixedslope):
     for i in range(len(residual)):
         ressq.append(residual[i]**2)
     #average y
-    aveexp = np.sum(ylist)/len(ylist)
+    avey = np.sum(ylist)/len(ylist)
     diffmean = []
     for i in range(len(ylist)):
-        diffmean.append(ylist[i] - aveexp) #actual y - average y
+        diffmean.append(ylist[i] - avey) #actual y - average y
     diffmeansq = []
     for i in range(len(diffmean)):
         diffmeansq.append(diffmean[i]**2)
@@ -641,16 +720,11 @@ def dataanalysis(xlist, ylist, fixedslope):
     Rsquared = 1 - ressqsum/diffmeansqsum
     
     #Get RMSE
-    difflist=[]
-    for i in range(len(xlist)):
-        diffexpcalsq = (predictedy[i]-ylist[i])**2
-        difflist.append(diffexpcalsq)
-    diffsqsum = np.sum(difflist)
-    RMSE = np.sqrt(diffsqsum/len(xlist))
+    RMSE = np.sqrt(ressqsum/len(xlist))
     
     return Rsquared, RMSE, yint
 
-def savedata(project, DID, sysd, mold, sold, modd,lvld):
+def savedata(project, DID, sysd, mold, sold, modd, lvld, disp):
     """
     Saves free energy of hydricity half reaction to dat file, vertically shifts data points according to solvent,
     which gives hydricity, and makes plots for each solvent and one plot that includes points for all solvents.
@@ -690,7 +764,11 @@ def savedata(project, DID, sysd, mold, sold, modd,lvld):
             hyddict[expOM] = []
         
     #Make directories for data
-    datadir = os.path.join('data', '%s' %DID)
+    if disp == "yes":
+        datadir = os.path.join('data', '%s' %DID)
+    else:
+        datadir = os.path.join('no_dispcorr_data', '%s' %DID)
+        
     if not os.path.exists(datadir): os.makedirs(datadir)
 
     #Add column titles
@@ -703,8 +781,8 @@ def savedata(project, DID, sysd, mold, sold, modd,lvld):
             #Calculate delta G_HHR
             MID = sysd[YID]['molecule']
             SID = sysd[YID]['solvent']
-            donminspn, donfreeE = gethyd(MID,SID,DID,mold,sold,modd,lvld,'donor')
-            accminspn, accfreeE = gethyd(MID,SID,DID,mold,sold,modd,lvld,'acceptor')
+            donminspn, donfreeE = gethyd(MID,SID,DID,mold,sold,modd,lvld,'donor', disp)
+            accminspn, accfreeE = gethyd(MID,SID,DID,mold,sold,modd,lvld,'acceptor', disp)
             delG_HHR = accfreeE - donfreeE
                 
             #Save results to dat file (YID, donor charge, donor spin, acceptor charge, acceptor spin, free energy of hydricity half reaction)
@@ -729,7 +807,11 @@ def savedata(project, DID, sysd, mold, sold, modd,lvld):
 
 
     #Make directories for plots
-    plotdir = os.path.join('plots', '%s' %DID)
+    if disp == "yes":
+        plotdir = os.path.join('plots', '%s' %DID)
+    else:
+        plotdir = os.path.join('no_dispcorr_plots', '%s' %DID)
+
     if not os.path.exists(plotdir): os.makedirs(plotdir)
     
     #For all molecules: This plot is PURELY for visual purposes
@@ -916,13 +998,22 @@ def main():
     jobtype = str(input('Enter job type: \n'))
     molfile = os.path.join("keys", "molecules.txt")
     
+    if jobtype == "removedisp":
+        disp = "no"
+        save_data = "yes"
+    if jobtype == "hydricity":
+        disp = "yes"
+        save_data = "yes"
+    else:
+        disp = "yes"
+        save_data = "no"
+    
     #Create dictionaries
     mold, lvld, sold, sysd, modd = parser(project, molfile)
     
     #If freq analysis done for all spin mults, calculate hydricity, then store data to dat file and plots
-    if jobtype == "hydricity":
-        savedata(project, DID, sysd, mold, sold, modd, lvld)
-    
+    if save_data == "yes":
+        savedata(project, DID, sysd, mold, sold, modd, lvld, disp) 
     else:
         PIDof = modd[DID]['optfreq']
         if len(modd[DID])>1:
